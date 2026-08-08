@@ -35,10 +35,15 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 
 .two-col{margin-top:16px;display:grid;grid-template-columns:285px 1fr;gap:16px;align-items:start}.toc{position:sticky;top:94px;padding:14px;max-height:calc(100vh - 115px);overflow:auto}.toc-group{margin:12px 0 5px;color:#ffe2a0;font-size:13px;font-weight:900;border-bottom:1px solid rgba(228,180,94,.14);padding-bottom:5px}.toc-item{display:block;padding:9px 10px;border:1px solid rgba(255,255,255,.06);border-radius:9px;background:rgba(255,255,255,.025);cursor:pointer;margin-top:6px}.toc-item.active{background:rgba(228,180,94,.08);color:#ffe2a0}.compact-card{padding:17px}.compact-top{display:flex;gap:16px}.compact-img{width:142px;height:142px;object-fit:cover;border-radius:11px;background:#071824;flex:0 0 142px}.codebox{margin-top:10px;padding:8px 11px;border:1px solid rgba(126,204,234,.18);border-radius:8px;background:rgba(126,204,234,.055);font-size:12px}.extra-code-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:7px}.extra-code-row .btn{margin-top:0}.type-manager{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.type-manager .field{flex:1 1 220px}
 @media(max-width:860px){.two-col{grid-template-columns:1fr}.toc{position:relative;top:auto;max-height:none}}@media(max-width:620px){.compact-top{flex-direction:column}.compact-img{width:100%;height:220px}}
+
+.content-area{display:grid;gap:18px;min-width:0}.catalog-type-section{scroll-margin-top:105px}.catalog-type-title{margin:0 0 10px;padding:0 2px 7px;border-bottom:1px solid rgba(228,180,94,.2);font-size:22px}.catalog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.catalog-card{padding:12px;min-width:0;display:flex;flex-direction:column}.catalog-card.active{border-color:rgba(255,226,160,.62);box-shadow:0 0 0 1px rgba(255,226,160,.08),0 14px 36px rgba(0,0,0,.28)}.catalog-head{display:grid;grid-template-columns:82px minmax(0,1fr);gap:10px;align-items:start}.catalog-img{width:82px;height:82px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,226,160,.14);background:#071824}.catalog-card h2{margin:0 0 5px;font-size:20px;line-height:1.12}.catalog-card .tags{margin:3px 0 5px}.catalog-card .desc{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;min-height:0}.catalog-card .codebox{padding:6px 8px;margin-top:7px}.catalog-card .entry-actions{margin-top:auto;padding-top:8px}.toc-type-button{width:100%;border:0;background:transparent;text-align:left;cursor:pointer;display:flex;justify-content:space-between;gap:8px}.toc-type-button span{color:#9db0b8;font-weight:500}.toc-item{cursor:pointer}.toc-item.active{border-color:rgba(255,226,160,.45)}
+@media(max-width:1100px){.catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.catalog-grid{grid-template-columns:1fr}.catalog-head{grid-template-columns:92px minmax(0,1fr)}.catalog-img{width:92px;height:92px}}
+
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="supabase-sync.js?v=0.0.48"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.48">
+<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
 </head><body><header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -58,7 +63,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <div class="field"><label>Дополнительный Код</label><div id="extraCodes"></div><button class="btn secondary" type="button" id="addExtraCode">Добавить Дополнительный Код</button></div>
 <div class="filebox"><label>Изображение</label><input id="imageInput" type="file" accept="image/*"><img class="preview" id="imagePreview"></div>
 <button class="btn secondary" type="button" id="previewBtn">Предпросмотр</button><button class="btn" id="saveBtn">Опубликовать</button><button class="btn secondary" type="button" id="cancelBtn" style="display:none">Отменить</button><div id="saveStatus" class="role-note" style="display:none"></div>
-</div></section><div class="two-col"><aside class="panel toc"><h3>Оглавление</h3><input id="search" placeholder="Поиск по названию или коду"><div id="tocList"></div></aside><section id="content"></section></div></main>
+</div></section><div class="two-col"><aside class="panel toc"><h3>Оглавление по типам предмета</h3><input id="search" placeholder="Поиск по названию или коду"><div id="tocList"></div></aside><section id="content" class="content-area"></section></div></main>
 <div class="preview-modal" id="previewModal"><div class="preview-box"><div class="preview-head"><h2>Предпросмотр</h2><button class="btn danger" style="margin:0" onclick="closePreview()">Закрыть</button></div><div id="previewContent"></div></div></div>
 <script>
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
@@ -206,38 +211,50 @@ function codeHtml(item){
   return `${item.code?`<div class="codebox"><b>Код:</b> ${esc(item.code)}</div>`:''}${arr.map((x,i)=>`<div class="codebox"><b>Дополнительный Код ${i+1}:</b> ${esc(x)}</div>`).join('')}`;
 }
 
-function card(item){
-  return `<article class="panel compact-card"><div class="compact-top">
-  ${item.image?`<img class="compact-img" src="${item.image}" loading="lazy">`:'<div class="compact-img"></div>'}
-  <div><h2>${esc(item.name)}</h2>
-  <div class="tags"><span class="tag">${esc(item.type||'Без типа')}</span></div>
-  <div class="desc">${esc(item.description||'').replace(/\n/g,'<br>')}</div>
-  ${codeHtml(item)}
-  ${isAdmin?`<div class="entry-actions"><button class="btn secondary" onclick="editEntry(${item.id})">Редактировать</button><button class="btn danger" onclick="delEntry(${item.id})">Удалить</button></div>`:''}
-  </div></div></article>`;
+function card(item,preview=false){
+  return `<article id="item-card-${item.id}" class="panel catalog-card ${item.id===selectedId&&!preview?'active':''}">
+    <div class="catalog-head">
+      ${item.image?`<img class="catalog-img" src="${item.image}" loading="lazy" alt="${esc(item.name||'Предмет')}">`:'<div class="catalog-img"></div>'}
+      <div><h2>${esc(item.name||'Без названия')}</h2><div class="tags"><span class="tag">${esc(item.type||'Без типа')}</span></div></div>
+    </div>
+    ${item.description?`<div class="desc" style="margin-top:8px">${esc(item.description).replace(/\n/g,'<br>')}</div>`:''}
+    ${codeHtml(item)}
+    ${isAdmin&&!preview?`<div class="entry-actions"><button class="btn secondary" onclick="editEntry(${item.id})">Редактировать</button><button class="btn danger" onclick="delEntry(${item.id})">Удалить</button></div>`:''}
+  </article>`;
 }
 
 function render(){
   const q=searchInput.value.trim().toLowerCase();
   const list=entries.filter(x=>
     (x.name||'').toLowerCase().includes(q) ||
+    (x.type||'').toLowerCase().includes(q) ||
+    (x.description||'').toLowerCase().includes(q) ||
     (x.code||'').toLowerCase().includes(q) ||
     (Array.isArray(x.extraCodes)&&x.extraCodes.some(c=>(c||'').toLowerCase().includes(q)))
   );
 
-  tocList.innerHTML=types.map(t=>{
-    const a=list.filter(x=>(x.type||types[0])===t);
-    return a.length
-      ?`<div class="toc-group">${esc(t)}</div>`+a.map(x=>`<a class="toc-item ${x.id===selectedId?'active':''}" onclick="selectEntry(${x.id})">${esc(x.name)}</a>`).join('')
-      :'';
+  tocList.innerHTML=types.map(type=>{
+    const rows=list.filter(x=>(x.type||types[0])===type);
+    if(!rows.length)return '';
+    return `<button class="toc-group toc-type-button" type="button" onclick="jumpType('${encodeURIComponent(type)}')"><b>${esc(type)}</b><span>${rows.length}</span></button>`+
+      rows.map(x=>`<a class="toc-item ${x.id===selectedId?'active':''}" onclick="selectEntry(${x.id})">${esc(x.name||'Без названия')}</a>`).join('');
   }).join('')||'<div class="muted">Пусто</div>';
 
-  const item=entries.find(x=>x.id===selectedId)||list[0];
-  if(item)selectedId=item.id;
-  content.innerHTML=item?card(item):'<div class="panel empty">Предметы пока не добавлены.</div>';
+  content.innerHTML=types.map(type=>{
+    const rows=list.filter(x=>(x.type||types[0])===type);
+    if(!rows.length)return '';
+    return `<section class="catalog-type-section" id="item-type-${encodeURIComponent(type)}"><h2 class="catalog-type-title">${esc(type)} <span class="muted">(${rows.length})</span></h2><div class="catalog-grid">${rows.map(x=>card(x)).join('')}</div></section>`;
+  }).join('')||'<div class="panel empty">Предметы пока не добавлены.</div>';
 }
-window.selectEntry=id=>{selectedId=id;render()};
-searchInput.addEventListener('input',render);
+window.selectEntry=id=>{
+  selectedId=id;render();
+  requestAnimationFrame(()=>document.getElementById('item-card-'+id)?.scrollIntoView({behavior:'smooth',block:'center'}));
+};
+window.jumpType=enc=>{
+  const type=decodeURIComponent(enc);
+  requestAnimationFrame(()=>document.getElementById('item-type-'+encodeURIComponent(type))?.scrollIntoView({behavior:'smooth',block:'start'}));
+};
+searchInput.addEventListener('input',()=>{selectedId=null;render()});
 
 function reset(){
   editingId=null;
