@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Резервные копии — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+:root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.94)),url("background.png") center/cover fixed no-repeat}
+a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.94);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}.brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.nav a{font-size:14px;font-weight:700}.wrap{width:min(1180px,calc(100% - 30px));margin:34px auto 70px}.panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(5,27,40,.94),rgba(3,18,28,.97));padding:20px;margin-top:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin-top:10px;border:0;border-radius:9px;padding:0 14px;background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:600;cursor:pointer}.btn.secondary{background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)}.btn.danger{background:#50252a;color:#ffd7d7}.muted{color:var(--muted);line-height:1.55}.status,.warn{padding:11px;border-radius:10px;margin-top:10px;line-height:1.5;font-size:13px}.status{border:1px solid rgba(126,204,234,.16);background:rgba(126,204,234,.05);color:#cbe4ed}.warn{border:1px solid rgba(255,190,110,.2);background:rgba(160,100,35,.08);color:#f5dfbf}.hidden{display:none!important}input[type=file]{width:100%;padding:10px;background:#071824;color:#fff;border:1px solid var(--line);border-radius:9px}.table-wrap{overflow:auto;margin-top:12px}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;font-size:13px}th{color:#ffe2a0}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.brand span{display:none}.nav{gap:8px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="supabase-sync.js?v=0.0.48"></script>
+<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.48">
+<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
+</head>
+<body>
+<header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav"><a href="index.html">Главная</a><a href="updates.html">Обновления</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="account.html">Аккаунт</a></nav></header>
+<main class="wrap" id="app">
+<section class="panel"><h1>Резервные копии</h1>
+<p class="muted">В версии 0.0.47 код сайта хранится в GitHub, а живые пользователи, контент, реакции и изображения — в Supabase.</p>
+<div class="status" id="status">Проверка подключения...</div></section>
+
+<section class="grid">
+<article class="panel"><h2>1. Копия контента из админки</h2>
+<p class="muted">Скачивает JSON с <b>site_store</b>, профилями и реакциями. Это удобно для восстановления текстового контента, но это <b>не полный backup Supabase Auth</b> и не архив самих файлов Storage.</p>
+<button class="btn" id="exportBtn">Скачать JSON контента</button>
+<div class="status" id="exportStatus"></div></article>
+
+<article class="panel"><h2>2. Восстановить контент JSON</h2>
+<p class="muted">Восстанавливает ключи контента и реакции. Зарегистрированных пользователей Auth эта кнопка не создаёт и не удаляет.</p>
+<input type="file" id="importFile" accept=".json,application/json">
+<button class="btn danger" id="importBtn" disabled>Восстановить контент</button>
+<div class="status" id="importStatus"></div></article>
+</section>
+
+<section class="grid">
+<article class="panel"><h2>Полная база пользователей</h2>
+<p class="muted">Для восстановления пользователей вместе с их хэшами паролей используйте резервную копию базы Supabase в Dashboard. Auth хранится внутри Postgres, но браузерный publishable key не имеет права выгружать секретные поля Auth.</p>
+<a class="btn secondary" id="dbBackupsLink" target="_blank" rel="noopener">Открыть Database → Backups</a>
+</article>
+<article class="panel"><h2>Изображения</h2>
+<p class="muted">Database Backup не содержит сами объекты Storage — только метаданные. Поэтому важные изображения нужно резервировать отдельно из Storage.</p>
+<a class="btn secondary" id="storageLink" target="_blank" rel="noopener">Открыть Storage</a>
+</article>
+</section>
+
+<section class="panel"><h2>Пользователи</h2><div class="table-wrap"><table><thead><tr><th>Никнейм</th><th>E-mail</th><th>Роль</th><th>Создан</th></tr></thead><tbody id="usersTable"></tbody></table></div></section>
+</main>
+<section class="panel hidden" id="denied" style="width:min(620px,calc(100% - 30px));margin:60px auto"><h1>Доступ закрыт</h1><p class="muted">Раздел доступен только администратору.</p><a class="btn" href="admin-login.html">Вход администратора</a></section>
+
+<script>
+const app=document.getElementById('app');
+const denied=document.getElementById('denied');
+const statusBox=document.getElementById('status');
+const usersTable=document.getElementById('usersTable');
+const exportBtn=document.getElementById('exportBtn');
+const exportStatus=document.getElementById('exportStatus');
+const importFile=document.getElementById('importFile');
+const importBtn=document.getElementById('importBtn');
+const importStatus=document.getElementById('importStatus');
+const dbBackupsLink=document.getElementById('dbBackupsLink');
+const storageLink=document.getElementById('storageLink');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+let imported=null;
+function download(obj,name){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+function stamp(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}`}
+
+async function init(){
+  await KFSupabase.ready;
+  if(!KFSupabase.configured){app.classList.add('hidden');denied.classList.remove('hidden');return}
+  const me=await KFSupabase.getCurrentProfile().catch(()=>null);
+  if(!me||me.role!=='admin'){app.classList.add('hidden');denied.classList.remove('hidden');return}
+  statusBox.textContent='Supabase подключён. Администратор: '+me.email;
+
+  const ref=String(window.KF_SUPABASE_CONFIG.url||'').match(/^https:\/\/([^.]+)\.supabase\.co/i)?.[1]||'';
+  if(ref){
+    dbBackupsLink.href=`https://supabase.com/dashboard/project/${ref}/database/backups`;
+    storageLink.href=`https://supabase.com/dashboard/project/${ref}/storage/buckets`;
+  }
+
+  const {data,error}=await KFSupabase.client.from('profiles').select('nickname,email,role,created_at').order('created_at',{ascending:false});
+  usersTable.innerHTML=error?`<tr><td colspan="4">${esc(error.message)}</td></tr>`:(data||[]).map(u=>`<tr><td>${esc(u.nickname)}</td><td>${esc(u.email||'')}</td><td>${esc(u.role)}</td><td>${esc(u.created_at?new Date(u.created_at).toLocaleString('ru-RU'):'—')}</td></tr>`).join('');
+}
+
+exportBtn.onclick=async()=>{
+  exportStatus.textContent='Подготовка...';
+  try{
+    const [storeRes,profileRes,reactionRes]=await Promise.all([
+      KFSupabase.client.from('site_store').select('key,value_json,updated_at,updated_by').order('key'),
+      KFSupabase.client.from('profiles').select('id,nickname,email,bio,avatar_url,role,created_at,last_seen_at').order('created_at'),
+      KFSupabase.client.from('content_reactions').select('content_key,entry_id,user_id,reaction,created_at,updated_at').order('id')
+    ]);
+    if(storeRes.error)throw storeRes.error;if(profileRes.error)throw profileRes.error;if(reactionRes.error)throw reactionRes.error;
+    download({format:'kungfu-supabase-content-0.0.48',createdAt:new Date().toISOString(),site_store:storeRes.data||[],profiles:profileRes.data||[],content_reactions:reactionRes.data||[]},`kungfu_content_${stamp()}.json`);
+    exportStatus.textContent='JSON контента скачан.';
+  }catch(e){exportStatus.textContent=e.message||String(e)}
+};
+
+importFile.onchange=async e=>{
+  imported=null;importBtn.disabled=true;
+  const f=e.target.files&&e.target.files[0];if(!f)return;
+  try{imported=JSON.parse(await f.text());if(!['kungfu-supabase-content-0.0.48','kungfu-supabase-content-0.0.47'].includes(imported.format))throw new Error('Неподдерживаемый формат.');importBtn.disabled=false;importStatus.textContent='Копия готова к восстановлению.'}
+  catch(e){importStatus.textContent=e.message||'Неверный JSON.'}
+};
+
+importBtn.onclick=async()=>{
+  if(!imported)return;
+  if(!confirm('Восстановить контент из выбранной копии? Совпадающие ключи будут заменены.'))return;
+  importBtn.disabled=true;importStatus.textContent='Восстановление...';
+  try{
+    const me=await KFSupabase.getCurrentProfile();
+    for(const r of imported.site_store||[]){
+      const {error}=await KFSupabase.client.from('site_store').upsert({key:r.key,value_json:r.value_json,updated_at:new Date().toISOString(),updated_by:me.id},{onConflict:'key'});
+      if(error)throw error;
+    }
+    for(const r of imported.content_reactions||[]){
+      const {error}=await KFSupabase.client.from('content_reactions').upsert({content_key:r.content_key,entry_id:String(r.entry_id),user_id:r.user_id,reaction:r.reaction,created_at:r.created_at||new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'content_key,entry_id,user_id'});
+      if(error)throw error;
+    }
+    await KFSupabase.refreshStore();
+    importStatus.textContent='Контент восстановлен. Пользователи Auth и файлы Storage этой операцией не изменялись.';
+  }catch(e){importStatus.textContent=e.message||String(e)}
+  finally{importBtn.disabled=false}
+};
+init();
+</script>
+<script src="decor-0.0.48.js?v=0.0.48"></script>
+</body></html>

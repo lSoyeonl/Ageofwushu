@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Продажа Аккаунтов — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+
+<style>
+:root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.35)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.png") center/cover fixed no-repeat}
+a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.93);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto;color:var(--gold2);font-size:20px;font-weight:700}.brand img{width:54px;height:54px}.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.nav a{font-weight:700}
+.wrap{width:min(1150px,calc(100% - 30px));margin:38px auto}.panel{padding:20px;border:1px solid var(--line);border-radius:16px;background:rgba(4,23,35,.93);margin-top:14px}
+h1,h2{color:var(--gold2)}h1{font-size:44px;margin:0}.composer{display:none}.composer.show{display:block}
+input,textarea,select{width:100%;padding:10px;border:1px solid rgba(228,180,94,.3);border-radius:9px;background:#071824;color:#fff;font:inherit;margin-top:8px}textarea{min-height:85px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{min-height:40px;margin-top:10px;border:0;border-radius:9px;padding:0 14px;background:linear-gradient(#f3d28f,#cb9643);font-weight:900;cursor:pointer}.danger{background:#51252a;color:#ffd7d7}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.sale{display:grid;grid-template-columns:150px 1fr;gap:16px}.avatar{width:150px;height:150px;object-fit:cover;border-radius:12px;background:#071824}
+.status{display:inline-flex;padding:4px 9px;border-radius:999px;background:#6b2730;font-weight:900}.status.buy{background:#235d47}.muted{color:#bfd0d8}.date{font-size:11px;color:#91a8b2;margin-top:5px}
+.specs{display:grid;grid-template-columns:1fr 1fr;gap:7px;font-size:13px}.publish-status{margin-top:10px;min-height:20px;color:#c8f4d8;font-size:13px}.avatar-preview{display:none;width:180px;max-height:240px;object-fit:contain;margin-top:10px;border-radius:10px;border:1px solid rgba(228,180,94,.18)}.avatar-preview.show{display:block}.price-line{margin-top:8px;padding:7px 10px;border-radius:9px;background:rgba(228,180,94,.08);border:1px solid rgba(228,180,94,.16);color:#f6ead0;font-size:14px}
+.contact-line{margin-top:9px;padding:8px 10px;border-radius:9px;background:rgba(228,180,94,.06);border:1px solid rgba(228,180,94,.15);font-size:13px}.contact-line a{color:#9fdfff;text-decoration:underline}
+.important-sale-note{position:relative;margin-top:13px;padding:11px 14px 11px 42px;border:1px solid rgba(228,180,94,.20);border-radius:11px;background:linear-gradient(90deg,rgba(228,180,94,.055),rgba(84,143,167,.035));color:#d9e5e9;font-size:13px;line-height:1.5;overflow:hidden}.important-sale-note::before{content:'!';position:absolute;left:13px;top:50%;translate:0 -50%;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,226,160,.30);color:#ffe2a0;font-weight:900;animation:kfSaleNotice 2.8s ease-in-out infinite}.important-sale-note::after{content:'';position:absolute;inset:0 auto 0 -30%;width:12%;background:linear-gradient(100deg,transparent,rgba(255,235,180,.08),transparent);animation:kfSaleGlint 6s ease-in-out infinite;pointer-events:none}@keyframes kfSaleNotice{50%{box-shadow:0 0 10px rgba(228,180,94,.18)}}@keyframes kfSaleGlint{0%,70%{left:-30%}90%,100%{left:125%}}.status-editor{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07)}.status-editor select{width:auto;min-width:150px;margin-top:0}.status-save{margin-top:0}
+@media(max-width:850px){.cards{grid-template-columns:1fr}.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}}@media(max-width:550px){.sale,.grid2{grid-template-columns:1fr}.avatar{width:100%;height:220px}}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="supabase-sync.js?v=0.0.48"></script>
+<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.48">
+<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
+</head>
+<body>
+<header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
+<a href="index.html">Главная</a><a href="taiwan.html">О Тайвани</a><a href="pirate.html">О Пиратке</a><a href="updates.html">Обновления</a><a href="accounts-sale.html">Продажа Аккаунтов</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="register.html">Регистрация</a><a href="login.html">Вход</a>
+</nav></header>
+
+<main class="wrap">
+<section class="panel">
+<h1>Продажа Аккаунтов</h1>
+<p class="muted" id="supabaseAdminNote" style="display:none">Один аккаунт пользователя работает на телефоне и компьютере через Supabase. Зарегистрированные пользователи могут публиковать объявления.</p>
+
+<div class="composer" id="composer"><h2 id="composerTitle">Создать объявление</h2>
+<div class="grid2"><input id="nick" placeholder="Никнейм персонажа"><select id="server"><option>Тайвань</option><option>Пиратка</option></select></div>
+<div class="grid2"><select id="status"><option>Продаю</option><option>Продано</option><option>Куплю</option></select><input id="price" placeholder="Цена"></div>
+
+<input id="avatar" type="file" accept="image/*">
+<div class="muted" style="font-size:11px;margin-top:5px">Изображение оптимизируется без принудительного обрезания. Большие объявления сохраняются вне лимита localStorage.</div>
+<img id="avatarPreview" class="avatar-preview" alt="Предпросмотр">
+
+<div class="grid2"><textarea id="meridians" placeholder="Меридианы"></textarea><textarea id="neigongs" placeholder="Нейгуны"></textarea></div>
+<div class="grid2"><textarea id="gear" placeholder="Снаряжение"></textarea><textarea id="pets" placeholder="Питомцы"></textarea></div>
+<div class="grid2"><textarea id="profession" placeholder="Профессия"></textarea><textarea id="other" placeholder="Остальное"></textarea></div>
+<input id="contact" placeholder="Связаться: ссылка, Telegram, Discord и т.д.">
+<button class="btn" id="add" type="button">Опубликовать</button> <button class="btn" id="cancelEditAd" type="button" style="display:none;background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)">Отменить редактирование</button>
+<div class="publish-status" id="publishStatus"></div>
+</div>
+
+<div class="important-sale-note"><b>Важно!</b> Если неверно указал описание, размести персонажа снова!</div><div id="loginNote" class="muted"></div>
+</section>
+<section class="cards" id="cards"></section>
+</main>
+
+<script>
+let u=null,avatarData='',ads=[],editingId=null;
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+function safeUrl(v){try{const u=new URL(String(v||'').trim());return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}}
+function contactHtml(v){const value=String(v||'').trim();if(!value)return '';const url=safeUrl(value);return url?`<div class="contact-line"><b>Связаться:</b> <a href="${url}" target="_blank" rel="noopener">${esc(value)}</a></div>`:`<div class="contact-line"><b>Связаться:</b> ${esc(value)}</div>`}
+function canEdit(x){return !!u&&(u.role==='admin'||(x.ownerId?String(x.ownerId)===String(u.id):u.nickname===x.author))}
+function readAds(){try{const x=JSON.parse(localStorage.getItem('kungfuAccountSales')||'[]');return Array.isArray(x)?x:[]}catch{return []}}
+async function loadAds(){
+  if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+  await KFSupabase.ready;
+  const fresh=await KFSupabase.getStore('kungfuAccountSales',null);
+  ads=Array.isArray(fresh)?fresh:[];
+  return ads;
+}
+async function saveAds(){
+  if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+  ads=await KFSupabase.saveStore('kungfuAccountSales',ads);
+  return ads;
+}
+
+function render(){
+  cards.innerHTML=ads.length?ads.slice().reverse().map(x=>`<article class="panel sale">
+  ${x.avatar?`<img class="avatar" src="${x.avatar}" loading="lazy">`:'<div class="avatar"></div>'}
+  <div><span class="status ${x.status==='Куплю'?'buy':''}">${esc(x.status||'Продаю')}</span><h2>${esc(x.nick||'Без имени')}</h2>
+  <div class="muted">Сервер: ${esc(x.server||'')} · Автор: ${esc(x.author||'')}</div>
+  <div class="date">Добавлено: ${esc(x.createdAt||'Ранее')}</div>
+  <div class="price-line"><b>Цена:</b> ${esc(x.price||'Не указана')}</div>
+  <div class="specs">
+    <div><b>Меридианы:</b> ${esc(x.meridians||'')}</div>
+    <div><b>Нейгуны:</b> ${esc(x.neigongs||'')}</div>
+    <div><b>Снаряжение:</b> ${esc(x.gear||'')}</div>
+    <div><b>Питомцы:</b> ${esc(x.pets||'')}</div>
+    <div><b>Профессия:</b> ${esc(x.profession||'')}</div>
+    <div><b>Остальное:</b> ${esc(x.other||'')}</div>
+  </div>
+  ${contactHtml(x.contact)}
+  ${canEdit(x)?`<div class="status-editor"><select id="status-${x.id}"><option ${x.status==='Куплю'?'selected':''}>Куплю</option><option ${x.status==='Продаю'?'selected':''}>Продаю</option><option ${x.status==='Продано'?'selected':''}>Продано</option></select><button class="btn status-save" onclick="saveStatus(${x.id})">Сохранить статус</button><button class="btn" style="background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)" onclick="editAd(${x.id})">Редактировать</button><button class="btn danger" onclick="delAd(${x.id})">Удалить</button></div>`:''}
+  </div></article>`).join(''):'<div class="panel muted">Объявлений пока нет.</div>';
+}
+
+function resetComposer(){
+  editingId=null;avatarData='';
+  ['nick','price','meridians','neigongs','gear','pets','profession','other','contact'].forEach(id=>document.getElementById(id).value='');
+  server.value='Тайвань';status.value='Продаю';
+  avatar.value='';avatarPreview.src='';avatarPreview.classList.remove('show');
+  composerTitle.textContent='Создать объявление';
+  add.textContent='Опубликовать';
+  cancelEditAd.style.display='none';
+}
+cancelEditAd.onclick=resetComposer;
+
+window.editAd=id=>{
+  const x=ads.find(a=>a.id===id);if(!x||!canEdit(x))return;
+  editingId=id;
+  nick.value=x.nick||'';server.value=x.server||'Тайвань';status.value=x.status||'Продаю';price.value=x.price||'';
+  meridians.value=x.meridians||'';neigongs.value=x.neigongs||'';gear.value=x.gear||'';pets.value=x.pets||'';profession.value=x.profession||'';other.value=x.other||'';contact.value=x.contact||'';
+  avatarData=x.avatar||'';
+  if(avatarData){avatarPreview.src=avatarData;avatarPreview.classList.add('show')}else avatarPreview.classList.remove('show');
+  composerTitle.textContent='Редактировать объявление';
+  add.textContent='Сохранить изменения';
+  cancelEditAd.style.display='inline-flex';
+  publishStatus.textContent='';
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+avatar.onchange=async()=>{
+  const f=avatar.files&&avatar.files[0];if(!f)return;
+  try{
+    avatarData=await imageToData(f,2000);
+    avatarPreview.src=avatarData;avatarPreview.classList.add('show');
+  }catch(e){
+    avatar.value='';avatarData='';avatarPreview.classList.remove('show');
+    alert(e.message||'Не удалось обработать изображение.');
+  }
+};
+
+add.onclick=async()=>{
+  if(!u){publishStatus.style.color='#ffd0d0';publishStatus.textContent='Сначала войдите в аккаунт.';return}
+  const nickname=nick.value.trim();
+  if(!nickname){alert('Укажите никнейм');return}
+
+  const btn=add,oldText=btn.textContent;
+  btn.disabled=true;btn.textContent=editingId?'Сохранение...':'Публикация...';publishStatus.textContent='';
+
+  try{
+    const old=editingId?ads.find(a=>a.id===editingId):null;
+    let finalAvatar=avatarData||(old&&old.avatar)||'';
+    if(finalAvatar&&/^data:image\//i.test(finalAvatar)&&window.KFSupabase?.configured){
+      try{finalAvatar=await KFSupabase.uploadImageDataUrlStrict(finalAvatar)}
+      catch(e){console.warn('Avatar Storage fallback:',e?.message||e)}
+    }
+
+    const item={
+      id:editingId||Date.now(),
+      nick:nickname,server:server.value,status:status.value,price:price.value.trim(),
+      meridians:meridians.value.trim(),neigongs:neigongs.value.trim(),gear:gear.value.trim(),
+      pets:pets.value.trim(),profession:profession.value.trim(),other:other.value.trim(),
+      contact:contact.value.trim(),avatar:finalAvatar,
+      ownerId:old?.ownerId||u.id||'',author:old?.author||u.nickname,
+      createdAt:old?.createdAt||new Date().toLocaleDateString('ru-RU'),
+      updatedAt:new Date().toISOString()
+    };
+
+    const before=ads.slice();
+    if(editingId){
+      const i=ads.findIndex(a=>a.id===editingId);
+      if(i<0)throw new Error('Объявление не найдено.');
+      ads[i]={...ads[i],...item};
+    }else ads.push(item);
+
+    try{await saveAds()}catch(e){ads=before;throw e}
+
+    const wasEdit=!!editingId;
+    resetComposer();
+    publishStatus.style.color='#c8f4d8';
+    publishStatus.textContent=wasEdit?'Изменения сохранены.':'Объявление опубликовано.';
+    render();
+  }catch(e){
+    publishStatus.style.color='#ffd0d0';
+    publishStatus.textContent=e.message||'Не удалось сохранить объявление.';
+  }finally{
+    btn.disabled=false;
+    if(editingId)btn.textContent='Сохранить изменения';else if(btn.textContent.includes('...'))btn.textContent=oldText;
+  }
+};
+
+window.saveStatus=async id=>{
+  const x=ads.find(a=>a.id===id);if(!x||!canEdit(x))return;
+  const select=document.getElementById('status-'+id);if(!select)return;
+  const before=x.status;x.status=select.value;
+  try{await saveAds();render()}catch(e){x.status=before;alert(e.message||'Не удалось сохранить статус')}
+};
+window.delAd=async id=>{
+  const x=ads.find(a=>a.id===id);if(!x||!canEdit(x))return;
+  if(!confirm('Удалить объявление?'))return;
+  const before=ads.slice();ads=ads.filter(a=>a.id!==id);
+  try{await saveAds();if(editingId===id)resetComposer();render()}catch(e){ads=before;alert(e.message||'Не удалось удалить объявление')}
+};
+
+(async function init(){
+  try{
+    await KFSupabase.ready;
+    u=await KFSupabase.getCurrentProfile();
+  }catch{
+    try{u=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null')}catch{u=null}
+  }
+  await loadAds();
+  if(u){
+    composer.classList.add('show');
+    if(u.role==='admin')supabaseAdminNote.style.display='block';
+    loginNote.textContent='Вы вошли как '+(u.nickname||'пользователь')+'.';
+  }else{
+    composer.classList.remove('show');
+    loginNote.innerHTML='Чтобы создать объявление, <a href="login.html" style="color:#ffe2a0">войдите</a> или <a href="register.html" style="color:#ffe2a0">зарегистрируйтесь</a>.';
+  }
+  render();
+})();
+
+window.addEventListener('kf-supabase-synced',async e=>{
+  if(e.detail&&e.detail.key==='kungfuAccountSales'){await loadAds();render()}
+});
+</script>
+<script src="image-tools-0.0.48.js?v=0.0.48"></script>
+<script src="decor-0.0.48.js?v=0.0.48"></script>
+</body>

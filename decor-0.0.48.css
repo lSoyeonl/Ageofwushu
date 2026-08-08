@@ -1,0 +1,72 @@
+
+.kf-lantern-layer{position:fixed;inset:0;pointer-events:none;z-index:32;overflow:hidden}
+.kf-lantern{
+  position:absolute;bottom:-130px;width:clamp(38px,4.2vw,66px);height:auto;
+  pointer-events:auto;cursor:pointer;user-select:none;-webkit-user-drag:none;
+  filter:drop-shadow(0 0 9px rgba(255,190,78,.24));
+  opacity:.78;
+  animation:kfLanternRise var(--rise,28s) linear forwards,kfLanternSway 3.6s ease-in-out infinite alternate;
+  transform-origin:center 70%;
+}
+.kf-lantern:hover{filter:drop-shadow(0 0 13px rgba(255,213,116,.55));opacity:.96}
+.kf-lantern.pop{
+  animation:kfLanternPop .34s ease-out forwards!important;
+  pointer-events:none;
+}
+.kf-lantern-spark{
+  position:fixed;width:5px;height:5px;border-radius:50%;pointer-events:none;z-index:34;
+  background:rgba(255,224,139,.92);box-shadow:0 0 8px rgba(255,194,74,.8);
+  animation:kfSpark .55s ease-out forwards;
+}
+@keyframes kfLanternRise{
+  from{bottom:-130px}
+  to{bottom:calc(100vh + 110px)}
+}
+@keyframes kfLanternSway{
+  from{margin-left:-10px;rotate:-3deg}
+  to{margin-left:10px;rotate:3deg}
+}
+@keyframes kfLanternPop{
+  0%{transform:scale(1);opacity:.9}
+  60%{transform:scale(1.45);opacity:.85;filter:brightness(1.7) drop-shadow(0 0 18px rgba(255,213,116,.9))}
+  100%{transform:scale(.1);opacity:0}
+}
+@keyframes kfSpark{
+  from{translate:0 0;scale:1;opacity:1}
+  to{translate:var(--sx) var(--sy);scale:.1;opacity:0}
+}
+
+/* Очень мягкое поблескивание только на внутренних страницах */
+body.kf-subpage-shimmer .panel,
+body.kf-subpage-shimmer .card,
+body.kf-subpage-shimmer .update-card{
+  position:relative;
+  overflow:hidden;
+}
+body.kf-subpage-shimmer .panel::after,
+body.kf-subpage-shimmer .card::after,
+body.kf-subpage-shimmer .update-card::after{
+  content:"";position:absolute;inset:-35% auto -35% -45%;width:16%;
+  pointer-events:none;z-index:0;opacity:0;
+  background:linear-gradient(100deg,transparent,rgba(255,233,175,.09),transparent);
+  transform:skewX(-14deg);
+  animation:kfPanelGlint 9s ease-in-out infinite;
+}
+body.kf-subpage-shimmer .panel>*,
+body.kf-subpage-shimmer .card>*,
+body.kf-subpage-shimmer .update-card>*{position:relative;z-index:1}
+@keyframes kfPanelGlint{
+  0%,70%{left:-45%;opacity:0}
+  76%{opacity:.5}
+  88%{left:135%;opacity:.28}
+  100%{left:135%;opacity:0}
+}
+@media(max-width:700px){
+  .kf-lantern{width:42px;opacity:.68}
+}
+@media(prefers-reduced-motion:reduce){
+  .kf-lantern,.kf-lantern-spark,
+  body.kf-subpage-shimmer .panel::after,
+  body.kf-subpage-shimmer .card::after,
+  body.kf-subpage-shimmer .update-card::after{animation:none!important}
+}

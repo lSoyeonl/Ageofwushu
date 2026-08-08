@@ -1,0 +1,126 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Меридианы — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<style>
+:root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.png") center/cover fixed no-repeat}
+a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
+.top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.93);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}
+.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.nav a{font-size:14px;font-weight:750}.nav a:hover{color:var(--gold2)}
+.wrap{width:min(1240px,calc(100% - 30px));margin:34px auto 70px}.panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(5,27,40,.93),rgba(3,18,28,.96));box-shadow:0 16px 44px rgba(0,0,0,.27)}
+.page-head{padding:22px 24px}h1,h2,h3{color:var(--gold2)}h1{font-size:42px;margin:0}.muted{color:var(--muted)}
+.admin-badge{display:inline-flex;padding:3px 7px;border-radius:999px;background:linear-gradient(#efc66d,#b98131);color:#241506;font-size:9px;font-weight:900;margin-left:6px;vertical-align:middle}
+.role-note{margin-top:10px;padding:9px 11px;border:1px solid rgba(126,204,234,.16);border-radius:9px;color:#bcd9e4;background:rgba(126,204,234,.05);font-size:12px}
+.editor{display:none;margin-top:14px;padding:16px;border:1px solid rgba(255,226,160,.2);border-radius:13px;background:rgba(3,21,32,.62)}.editor.show{display:block}
+.field{margin-top:10px}label{display:block;margin-bottom:5px;color:#dce7eb;font-weight:700;font-size:13px}
+input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.28);border-radius:9px;background:#071824;color:#fff;outline:0;padding:10px 11px}textarea{min-height:92px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-shadow:0 0 0 3px rgba(228,180,94,.06)}
+.btn{min-height:40px;margin-top:10px;border:0;border-radius:9px;padding:0 14px;background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:900;cursor:pointer}.btn.secondary{background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)}.btn.danger{background:#50252a;color:#ffd7d7;border:1px solid rgba(255,140,140,.2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.filebox{margin-top:10px;padding:10px;border:1px dashed rgba(228,180,94,.25);border-radius:10px;background:rgba(3,20,31,.46)}.filebox img.preview{display:none;width:min(100%,340px);max-height:210px;object-fit:cover;margin-top:8px;border-radius:9px}.filebox img.preview.show{display:block}
+.two-col{margin-top:16px;display:grid;grid-template-columns:285px 1fr;gap:16px;align-items:start}.toc{position:sticky;top:94px;padding:14px;max-height:calc(100vh - 115px);overflow:auto}.toc h3{margin:0 0 10px;font-size:19px}.toc-search{margin-bottom:9px}.toc-list{display:grid;gap:7px}.toc-group{margin:12px 0 5px;color:#ffe2a0;font-size:13px;font-weight:900;border-bottom:1px solid rgba(228,180,94,.14);padding-bottom:5px}.toc-item{display:block;padding:9px 10px;border:1px solid rgba(255,255,255,.06);border-radius:9px;background:rgba(255,255,255,.025);cursor:pointer;transition:.18s}.toc-item:hover,.toc-item.active{border-color:rgba(228,180,94,.34);background:rgba(228,180,94,.08);color:#ffe2a0}.toc-item small{display:block;color:#91a7b1;margin-top:3px;font-size:10px}
+.content-area{display:grid;gap:12px}.compact-card{padding:17px}.compact-top{display:flex;gap:16px;align-items:flex-start}.compact-img{width:142px;height:142px;object-fit:cover;border-radius:11px;background:#071824;border:1px solid rgba(255,226,160,.14);flex:0 0 142px}.compact-body{min-width:0;flex:1}.compact-card h2{margin:0 0 7px;font-size:26px}.tags{display:flex;gap:6px;flex-wrap:wrap;margin:5px 0 8px}.tag{display:inline-flex;padding:3px 7px;border-radius:999px;background:rgba(228,180,94,.1);border:1px solid rgba(228,180,94,.18);color:#ffe2a0;font-size:10px;font-weight:800}.desc{color:#d6e2e7;line-height:1.55;font-size:14px}.code-under-description{margin-top:10px;padding:8px 11px;border:1px solid rgba(126,204,234,.18);border-radius:8px;background:rgba(126,204,234,.055);color:#cde8f2;font-size:12px}.code-under-description b{color:#ffe2a0}.props{margin-top:10px;padding:10px 11px;border-left:3px solid var(--gold);border-radius:0 9px 9px 0;background:rgba(228,180,94,.065);color:#f6ead0;font-size:13px;line-height:1.5}.entry-actions{display:none;gap:7px;margin-top:9px;flex-wrap:wrap}.entry-actions.show{display:flex}.empty{padding:26px;text-align:center;color:#9db0b8;border:1px dashed rgba(255,226,160,.18);border-radius:12px}
+.type-manager{display:flex;gap:8px;align-items:end;margin-top:10px;flex-wrap:wrap}.type-manager .field{flex:1 1 220px}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:999px;background:rgba(228,180,94,.08);border:1px solid rgba(228,180,94,.18);font-size:11px;color:#ffe2a0}.chip button{width:18px;height:18px;border:0;border-radius:50%;background:#51252a;color:#ffd7d7;cursor:pointer}.edit-note{display:none;margin:10px 0;padding:9px 11px;border-radius:9px;background:rgba(228,180,94,.08);border:1px solid rgba(228,180,94,.18);color:#ffe2a0;font-size:12px}.edit-note.show{display:block}
+.preview-modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);padding:22px;align-items:center;justify-content:center}.preview-modal.open{display:flex}.preview-box{width:min(900px,96vw);max-height:88vh;overflow:auto;padding:22px;border:1px solid rgba(228,180,94,.42);border-radius:18px;background:linear-gradient(180deg,#0a2636,#061721);box-shadow:0 25px 80px rgba(0,0,0,.55)}.preview-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}.preview-head h2{margin:0}.preview-content{display:grid;gap:12px}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.gallery img{width:100%;height:170px;object-fit:cover;border-radius:10px;border:1px solid rgba(228,180,94,.16)}.draft-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.draft-img{position:relative}.draft-img img{width:100%;height:110px;object-fit:cover;border-radius:9px;border:1px solid rgba(228,180,94,.16)}.draft-img button{position:absolute;top:4px;right:4px;width:27px;height:27px;border:0;border-radius:50%;background:#57262b;color:#fff;cursor:pointer}
+.rich-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.rich-toolbar button,.rich-toolbar select,.rich-toolbar input[type=color]{min-height:34px;border:1px solid rgba(228,180,94,.25);border-radius:7px;background:#102b3b;color:#fff;padding:0 9px;cursor:pointer}.rich-editor{min-height:180px;padding:12px;border:1px solid rgba(228,180,94,.30);border-radius:10px;background:#071824;color:#fff;outline:0;line-height:1.55}.rich-editor table,.rich-output table{width:100%;border-collapse:collapse;margin:12px 0}.rich-editor td,.rich-editor th,.rich-output td,.rich-output th{border:1px solid rgba(228,180,94,.35);padding:7px 8px;vertical-align:top}.rich-editor th,.rich-output th{background:rgba(228,180,94,.10);color:#ffe2a0}.rich-output{line-height:1.58;color:#d7e3e8}.safe-link{display:inline-flex;margin-top:10px;padding:7px 10px;border:1px solid rgba(228,180,94,.22);border-radius:8px;color:#ffe2a0;background:rgba(228,180,94,.06)}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}.toc{position:relative;top:auto;max-height:none}.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.grid3{grid-template-columns:1fr}.draft-gallery{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.compact-top{flex-direction:column}.compact-img{width:100%;height:220px}.grid2{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.draft-gallery{grid-template-columns:1fr}}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="supabase-sync.js?v=0.0.48"></script>
+<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.48">
+<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
+</head><body>
+<header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
+  <a href="index.html">Главная</a>
+  <a href="taiwan.html">О Тайвани</a>
+  <a href="pirate.html">О Пиратке</a>
+  <a href="updates.html">Обновления</a>
+  <a href="accounts-sale.html">Продажа Аккаунтов</a>
+  <a href="forum.html">Форум</a>
+      <a href="partners.html">Партнеры</a>
+  <a href="register.html">Регистрация</a>
+  <a href="login.html">Вход</a>
+</nav></header>
+<main class="wrap"><section class="panel page-head"><h1>Меридианы <span id="adminBadge"></span></h1><p class="muted">Типы меридианов создаёт администратор. Оглавление автоматически группируется по типу.</p><div class="role-note" id="roleNote"></div>
+<div class="editor" id="editor"><h2 id="editorTitle" style="margin-top:0">Добавить запись</h2><div class="edit-note" id="editNote">Режим редактирования опубликованной записи.</div><div class="grid2"><div class="field"><label>Название</label><input id="name" maxlength="180"></div><div class="field"><label>Тип</label><select id="type"></select></div><div class="field"><label>Принадлежность</label><input id="affiliation" maxlength="180"></div><div class="field"><label>Уровень</label><select id="level"><option>9</option><option>36</option><option>108</option><option>216</option></select></div><div class="field"><label>Описание</label><textarea id="description"></textarea></div><div class="field"><label>Код</label><input id="code" maxlength="180"></div><div class="field"><label>Свойства</label><textarea id="properties"></textarea></div></div>
+<div class="type-manager"><div class="field"><label>Новый тип</label><input id="newType" maxlength="80" placeholder="Введите новый тип"></div><button class="btn secondary" id="addType" type="button">Добавить тип</button></div><div class="chips" id="typeChips"></div>
+<div class="filebox"><label>Изображение</label><input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><img class="preview" id="imagePreview"></div>
+
+<button class="btn secondary" type="button" id="previewBtn">Предпросмотр</button><button class="btn" id="saveEntry">Добавить</button><button class="btn secondary" id="cancelEdit" type="button" style="display:none">Отменить редактирование</button></div></section>
+<div class="two-col"><aside class="panel toc"><h3>Оглавление по типу</h3><input class="toc-search" id="search" placeholder="Поиск..."><div class="toc-list" id="tocList"></div></aside><section class="content-area" id="content"></section></div></main>
+<div class="preview-modal" id="previewModal"><div class="preview-box"><div class="preview-head"><h2>Предварительный просмотр</h2><button class="btn danger" style="margin:0" type="button" onclick="closePreview()">Закрыть</button></div><div class="preview-content" id="previewContent"></div></div></div>
+<script>
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+function safeUrl(v){try{const u=new URL(String(v||'').trim());return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}}
+function cleanRich(html){const t=document.createElement('template');t.innerHTML=html;t.content.querySelectorAll('script,iframe,object,embed,style,link').forEach(x=>x.remove());t.content.querySelectorAll('*').forEach(el=>{[...el.attributes].forEach(a=>{if(/^on/i.test(a.name))el.removeAttribute(a.name);if((a.name==='href'||a.name==='src')&&/^javascript:/i.test(a.value))el.removeAttribute(a.name)})});return t.innerHTML;}
+function fmt(cmd,val=null){document.execCommand(cmd,false,val);const ed=document.querySelector('.rich-editor:focus')||document.querySelector('.rich-editor');if(ed)ed.focus();}
+function openPreview(html){document.getElementById('previewContent').innerHTML=html;document.getElementById('previewModal').classList.add('open')}
+function closePreview(){document.getElementById('previewModal').classList.remove('open')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('previewModal');if(m)m.classList.remove('open')}});
+async function imageToData(file,maxSide=1500){
+  if(!file)return '';
+  if(file.size>4*1024*1024)throw new Error('Файл больше 4 МБ');
+  if(file.type==='image/gif'){
+    if(file.size>2*1024*1024)throw new Error('GIF должен быть не больше 2 МБ');
+    return await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)});
+  }
+  const raw=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)});
+  const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=raw});
+  const scale=Math.min(1,maxSide/Math.max(img.width,img.height));
+  const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  return c.toDataURL('image/webp',.84);
+}
+async function filesToData(fileList,limit=8){
+  const files=[...fileList].slice(0,limit);const out=[];
+  for(const f of files)out.push(await imageToData(f));
+  return out;
+}
+
+const currentUser=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null');const isAdmin=!!currentUser&&(currentUser.role||'user')==='admin';
+if(isAdmin){document.getElementById('editor').classList.add('show');document.getElementById('adminBadge').innerHTML='<span class="admin-badge">АДМИН</span>';document.getElementById('roleNote').innerHTML='Можно добавлять, редактировать и предварительно просматривать контент.';}else document.getElementById('roleNote').textContent='Просмотр доступен всем. Добавление и редактирование — только администратору.';
+let selectedImage='';const imageInput=document.getElementById('imageInput'),imagePreview=document.getElementById('imagePreview');
+imageInput.onchange=async()=>{const f=imageInput.files&&imageInput.files[0];if(!f)return;try{selectedImage=await imageToData(f);imagePreview.src=selectedImage;imagePreview.classList.add('show')}catch(e){alert(e.message);imageInput.value=''}};
+let entries=JSON.parse(localStorage.getItem('kungfuMeridians')||'[]'),selectedId=entries.length?entries[0].id:null,editingId=null;
+let types=JSON.parse(localStorage.getItem('kungfuMeridianTypes')||'null');if(!types||!Array.isArray(types)||!types.length){types=["Общее"];localStorage.setItem('kungfuMeridianTypes',JSON.stringify(types))}
+function save(){localStorage.setItem('kungfuMeridians',JSON.stringify(entries))}function saveTypes(){localStorage.setItem('kungfuMeridianTypes',JSON.stringify(types))}
+function renderTypes(){const sel=document.getElementById('type'),cur=sel.value;sel.innerHTML=types.map(x=>`<option>${esc(x)}</option>`).join('');if(types.includes(cur))sel.value=cur;document.getElementById('typeChips').innerHTML=isAdmin?types.map(x=>`<span class="chip">${esc(x)} <button type="button" onclick="removeType('${encodeURIComponent(x)}')">×</button></span>`).join(''):''}
+document.getElementById('addType').onclick=()=>{if(!isAdmin)return;const i=document.getElementById('newType'),v=i.value.trim();if(!v)return;if(types.some(x=>x.toLowerCase()===v.toLowerCase())){alert('Такой тип уже существует');return}types.push(v);saveTypes();i.value='';renderTypes();document.getElementById('type').value=v};
+window.removeType=enc=>{if(!isAdmin)return;const v=decodeURIComponent(enc);if(entries.some(x=>(x.type||types[0])===v)){alert('Нельзя удалить тип, пока есть записи этого типа.');return}types=types.filter(x=>x!==v);if(!types.length)types=['Общее'];saveTypes();renderTypes()};
+
+function displayImage(item){return item.image?`<img class="compact-img" src="${item.image}" alt="${esc(item.name||'')}">`:`<div class="compact-img"></div>`}
+function render(){const q=document.getElementById('search').value.trim().toLowerCase();const list=entries.filter(x=>[x.name,x.code,x.description,x.type].some(v=>String(v||'').toLowerCase().includes(q)));document.getElementById('tocList').innerHTML=list.length?types.map(type=>{const rows=list.filter(x=>(x.type||types[0])===type);if(!rows.length)return '';return `<div class="toc-group">${esc(type)}</div>`+rows.map(x=>`<a class="toc-item ${x.id===selectedId?'active':''}" onclick="selectEntry(${x.id})"><b>${esc(x.name||'Без названия')}</b><small>${esc(type)}</small></a>`).join('')}).join(''):'<div class="muted">Ничего не найдено</div>';
+const item=entries.find(x=>x.id===selectedId)||list[0];if(item&&!entries.find(x=>x.id===selectedId))selectedId=item.id;document.getElementById('content').innerHTML=item?`<article class="panel compact-card"><div class="compact-top">${displayImage(item)}<div class="compact-body"><h2>${esc(item.name||'Без названия')}</h2><div class="tags"><span class="tag">Тип: ${esc(item.type||types[0])}</span>${item.affiliation?`<span class="tag">Принадлежность: ${esc(item.affiliation)}</span>`:''}${item.level?`<span class="tag">Уровень: ${esc(item.level)}</span>`:''}</div>${item.description?`<div class="desc">${esc(item.description).replace(/\n/g,'<br>')}</div>`:''}${item.code?`<div class="code-under-description"><b>Код:</b> ${esc(item.code)}</div>`:''}${item.properties?`<div class="props"><b>Свойства</b><br>${esc(item.properties).replace(/\n/g,'<br>')}</div>`:''}<div class="entry-actions ${isAdmin?'show':''}"><button class="btn secondary" onclick="editEntry(${item.id})">Редактировать</button><button class="btn danger" onclick="removeEntry(${item.id})">Удалить</button></div></div></div></article>`:'<div class="panel empty">Пока нет контента.</div>'}
+window.selectEntry=id=>{selectedId=id;render()};document.getElementById('search').oninput=render;
+function resetForm(){editingId=null;document.getElementById('editorTitle').textContent='Добавить запись';document.getElementById('editNote').classList.remove('show');document.getElementById('saveEntry').textContent='Добавить';document.getElementById('cancelEdit').style.display='none';if(document.getElementById('name').tagName!=='SELECT')document.getElementById('name').value='';
+if(document.getElementById('type').tagName!=='SELECT')document.getElementById('type').value='';
+if(document.getElementById('affiliation').tagName!=='SELECT')document.getElementById('affiliation').value='';
+if(document.getElementById('level').tagName!=='SELECT')document.getElementById('level').value='';
+if(document.getElementById('description').tagName!=='SELECT')document.getElementById('description').value='';
+if(document.getElementById('code').tagName!=='SELECT')document.getElementById('code').value='';
+if(document.getElementById('properties').tagName!=='SELECT')document.getElementById('properties').value=''; selectedImage='';imageInput.value='';imagePreview.classList.remove('show');imagePreview.removeAttribute('src');}
+window.editEntry=id=>{if(!isAdmin)return;const item=entries.find(x=>x.id===id);if(!item)return;editingId=id;selectedId=id;document.getElementById('editorTitle').textContent='Редактировать запись';document.getElementById('editNote').classList.add('show');document.getElementById('saveEntry').textContent='Сохранить изменения';document.getElementById('cancelEdit').style.display='inline-flex';document.getElementById('name').value=item.name||'';
+document.getElementById('type').value=item.type||'';
+document.getElementById('affiliation').value=item.affiliation||'';
+document.getElementById('level').value=item.level||'';
+document.getElementById('description').value=item.description||'';
+document.getElementById('code').value=item.code||'';
+document.getElementById('properties').value=item.properties||''; selectedImage=item.image||'';if(selectedImage){imagePreview.src=selectedImage;imagePreview.classList.add('show')}else imagePreview.classList.remove('show'); window.scrollTo({top:0,behavior:'smooth'})};
+document.getElementById('cancelEdit').onclick=resetForm;
+document.getElementById('previewBtn').onclick=()=>{const name=document.getElementById('name').value.trim()||'Без названия',type=document.getElementById('type').value;let html=`<article class="panel compact-card"><div class="compact-top">${selectedImage?`<img class="compact-img" src="${selectedImage}">`:'<div class="compact-img"></div>'}<div class="compact-body"><h2>${esc(name)}</h2><div class="tags"><span class="tag">Тип: ${esc(type)}</span></div>${document.getElementById('description')?`<div class="desc">${esc(document.getElementById('description').value).replace(/\n/g,'<br>')}</div>`:''}${document.getElementById('code')&&document.getElementById('code').value?`<div class="code-under-description"><b>Код:</b> ${esc(document.getElementById('code').value)}</div>`:''}</div></div></article>`;openPreview(html)};
+document.getElementById('saveEntry').onclick=()=>{if(!isAdmin)return;const current=editingId?entries.find(x=>x.id===editingId):null;const item={id:editingId||Date.now(),image:selectedImage};item.name=document.getElementById('name').value.trim();
+item.type=document.getElementById('type').value.trim();
+item.affiliation=document.getElementById('affiliation').value.trim();
+item.level=document.getElementById('level').value.trim();
+item.description=document.getElementById('description').value.trim();
+item.code=document.getElementById('code').value.trim();
+item.properties=document.getElementById('properties').value.trim(); if(!item.name){alert('Укажите название');return}if(current&&!selectedImage)item.image=current.image||''; if(editingId){const i=entries.findIndex(x=>x.id===editingId);if(i>=0)entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;save();resetForm();render()};
+window.removeEntry=id=>{if(!isAdmin||!confirm('Удалить запись?'))return;entries=entries.filter(x=>x.id!==id);if(editingId===id)resetForm();selectedId=entries.length?entries[0].id:null;save();render()};renderTypes();render();
+</script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
+<script src="decor-0.0.48.js?v=0.0.48"></script>
+</body></html>

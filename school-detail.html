@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Материал — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<style>
+:root{
+  --gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);
+  --muted:#bfd0d8;--panel:rgba(4,23,35,.91);--deep:#071824
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:#fff;
+  font-family:"Oswald","Arial Narrow",Arial,sans-serif;
+  background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.png") center/cover fixed no-repeat;
+}
+a{text-decoration:none;color:inherit}
+button,input,textarea,select{font:inherit}
+.top{
+  min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;
+  background:rgba(3,16,26,.93);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px);position:sticky;top:0;z-index:40
+}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font:700 18px "Oswald","Arial Narrow",Arial,sans-serif}
+.brand img{width:52px;height:52px;object-fit:contain}
+.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.nav a{font-size:14px;font-weight:750}
+.nav a:hover{color:var(--gold2)}
+.wrap{width:min(1220px,calc(100% - 30px));margin:34px auto 70px}
+.panel{
+  border:1px solid var(--line);border-radius:16px;
+  background:linear-gradient(180deg,rgba(5,27,40,.93),rgba(3,18,28,.96));
+  box-shadow:0 16px 44px rgba(0,0,0,.27)
+}
+.page-head{padding:22px 24px}
+h1,h2,h3{font-family:"Oswald","Arial Narrow",Arial,sans-serif;color:var(--gold2)}
+h1{font-size:42px;margin:0}
+.muted{color:var(--muted)}
+.admin-badge{
+  display:inline-flex;padding:3px 7px;border-radius:999px;
+  background:linear-gradient(#efc66d,#b98131);color:#241506;
+  font:900 9px Arial;margin-left:6px;vertical-align:middle
+}
+.role-note{
+  margin-top:10px;padding:9px 11px;border:1px solid rgba(126,204,234,.16);
+  border-radius:9px;color:#bcd9e4;background:rgba(126,204,234,.05);font-size:12px
+}
+.editor{
+  display:none;margin-top:14px;padding:16px;border:1px solid rgba(255,226,160,.2);
+  border-radius:13px;background:rgba(3,21,32,.62)
+}
+.editor.show{display:block}
+.field{margin-top:10px}
+label{display:block;margin-bottom:5px;color:#dce7eb;font-weight:700;font-size:13px}
+input,textarea,select{
+  width:100%;border:1px solid rgba(228,180,94,.28);border-radius:9px;
+  background:#071824;color:#fff;outline:0;padding:10px 11px
+}
+textarea{min-height:92px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-shadow:0 0 0 3px rgba(228,180,94,.06)}
+.btn{
+  min-height:40px;margin-top:10px;border:0;border-radius:9px;padding:0 14px;
+  background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:900;cursor:pointer
+}
+.btn.secondary{background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)}
+.btn.danger{background:#50252a;color:#ffd7d7;border:1px solid rgba(255,140,140,.2)}
+.filebox{margin-top:10px;padding:10px;border:1px dashed rgba(228,180,94,.25);border-radius:10px;background:rgba(3,20,31,.46)}
+.filebox img{display:none;width:min(100%,320px);max-height:190px;object-fit:cover;margin-top:8px;border-radius:9px}
+.filebox img.show{display:block}
+.two-col{
+  margin-top:16px;display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start
+}
+.toc{position:sticky;top:94px;padding:14px;max-height:calc(100vh - 115px);overflow:auto}
+.toc h3{margin:0 0 10px;font-size:19px}
+.toc-search{margin-bottom:9px}
+.toc-list{display:grid;gap:7px}
+.toc-item{
+  display:block;padding:9px 10px;border:1px solid rgba(255,255,255,.06);
+  border-radius:9px;background:rgba(255,255,255,.025);cursor:pointer;transition:.18s
+}
+.toc-item:hover,.toc-item.active{border-color:rgba(228,180,94,.34);background:rgba(228,180,94,.08);color:#ffe2a0}
+.toc-item small{display:block;color:#91a7b1;margin-top:3px;font-size:10px}
+.content-area{display:grid;gap:12px}
+.compact-card{padding:17px}
+.compact-top{display:flex;gap:16px;align-items:flex-start}
+.compact-img{width:128px;height:128px;object-fit:cover;border-radius:11px;background:#071824;border:1px solid rgba(255,226,160,.14);flex:0 0 128px}
+.compact-body{min-width:0;flex:1}
+.compact-card h2{margin:0 0 7px;font-size:26px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:5px 0 8px}
+.tag{display:inline-flex;padding:3px 7px;border-radius:999px;background:rgba(228,180,94,.1);border:1px solid rgba(228,180,94,.18);color:#ffe2a0;font-size:10px;font-weight:800}
+.desc{color:#d6e2e7;line-height:1.5;font-size:14px}
+.props{
+  margin-top:10px;padding:10px 11px;border-left:3px solid var(--gold);
+  border-radius:0 9px 9px 0;background:rgba(228,180,94,.065);color:#f6ead0;font-size:13px;line-height:1.5
+}
+.entry-actions{display:none;gap:7px;margin-top:9px}.entry-actions.show{display:flex}
+.empty{padding:26px;text-align:center;color:#9db0b8;border:1px dashed rgba(255,226,160,.18);border-radius:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.type-manager{display:flex;gap:8px;align-items:end;margin-top:10px;flex-wrap:wrap}
+.type-manager .field{flex:1 1 220px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:999px;background:rgba(228,180,94,.08);border:1px solid rgba(228,180,94,.18);font-size:11px;color:#ffe2a0}
+.chip button{width:18px;height:18px;border:0;border-radius:50%;background:#51252a;color:#ffd7d7;cursor:pointer}
+@media(max-width:860px){
+  .two-col{grid-template-columns:1fr}.toc{position:relative;top:auto;max-height:none}
+  .brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}
+}
+@media(max-width:600px){.compact-top{flex-direction:column}.compact-img{width:100%;height:210px}.grid2{grid-template-columns:1fr}}
+
+.detail{padding:24px}.detail img{width:100%;max-height:480px;object-fit:cover;border-radius:14px;margin:14px 0}
+.detail p{color:#d7e3e8;line-height:1.7}.back{display:inline-flex;margin-top:18px}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="supabase-sync.js?v=0.0.48"></script>
+<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.48">
+<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
+</head>
+<body>
+<header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a>
+<nav class="nav">
+  <a href="index.html">Главная</a>
+  <a href="taiwan.html">О Тайвани</a>
+  <a href="pirate.html">О Пиратке</a>
+  <a href="updates.html">Обновления</a>
+  <a href="accounts-sale.html">Продажа Аккаунтов</a>
+  <a href="forum.html">Форум</a>
+      <a href="partners.html">Партнеры</a>
+  <a href="register.html">Регистрация</a>
+  <a href="login.html">Вход</a>
+</nav>
+</header>
+<main class="wrap"><article class="panel detail" id="detail"></article></main>
+<script>
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+const id=Number(new URLSearchParams(location.search).get('id'));const data=JSON.parse(localStorage.getItem('kungfuSchoolsForcesSects')||'[]');const x=data.find(a=>a.id===id);
+document.getElementById('detail').innerHTML=x?`<span class="tag">${esc(x.category)}</span><h1>${esc(x.name)}</h1>${x.image?`<img src="${x.image}">`:''}<p>${esc(x.content).replace(/\n/g,'<br>')}</p><a class="btn secondary back" href="schools.html">← Назад</a>`:'<div class="empty">Материал не найден.</div>';
+</script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
+<script src="decor-0.0.48.js?v=0.0.48"></script>
+</body></html>

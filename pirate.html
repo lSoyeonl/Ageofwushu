@@ -1,0 +1,149 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>О Пиратке — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<style>
+
+:root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.png") center/cover fixed no-repeat}
+a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
+.top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.93);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}
+.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.nav a{font-size:14px;font-weight:750}.nav a:hover{color:var(--gold2)}
+.wrap{width:min(1220px,calc(100% - 30px));margin:34px auto 70px}
+.panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(5,27,40,.93),rgba(3,18,28,.96));box-shadow:0 16px 44px rgba(0,0,0,.27)}
+.page-head{padding:22px 24px}h1,h2,h3,h4{color:var(--gold2)}h1{font-size:42px;margin:0}.muted{color:var(--muted)}
+.editor{display:none;margin-top:14px;padding:16px;border:1px solid rgba(255,226,160,.2);border-radius:13px;background:rgba(3,21,32,.62)}.editor.show{display:block}
+.field{margin-top:10px}label{display:block;margin-bottom:5px;color:#dce7eb;font-weight:700;font-size:13px}
+input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.28);border-radius:9px;background:#071824;color:#fff;outline:0;padding:10px 11px}
+textarea{min-height:92px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-shadow:0 0 0 3px rgba(228,180,94,.06)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.btn{min-height:40px;margin-top:10px;border:0;border-radius:9px;padding:0 14px;background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:900;cursor:pointer}
+.btn.secondary{background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)}.btn.danger{background:#50252a;color:#ffd7d7;border:1px solid rgba(255,140,140,.2)}
+.role-note{margin-top:10px;padding:9px 11px;border:1px solid rgba(126,204,234,.16);border-radius:9px;color:#bcd9e4;background:rgba(126,204,234,.05);font-size:12px}
+.filebox{margin-top:10px;padding:10px;border:1px dashed rgba(228,180,94,.25);border-radius:10px;background:rgba(3,20,31,.46)}
+.tag{display:inline-flex;padding:3px 8px;border-radius:999px;background:rgba(228,180,94,.1);border:1px solid rgba(228,180,94,.18);color:#ffe2a0;font-size:10px;font-weight:900}
+.important-tag{background:rgba(160,40,55,.35);border-color:rgba(255,130,150,.35);color:#ffd7df}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:5px 0 9px}
+.entry-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.empty{padding:26px;text-align:center;color:#9db0b8;border:1px dashed rgba(255,226,160,.18);border-radius:12px}
+.preview-modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);padding:22px;align-items:center;justify-content:center}.preview-modal.open{display:flex}.preview-box{width:min(900px,96vw);max-height:88vh;overflow:auto;padding:22px;border:1px solid rgba(228,180,94,.42);border-radius:18px;background:linear-gradient(180deg,#0a2636,#061721);box-shadow:0 25px 80px rgba(0,0,0,.55)}.preview-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}
+.rich-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.rich-toolbar button,.rich-toolbar select,.rich-toolbar input[type=color]{min-height:34px;border:1px solid rgba(228,180,94,.25);border-radius:7px;background:#102b3b;color:#fff;padding:0 9px;cursor:pointer}.rich-editor{min-height:180px;padding:12px;border:1px solid rgba(228,180,94,.30);border-radius:10px;background:#071824;color:#fff;outline:0;line-height:1.55}.rich-output{line-height:1.58;color:#d7e3e8}
+.rich-editor table,.rich-output table{width:100%;border-collapse:collapse;margin:12px 0}.rich-editor td,.rich-editor th,.rich-output td,.rich-output th{border:1px solid rgba(228,180,94,.35);padding:7px 8px;vertical-align:top}.rich-editor th,.rich-output th{background:rgba(228,180,94,.10);color:#ffe2a0}
+.gallery{display:flex;flex-wrap:wrap;align-items:flex-start;gap:10px;margin-top:12px}.gallery img{width:auto;max-width:min(100%,460px);height:auto;max-height:420px;object-fit:contain;border-radius:10px;border:1px solid rgba(228,180,94,.16);background:rgba(255,255,255,.02)}.draft-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.draft-img{position:relative}.draft-img img{width:100%;height:110px;object-fit:cover;border-radius:8px}.draft-img button{position:absolute;right:5px;top:5px;width:25px;height:25px;border:0;border-radius:50%;background:#702d35;color:#fff;cursor:pointer}
+@media(max-width:900px){.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.grid3{grid-template-columns:1fr}.gallery{display:flex}}
+@media(max-width:620px){.grid2{grid-template-columns:1fr}.gallery,.draft-gallery{grid-template-columns:1fr}}
+
+.posts{display:grid;gap:14px;margin-top:16px}.post{padding:19px}.post h2{margin:0 0 7px}.safe-link{display:inline-flex;margin-top:10px;padding:8px 11px;border:1px solid rgba(228,180,94,.22);border-radius:8px;color:#ffe2a0;background:rgba(228,180,94,.06)}.checkline{display:flex;align-items:center;gap:8px;margin-top:12px}.checkline input{width:auto}.edit-note{display:none;color:#ffe2a0;margin-top:8px}.edit-note.show{display:block}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="supabase-sync.js?v=0.0.48"></script>
+<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.48">
+<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
+<link rel="stylesheet" href="reactions-0.0.48.css?v=0.0.48">
+<script src="reactions-0.0.48.js?v=0.0.48"></script>
+</head><body>
+<header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
+  <a href="index.html">Главная</a>
+  <a href="taiwan.html">О Тайвани</a>
+  <a href="pirate.html">О Пиратке</a>
+  <a href="updates.html">Обновления</a>
+  <a href="accounts-sale.html">Продажа Аккаунтов</a>
+  <a href="forum.html">Форум</a>
+      <a href="partners.html">Партнеры</a>
+  <a href="register.html">Регистрация</a>
+  <a href="login.html">Вход</a>
+</nav></header>
+<main class="wrap"><section class="panel page-head"><h1>О Пиратке</h1><p class="muted">Материалы о пиратской версии игры.</p><div class="role-note" id="roleNote"></div>
+<div class="editor" id="editor"><h2 id="editorTitle">Добавить материал</h2><div class="edit-note" id="editNote">Редактирование опубликованной записи.</div>
+<div class="grid2"><div class="field"><label>Заголовок</label><input id="postTitle"></div><div class="field"><label>Ссылка</label><input id="postLink" placeholder="https://..."></div></div>
+<label class="checkline"><input id="important" type="checkbox"> <span>Пометка «Важное»</span></label>
+<div class="field"><label>Содержание</label><div class="rich-toolbar">
+<button type="button" onclick="fmt('bold')"><b>B</b></button><button type="button" onclick="fmt('strikeThrough')"><s>S</s></button>
+<select onchange="if(this.value)setRichFontSize('rich',this.value);this.selectedIndex=0"><option value="">Шрифт 5–30 px</option><option value="5">5 px</option><option value="6">6 px</option><option value="7">7 px</option><option value="8">8 px</option><option value="9">9 px</option><option value="10">10 px</option><option value="11">11 px</option><option value="12">12 px</option><option value="13">13 px</option><option value="14">14 px</option><option value="15">15 px</option><option value="16">16 px</option><option value="17">17 px</option><option value="18">18 px</option><option value="19">19 px</option><option value="20">20 px</option><option value="21">21 px</option><option value="22">22 px</option><option value="23">23 px</option><option value="24">24 px</option><option value="25">25 px</option><option value="26">26 px</option><option value="27">27 px</option><option value="28">28 px</option><option value="29">29 px</option><option value="30">30 px</option></select><select class="rich-font-weight-select" onchange="if(this.value)setRichFontWeight('rich',this.value);this.selectedIndex=0"><option value="">Oswald</option><option value="300">Oswald тонкий</option><option value="400">Oswald обычный</option></select>
+<label style="display:flex;align-items:center;gap:5px">Цвет <input type="color" onchange="fmt('foreColor',this.value)"></label>
+<button type="button" onclick="fmt('justifyLeft')" title="По левому краю">⇤</button><button type="button" onclick="fmt('justifyCenter')" title="По центру">↔</button><button type="button" onclick="fmt('justifyRight')" title="По правому краю">⇥</button><span class="rich-image-tools"><select id="richImageMode" title="Положение изображения"><option value="inline">В тексте</option><option value="wrap">Обтекание текстом</option><option value="block">Текст сверху и снизу</option><option value="behind">За текстом</option><option value="front">Поверх текста</option></select><button type="button" onclick="insertImageIntoRichEditor('rich',richImageMode.value)">+ Изображения</button><select onchange="if(this.value){resizeSelectedRichImage('rich',this.value);this.selectedIndex=0}" title="Нажмите на картинку в тексте, затем выберите размер"><option value="">Размер картинки</option><option value="auto">Исходный / авто</option><option value="25">25% текста</option><option value="40">40% текста</option><option value="50">50% текста</option><option value="60">60% текста</option><option value="75">75% текста</option><option value="100">100% текста</option></select><button type="button" onclick="setSelectedRichImageMode('rich',richImageMode.value)" title="Применить выбранное положение к выделенной картинке">Применить положение</button></span><button type="button" onclick="insertTable()">+ Таблица</button><button type="button" onclick="fmt('removeFormat')">Сброс</button>
+</div><div class="muted" style="font-size:11px;margin:5px 0">Объём текста не ограничен. Для больших материалов без Supabase используется расширенное хранилище браузера.</div><div id="rich" class="rich-editor" contenteditable="true"></div></div>
+<div class="filebox"><label>Изображения (можно несколько)</label><input id="imagesInput" type="file" multiple accept="image/*"><div class="muted" style="font-size:11px;margin-top:6px">Рекомендуется: квадрат 1200×1200 px или прямоугольное 1600×1000 / 1920×1080 px. Пропорции сохраняются — изображение не обрезается и не растягивается.</div><div class="draft-gallery" id="draftGallery"></div></div>
+<button class="btn secondary" type="button" id="previewBtn">Предпросмотр</button><button class="btn" id="saveBtn">Опубликовать</button><button class="btn secondary" type="button" id="cancelBtn" style="display:none">Отменить</button>
+</div></section><section class="posts" id="posts"></section></main>
+<div class="preview-modal" id="previewModal"><div class="preview-box"><div class="preview-head"><h2>Предварительный просмотр</h2><button class="btn danger" style="margin:0" onclick="closePreview()">Закрыть</button></div><div id="previewContent"></div></div></div>
+<script>
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+function safeUrl(v){try{const u=new URL(String(v||'').trim());return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}}
+function cleanRich(html){
+  const t=document.createElement('template');t.innerHTML=html||'';
+  t.content.querySelectorAll('script,iframe,object,embed,style,link').forEach(x=>x.remove());
+  t.content.querySelectorAll('*').forEach(el=>[...el.attributes].forEach(a=>{
+    if(/^on/i.test(a.name))el.removeAttribute(a.name);
+    if((a.name==='href'||a.name==='src')&&/^javascript:/i.test(a.value))el.removeAttribute(a.name);
+  }));
+  return t.innerHTML;
+}
+function fmt(cmd,val=null){document.execCommand(cmd,false,val);document.getElementById('rich')?.focus()}
+function insertTable(){
+  let rows=parseInt(prompt('Количество строк таблицы','3'),10),cols=parseInt(prompt('Количество колонок','3'),10);
+  if(!Number.isFinite(rows)||!Number.isFinite(cols)||rows<1||cols<1||rows>30||cols>12)return;
+  let html='<table><tbody>';
+  for(let r=0;r<rows;r++){html+='<tr>';for(let c=0;c<cols;c++)html+=`<td>${r===0?'Заголовок':'Текст'}</td>`;html+='</tr>'}
+  html+='</tbody></table><p><br></p>';
+  document.getElementById('rich').focus();document.execCommand('insertHTML',false,html);
+}
+async function imageToData(file,maxSide=1400){
+  if(!file)return '';
+  if(file.size>4*1024*1024)throw new Error('Файл больше 4 МБ');
+  if(file.type==='image/gif'){
+    if(file.size>2*1024*1024)throw new Error('GIF должен быть не больше 2 МБ');
+    return await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)});
+  }
+  const raw=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)});
+  const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=raw});
+  const scale=Math.min(1,maxSide/Math.max(img.width,img.height));
+  const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  return c.toDataURL('image/webp',.84);
+}
+function openPreview(html){document.getElementById('previewContent').innerHTML=html;document.getElementById('previewModal').classList.add('open')}
+function closePreview(){document.getElementById('previewModal').classList.remove('open')}
+
+const u=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null'),isAdmin=!!u&&(u.role||'user')==='admin';
+if(isAdmin){editor.classList.add('show');roleNote.textContent='Администратор может публиковать и редактировать записи.'}else roleNote.textContent='Материалы доступны для просмотра всем посетителям сайта.';
+function readPublishedPosts(){
+  try{const raw=localStorage.getItem('kungfuPirateContent');if(raw!==null){const x=JSON.parse(raw);if(Array.isArray(x))return x}}catch{}
+  return [];
+}
+let posts=readPublishedPosts(),draftImages=[],editingId=null;
+async function save(){
+  if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+  posts=await KFSupabase.saveStore('kungfuPirateContent',posts);
+  return posts;
+}
+
+async function hydratePublishedPosts(){
+  try{
+    let fresh=null;
+    if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+    await KFSupabase.ready;
+    fresh=await KFSupabase.getStore('kungfuPirateContent',null);
+    if(Array.isArray(fresh)){posts=fresh;render()}
+  }catch(e){console.warn('Не удалось загрузить большой материал:',e)}
+}
+function imagesFor(x){const a=Array.isArray(x.images)?x.images.slice():[];if(!a.length&&x.image)a.push(x.image);return a}
+function renderDraft(){draftGallery.innerHTML=draftImages.map((src,i)=>`<div class="draft-img"><img src="${src}"><button type="button" onclick="removeDraft(${i})">×</button></div>`).join('')}
+window.removeDraft=i=>{draftImages.splice(i,1);renderDraft()};
+imagesInput.onchange=async()=>{for(const f of [...imagesInput.files]){try{draftImages.push(await imageToData(f))}catch(e){alert(e.message)}}imagesInput.value='';renderDraft()};
+function card(x,preview=false){const imgs=imagesFor(x);return `<article class="panel post">${x.important?'<span class="tag important-tag">Важное</span>':''}<h2>${esc(x.title||'Без заголовка')}</h2>${imgs.length?`<div class="gallery">${imgs.map(src=>`<img src="${src}">`).join('')}</div>`:''}<div class="rich-output">${cleanRich(x.content||'')}</div>${x.link&&safeUrl(x.link)?`<a class="safe-link" href="${safeUrl(x.link)}" target="_blank" rel="noopener">Перейти по ссылке</a>`:''}${!preview?`<div id="kf-check-pirate-${x.id}"></div>`:''}${isAdmin&&!preview?`<div class="entry-actions"><button class="btn secondary" onclick="editPost(${x.id})">Редактировать</button><button class="btn danger" onclick="delPost(${x.id})">Удалить</button></div>`:''}</article>`}
+function render(){document.getElementById('posts').innerHTML=posts.length?posts.slice().reverse().map(x=>card(x)).join(''):'<div class="panel empty">Материалы пока не опубликованы.</div>';setTimeout(()=>{if(window.KFReactions)posts.forEach(x=>KFReactions.mountCheck('kf-check-pirate-'+x.id,'kungfuPirateContent',x.id))},0)}
+function reset(){editingId=null;postTitle.value='';postLink.value='';important.checked=false;rich.innerHTML='';draftImages=[];renderDraft();editorTitle.textContent='Добавить материал';editNote.classList.remove('show');saveBtn.textContent='Опубликовать';cancelBtn.style.display='none'}
+window.editPost=id=>{if(!isAdmin)return;const x=posts.find(a=>a.id===id);if(!x)return;editingId=id;postTitle.value=x.title||'';postLink.value=x.link||'';important.checked=!!x.important;rich.innerHTML=x.content||'';draftImages=imagesFor(x);renderDraft();editorTitle.textContent='Редактировать материал';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'})}
+cancelBtn.onclick=reset;
+previewBtn.onclick=()=>openPreview(card({id:'preview',title:postTitle.value.trim()||'Без заголовка',link:postLink.value.trim(),important:important.checked,content:cleanRich(rich.innerHTML),images:draftImages.slice()},true));
+saveBtn.onclick=async()=>{if(!isAdmin)return;const btn=saveBtn,oldText=btn.textContent;btn.disabled=true;btn.textContent=editingId?'Сохранение...':'Публикация...';try{const titleValue=postTitle.value.trim(),contentValue=cleanRich(rich.innerHTML),linkValue=postLink.value.trim();if(!titleValue||!rich.innerText.trim())throw new Error('Заполните заголовок и содержание');const item={id:editingId||Date.now(),title:titleValue,link:linkValue,important:important.checked,content:contentValue,images:draftImages.slice(),image:draftImages[0]||''};const before=posts.slice();if(editingId){const i=posts.findIndex(x=>x.id===editingId);if(i<0)throw new Error('Материал не найден');posts[i]={...posts[i],...item}}else posts.push(item);try{await save()}catch(e){posts=before;throw e}reset();render()}catch(e){alert(e.message||'Не удалось опубликовать материал')}finally{btn.disabled=false;btn.textContent=oldText}};
+window.delPost=async id=>{if(!isAdmin||!confirm('Удалить материал?'))return;const before=posts.slice();posts=posts.filter(x=>x.id!==id);try{await save();if(editingId===id)reset();render()}catch(e){posts=before;alert(e.message||'Не удалось удалить материал')}};
+window.addEventListener('storage',e=>{if(e.key==='kungfuPublicDataV1'||e.key==='kungfuPirateContent')render()});
+window.addEventListener('kf-public-data-change',e=>{if(e.detail&&e.detail.key==='kungfuPirateContent')render()});window.addEventListener('kf-supabase-synced',e=>{if(e.detail&&e.detail.key==='kungfuPirateContent'){posts=readPublishedPosts();render()}});
+renderDraft();render();hydratePublishedPosts();
+</script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
+<script src="decor-0.0.48.js?v=0.0.48"></script>
+</body></html>
