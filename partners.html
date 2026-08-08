@@ -1,9 +1,13 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Партнеры — Легенды Кунг-Фу</title>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Партнеры — Легенды Кунг-Фу</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="shortcut icon" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
 <style>
-
 :root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.png") center/cover fixed no-repeat}
@@ -15,93 +19,426 @@ a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
 .panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(5,27,40,.93),rgba(3,18,28,.96));box-shadow:0 16px 44px rgba(0,0,0,.27)}
 .page-head{padding:22px 24px}h1,h2,h3,h4{color:var(--gold2)}h1{font-size:42px;margin:0}.muted{color:var(--muted)}
 .editor{display:none;margin-top:14px;padding:16px;border:1px solid rgba(255,226,160,.2);border-radius:13px;background:rgba(3,21,32,.62)}.editor.show{display:block}
-.field{margin-top:10px}label{display:block;margin-bottom:5px;color:#dce7eb;font-weight:700;font-size:13px}
+.field{margin-top:10px}label{display:block;margin-bottom:5px;color:#dce7eb;font-weight:700;font-size:14px}
 input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.28);border-radius:9px;background:#071824;color:#fff;outline:0;padding:10px 11px}
 textarea{min-height:92px;resize:vertical}
 input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-shadow:0 0 0 3px rgba(228,180,94,.06)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.btn{min-height:40px;margin-top:10px;border:0;border-radius:9px;padding:0 14px;background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:900;cursor:pointer}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{min-height:40px;margin-top:10px;border:0;border-radius:9px;padding:0 14px;background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:600;cursor:pointer}
 .btn.secondary{background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)}.btn.danger{background:#50252a;color:#ffd7d7;border:1px solid rgba(255,140,140,.2)}
-.role-note{margin-top:10px;padding:9px 11px;border:1px solid rgba(126,204,234,.16);border-radius:9px;color:#bcd9e4;background:rgba(126,204,234,.05);font-size:12px}
-.filebox{margin-top:10px;padding:10px;border:1px dashed rgba(228,180,94,.25);border-radius:10px;background:rgba(3,20,31,.46)}
-.filebox img.preview{display:none;width:min(100%,340px);max-height:210px;object-fit:cover;margin-top:8px;border-radius:9px}.filebox img.preview.show{display:block}
-.tag{display:inline-flex;padding:3px 7px;border-radius:999px;background:rgba(228,180,94,.1);border:1px solid rgba(228,180,94,.18);color:#ffe2a0;font-size:10px;font-weight:800}
-.tags{display:flex;gap:6px;flex-wrap:wrap;margin:5px 0 8px}.desc{color:#d6e2e7;line-height:1.55;font-size:14px}
+.role-note,.status{margin-top:10px;padding:9px 11px;border:1px solid rgba(126,204,234,.16);border-radius:9px;color:#bcd9e4;background:rgba(126,204,234,.05);font-size:13px}
+.avatar-preview{display:none;width:140px;height:140px;object-fit:cover;margin-top:10px;border-radius:12px;border:1px solid rgba(228,180,94,.18)}.avatar-preview.show{display:block}
 .entry-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.empty{padding:26px;text-align:center;color:#9db0b8;border:1px dashed rgba(255,226,160,.18);border-radius:12px}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:999px;background:rgba(228,180,94,.08);border:1px solid rgba(228,180,94,.18);font-size:11px;color:#ffe2a0}.chip button{width:18px;height:18px;border:0;border-radius:50%;background:#51252a;color:#ffd7d7;cursor:pointer}
 .preview-modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);padding:22px;align-items:center;justify-content:center}.preview-modal.open{display:flex}.preview-box{width:min(900px,96vw);max-height:88vh;overflow:auto;padding:22px;border:1px solid rgba(228,180,94,.42);border-radius:18px;background:linear-gradient(180deg,#0a2636,#061721);box-shadow:0 25px 80px rgba(0,0,0,.55)}.preview-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}
-@media(max-width:900px){.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.grid3{grid-template-columns:1fr}}
-@media(max-width:620px){.grid2{grid-template-columns:1fr}}
 
-.contacts-grid{display:grid;gap:14px;margin-top:16px}.contact{padding:18px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:start}.avatar{width:120px;height:120px;object-fit:cover;border-radius:12px;background:#071824;border:1px solid rgba(228,180,94,.16)}.mail{display:inline-flex;margin-top:7px;color:#9fdfff;text-decoration:underline}.contact-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.contact-link{display:inline-flex;padding:7px 10px;border-radius:8px;border:1px solid rgba(126,204,234,.18);background:rgba(126,204,234,.055);color:#9fdfff}.contact-text{color:#d4e2e8}.edit-note{display:none;color:#ffe2a0;margin:8px 0}.edit-note.show{display:block}
-@media(max-width:620px){.contact{grid-template-columns:1fr}.avatar{width:100%;height:220px}}
-</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+.contacts-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;margin-top:16px}
+.contact{width:100%;padding:18px}
+.partner-main{display:grid;grid-template-columns:132px minmax(0,1fr);gap:18px;align-items:start}
+.avatar{width:132px;height:132px;object-fit:cover;border-radius:12px;background:#071824;border:1px solid rgba(228,180,94,.16)}
+.partner-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.partner-head h2{margin:0}
+.pin-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:rgba(228,180,94,.12);border:1px solid rgba(228,180,94,.24);color:#ffe2a0;font-size:11px;font-weight:600}
+.mail{display:inline-flex;margin-top:7px;color:#9fdfff;text-decoration:underline}.contact-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.contact-link{display:inline-flex;padding:7px 10px;border-radius:8px;border:1px solid rgba(126,204,234,.18);background:rgba(126,204,234,.055);color:#9fdfff}.contact-text{color:#d4e2e8}
+.partner-desc{color:#d6e2e7;line-height:1.6;font-size:15px;white-space:pre-wrap}
+
+.reviews{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.075)}
+.reviews-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.reviews-head h3{margin:0}
+.review-list{display:grid;gap:9px;margin-top:10px}.review{padding:11px 12px;border-left:2px solid rgba(228,180,94,.42);background:rgba(255,255,255,.025);border-radius:0 9px 9px 0}
+.review-author{display:flex;align-items:center;gap:9px}.review-avatar{width:34px;height:34px;flex:0 0 34px;border-radius:50%;overflow:hidden;display:grid;place-items:center;border:1px solid rgba(255,226,160,.34);background:linear-gradient(145deg,#17384a,#071824);color:#ffe2a0;font-size:12px;font-weight:600}.review-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.review-name{color:#f5dfb7;font-weight:600}.review-date{margin-top:2px;color:#8fa7b1;font-size:11px}.review-text{margin-top:8px;color:#d6e2e7;line-height:1.55;overflow-wrap:anywhere}
+.review-form{margin-top:12px;padding:12px;border:1px solid rgba(228,180,94,.14);border-radius:11px;background:rgba(3,20,31,.42)}.review-form textarea{min-height:76px}
+.review-as{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#bcd0d8;font-size:12px}
+.review-login{margin-top:10px;color:#a9bcc5;font-size:13px}
+.review-actions{display:flex;gap:7px;flex-wrap:wrap}.review-actions .btn{min-height:34px;margin-top:7px;padding:0 11px;font-size:12px}
+.aow-inline-smile{height:40px;max-width:70px;object-fit:contain;vertical-align:middle;margin:2px 3px}
+.smile-modal{display:none;position:fixed;inset:0;z-index:1001;background:rgba(0,0,0,.72);padding:22px;align-items:center;justify-content:center}.smile-modal.open{display:flex}.smile-box{width:min(760px,96vw);max-height:80vh;overflow:auto;padding:18px;border:1px solid rgba(228,180,94,.4);border-radius:16px;background:#071824}.smile-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.smile-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:7px}.smile-pick{height:58px;border:1px solid rgba(228,180,94,.18);border-radius:8px;background:#102b3b;cursor:pointer;padding:4px}.smile-pick img{width:100%;height:100%;object-fit:contain}
+
+@media(max-width:900px){.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.smile-grid{grid-template-columns:repeat(6,1fr)}}
+@media(max-width:620px){.grid2{grid-template-columns:1fr}.partner-main{grid-template-columns:1fr}.avatar{width:100%;height:auto;aspect-ratio:1/1;max-height:340px}.smile-grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="supabase-sync.js?v=0.0.48"></script>
 <link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-</head><body><header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
-  <a href="index.html">Главная</a>
-  <a href="taiwan.html">О Тайвани</a>
-  <a href="pirate.html">О Пиратке</a>
-  <a href="updates.html">Обновления</a>
-  <a href="accounts-sale.html">Продажа Аккаунтов</a>
-  <a href="forum.html">Форум</a>
-      <a href="partners.html">Партнеры</a>
-  <a href="register.html">Регистрация</a>
-  <a href="login.html">Вход</a>
+<link rel="stylesheet" href="music-player-0.0.54.css?v=0.0.54">
+</head>
+<body>
+<header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
+<a href="index.html">Главная</a>
+<a href="taiwan.html">О Тайвани</a>
+<a href="pirate.html">О Пиратке</a>
+<a href="updates.html">Обновления</a>
+<a href="accounts-sale.html">Продажа Аккаунтов</a>
+<a href="forum.html">Форум</a>
+<a href="partners.html">Партнеры</a>
+<a href="register.html">Регистрация</a>
+<a href="login.html">Вход</a>
 </nav></header>
-<main class="wrap"><section class="panel page-head"><h1>Партнеры</h1><p class="muted">Партнеры проекта и представители сообщества.</p><div class="role-note" id="roleNote"></div>
-<div class="editor" id="editor"><h2 id="editorTitle">Добавить партнера</h2><div class="edit-note" id="editNote">Редактирование опубликованного партнера.</div>
-<div class="grid2"><div class="field"><label>Никнейм</label><input id="nick"></div><div class="field"><label>Изображение</label><input id="img" type="file" accept="image/*"></div></div>
+
+<main class="wrap">
+<section class="panel page-head">
+<h1>Партнеры</h1>
+<p class="muted">Партнеры проекта и представители сообщества. Записи выводятся одна под другой, закрепленные — первыми.</p>
+<div class="role-note" id="roleNote">Загрузка...</div>
+
+<div class="editor" id="editor">
+<h2 id="editorTitle">Добавить партнера</h2>
+<div class="grid2">
+  <div class="field"><label>Никнейм</label><input id="nick"></div>
+  <div class="field"><label>Изображение</label><input id="img" type="file" accept="image/*"></div>
+</div>
 <div class="field"><label>Описание</label><textarea id="desc"></textarea></div>
-<div class="grid2"><div class="field"><label>Вконтакте</label><input id="mainLink" placeholder="https://vk.com/..."></div><div class="field"><label>Дискорд</label><input id="discord" placeholder="Ссылка Discord или никнейм"></div></div>
+<div class="grid2">
+  <div class="field"><label>Вконтакте</label><input id="mainLink" placeholder="https://vk.com/..."></div>
+  <div class="field"><label>Дискорд</label><input id="discord" placeholder="Ссылка Discord или никнейм"></div>
+</div>
 <div class="field"><label>Почта</label><input id="email" type="email" placeholder="name@example.com"></div>
-<img id="previewImage" class="avatar" style="display:none;margin-top:10px">
-<button class="btn secondary" type="button" id="previewBtn">Предпросмотр</button><button class="btn" id="saveBtn">Добавить</button><button class="btn secondary" type="button" id="cancelBtn" style="display:none">Отменить</button>
-</div></section><section class="contacts-grid" id="list"></section></main>
-<div class="preview-modal" id="previewModal"><div class="preview-box"><div class="preview-head"><h2>Предпросмотр</h2><button class="btn danger" style="margin:0" onclick="closePreview()">Закрыть</button></div><div id="previewContent"></div></div></div>
+<img id="previewImage" class="avatar-preview" alt="">
+<div>
+  <button class="btn secondary" type="button" id="previewBtn">Предпросмотр</button>
+  <button class="btn" type="button" id="saveBtn">Добавить</button>
+  <button class="btn secondary" type="button" id="cancelBtn" style="display:none">Отменить</button>
+</div>
+<div class="status" id="saveStatus" style="display:none"></div>
+</div>
+</section>
+
+<section class="contacts-grid" id="list"></section>
+</main>
+
+<div class="preview-modal" id="previewModal"><div class="preview-box"><div class="preview-head"><h2>Предпросмотр</h2><button class="btn danger" style="margin:0" type="button" id="closePreviewBtn">Закрыть</button></div><div id="previewContent"></div></div></div>
+
+<div class="smile-modal" id="smileModal">
+  <div class="smile-box">
+    <div class="smile-head"><h2 style="margin:0">Смайлы Age of Wushu</h2><button class="btn danger" style="margin:0" type="button" id="closeSmileBtn">Закрыть</button></div>
+    <div class="smile-grid" id="smileGrid"></div>
+  </div>
+</div>
+
+<script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script>
+const roleNote=document.getElementById('roleNote');
+const editor=document.getElementById('editor');
+const editorTitle=document.getElementById('editorTitle');
+const nickInput=document.getElementById('nick');
+const imgInput=document.getElementById('img');
+const descInput=document.getElementById('desc');
+const mainLinkInput=document.getElementById('mainLink');
+const discordInput=document.getElementById('discord');
+const emailInput=document.getElementById('email');
+const previewImage=document.getElementById('previewImage');
+const previewBtn=document.getElementById('previewBtn');
+const saveBtn=document.getElementById('saveBtn');
+const cancelBtn=document.getElementById('cancelBtn');
+const saveStatus=document.getElementById('saveStatus');
+const list=document.getElementById('list');
+const previewModal=document.getElementById('previewModal');
+const previewContent=document.getElementById('previewContent');
+const smileModal=document.getElementById('smileModal');
+const smileGrid=document.getElementById('smileGrid');
+
+let currentUser=null;
+let isAdmin=false;
+let partners=[];
+let reviews=[];
+let publicProfiles=new Map();
+let editingId=null;
+let image='';
+let reviewReady=true;
+let smileTargetId=null;
+let reviewChannel=null;
+
+const smiles=Array.from({length:88},(_,i)=>({file:`smiles/smile_${String(i+1).padStart(3,'0')}.gif`,title:`Смайл ${i+1}`}));
+
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
 function safeUrl(v){try{const u=new URL(String(v||'').trim());return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}}
-async function imageToData(file,maxSide=1400){
-  if(!file)return '';
-  if(file.size>4*1024*1024)throw new Error('Файл больше 4 МБ');
-  if(file.type==='image/gif'){
-    if(file.size>2*1024*1024)throw new Error('GIF должен быть не больше 2 МБ');
-    return await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)});
-  }
-  const raw=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)});
-  const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=raw});
-  const scale=Math.min(1,maxSide/Math.max(img.width,img.height));
-  const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));
-  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-  return c.toDataURL('image/webp',.84);
-}
-function openPreview(html){document.getElementById('previewContent').innerHTML=html;document.getElementById('previewModal').classList.add('open')}
-function closePreview(){document.getElementById('previewModal').classList.remove('open')}
+function emailOf(x){return x.email||((x.extraLink||'').includes('@')?x.extraLink:'')}
+function vkOf(x){return x.vk||x.mainLink||''}
+function discordOf(x){return x.discord||''}
+function initials(name){const p=String(name||'Игрок').trim().split(/\s+/).filter(Boolean);return (p.slice(0,2).map(x=>x[0]).join('')||'И').toUpperCase()}
+function avatarUrl(v){try{const u=new URL(String(v||''),location.href);return u.protocol==='https:'?u.href:''}catch{return ''}}
+function fmtDate(v){try{return new Date(v).toLocaleString('ru-RU')}catch{return String(v||'')}}
+function encId(v){return encodeURIComponent(String(v))}
+function decId(v){try{return decodeURIComponent(String(v))}catch{return String(v)}}
 
-const u=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null'),isAdmin=!!u&&(u.role||'user')==='admin';
-if(isAdmin){editor.classList.add('show');roleNote.textContent='Администратор может добавлять и редактировать опубликованные контакты.'}else roleNote.textContent='Редактирование доступно только администратору.';
-let data=JSON.parse(localStorage.getItem('kungfuContacts')||'[]'),editingId=null,image='';
-const img=document.getElementById('img'),previewImage=document.getElementById('previewImage');
-img.onchange=async()=>{const f=img.files[0];if(!f)return;try{image=await imageToData(f);previewImage.src=image;previewImage.style.display='block'}catch(e){alert(e.message)}};
-function save(){localStorage.setItem('kungfuContacts',JSON.stringify(data))}
-function emailOf(x){return x.email||((x.extraLink||'').includes('@')?x.extraLink:'')}function vkOf(x){return x.vk||x.mainLink||''}function discordOf(x){return x.discord||''}
 function contactValue(label,value){
   const v=String(value||'').trim();if(!v)return '';
   const url=safeUrl(v);
-  return url?`<a class="contact-link" href="${url}" target="_blank" rel="noopener">${label}</a>`:`<span class="contact-link contact-text"><b>${label}:</b>&nbsp;${esc(v)}</span>`;
+  return url?`<a class="contact-link" href="${esc(url)}" target="_blank" rel="noopener">${esc(label)}</a>`:`<span class="contact-link contact-text"><b>${esc(label)}:</b>&nbsp;${esc(v)}</span>`;
 }
-function card(x){const mail=emailOf(x),vk=vkOf(x),discord=discordOf(x);return `<article class="panel contact">${x.image?`<img class="avatar" src="${x.image}" loading="lazy">`:'<div class="avatar"></div>'}<div><h2 style="margin:0">${esc(x.nick)}</h2><p class="muted">${esc(x.desc||'')}</p><div class="contact-links">${contactValue('Вконтакте',vk)}${contactValue('Дискорд',discord)}</div>${mail?`<br><a class="mail" href="mailto:${esc(mail)}">${esc(mail)}</a>`:''}${isAdmin?`<div class="entry-actions"><button class="btn secondary" onclick="editContact(${x.id})">Редактировать</button><button class="btn danger" onclick="delContact(${x.id})">Удалить</button></div>`:''}</div></article>`}
-function render(){list.innerHTML=data.length?data.map(card).join(''):'<div class="panel empty">Партнеры пока не добавлены.</div>'}
-function reset(){editingId=null;image='';img.value='';previewImage.style.display='none';['nick','desc','mainLink','discord','email'].forEach(id=>document.getElementById(id).value='');editorTitle.textContent='Добавить партнера';editNote.classList.remove('show');saveBtn.textContent='Добавить';cancelBtn.style.display='none'}
-window.editContact=id=>{if(!isAdmin)return;const x=data.find(a=>a.id===id);if(!x)return;editingId=id;nick.value=x.nick||'';desc.value=x.desc||'';mainLink.value=vkOf(x);discord.value=discordOf(x);email.value=emailOf(x);image=x.image||'';if(image){previewImage.src=image;previewImage.style.display='block'}editorTitle.textContent='Редактировать пользователя';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'})}
+function renderReviewText(text){
+  let safe=esc(text).replace(/\n/g,'<br>');
+  return safe.replace(/\[\[aow:(\d+)\]\]/g,(m,n)=>{
+    const x=smiles[Number(n)];
+    return x?`<img class="aow-inline-smile" src="${x.file}" title="${esc(x.title)}" alt="${esc(x.title)}">`:m;
+  });
+}
+function authorInfo(userId){
+  const id=String(userId||'');
+  const publicProfile=publicProfiles.get(id);
+  const own=currentUser&&String(currentUser.id||'')===id?currentUser:null;
+  return {
+    nickname:publicProfile?.nickname||own?.nickname||'Игрок',
+    avatarUrl:publicProfile?.avatarUrl||own?.avatarUrl||''
+  };
+}
+function authorHtml(userId){
+  const a=authorInfo(userId),src=avatarUrl(a.avatarUrl);
+  return `<div class="review-author"><span class="review-avatar">${src?`<img src="${esc(src)}" alt="Аватар ${esc(a.nickname)}">`:esc(initials(a.nickname))}</span><div><div class="review-name">${esc(a.nickname)}</div></div></div>`;
+}
+function reviewsFor(partnerId){return reviews.filter(r=>String(r.partner_id)===String(partnerId))}
+function canDeleteReview(r){return !!currentUser&&(isAdmin||String(r.user_id)===String(currentUser.id))}
+
+function reviewBlock(partner){
+  const rows=reviewsFor(partner.id);
+  const form=currentUser&&reviewReady?`
+    <div class="review-form">
+      <div class="review-as">${authorHtml(currentUser.id)}<span>Ваш отзыв</span></div>
+      <textarea id="reviewText-${partner.id}" maxlength="1500" placeholder="Напишите отзыв о партнере..."></textarea>
+      <div class="review-actions">
+        <button class="btn secondary" type="button" onclick="openSmilePicker('reviewText-${partner.id}')">Смайлы Age of Wushu</button>
+        <button class="btn" type="button" onclick="publishReview('${encId(partner.id)}')">Опубликовать отзыв</button>
+      </div>
+    </div>`:currentUser&&!reviewReady
+      ?`<div class="review-login">Отзывы станут доступны после выполнения SQL-файла <b>SUPABASE_PARTNER_REVIEWS_0.0.55.sql</b>.</div>`
+      :`<div class="review-login">Чтобы оставить отзыв, <a href="login.html" style="color:#ffe2a0;text-decoration:underline">войдите</a> или <a href="register.html" style="color:#ffe2a0;text-decoration:underline">зарегистрируйтесь</a>.</div>`;
+
+  return `<section class="reviews">
+    <div class="reviews-head"><h3>Отзывы <span class="muted">(${rows.length})</span></h3></div>
+    <div class="review-list">${rows.length?rows.map(r=>`<div class="review" data-review-id="${r.id}">
+      ${authorHtml(r.user_id)}
+      <div class="review-date">${esc(fmtDate(r.created_at))}</div>
+      <div class="review-text">${renderReviewText(r.text)}</div>
+      ${canDeleteReview(r)?`<div class="review-actions"><button class="btn danger" type="button" onclick="deleteReview(${r.id})">Удалить отзыв</button></div>`:''}
+    </div>`).join(''):'<div class="muted" style="margin-top:8px">Отзывов пока нет.</div>'}</div>
+    ${form}
+  </section>`;
+}
+
+function card(x,preview=false){
+  const mail=emailOf(x),vk=vkOf(x),discord=discordOf(x);
+  return `<article class="panel contact">
+    <div class="partner-main">
+      ${x.image?`<img class="avatar" src="${esc(x.image)}" loading="lazy" alt="${esc(x.nick||'Партнер')}">`:'<div class="avatar"></div>'}
+      <div>
+        <div class="partner-head"><h2>${esc(x.nick||'Партнер')}</h2>${x.pinned?'<span class="pin-tag">📌 Закреплено</span>':''}</div>
+        <div class="partner-desc">${esc(x.desc||'')}</div>
+        <div class="contact-links">${contactValue('Вконтакте',vk)}${contactValue('Дискорд',discord)}</div>
+        ${mail?`<a class="mail" href="mailto:${esc(mail)}">${esc(mail)}</a>`:''}
+        ${isAdmin&&!preview?`<div class="entry-actions">
+          <button class="btn secondary" type="button" onclick="togglePin('${encId(x.id)}')">${x.pinned?'Открепить':'Закрепить'}</button>
+          <button class="btn secondary" type="button" onclick="editPartner('${encId(x.id)}')">Редактировать</button>
+          <button class="btn danger" type="button" onclick="deletePartner('${encId(x.id)}')">Удалить</button>
+        </div>`:''}
+      </div>
+    </div>
+    ${preview?'':reviewBlock(x)}
+  </article>`;
+}
+
+function sortedPartners(){
+  return partners.map((x,i)=>({x,i})).sort((a,b)=>Number(!!b.x.pinned)-Number(!!a.x.pinned)||a.i-b.i).map(z=>z.x);
+}
+function render(){
+  const rows=sortedPartners();
+  list.innerHTML=rows.length?rows.map(x=>card(x)).join(''):'<div class="panel empty">Партнеры пока не добавлены.</div>';
+}
+function reset(){
+  editingId=null;image='';
+  imgInput.value='';previewImage.removeAttribute('src');previewImage.classList.remove('show');
+  [nickInput,descInput,mainLinkInput,discordInput,emailInput].forEach(x=>x.value='');
+  editorTitle.textContent='Добавить партнера';saveBtn.textContent='Добавить';cancelBtn.style.display='none';
+}
+function showStatus(text,ok=true){
+  saveStatus.style.display='block';saveStatus.style.color=ok?'#c8f4d8':'#ffd0d0';saveStatus.textContent=text;
+}
+async function savePartners(){
+  if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+  partners=await KFSupabase.saveStore('kungfuContacts',partners);
+  return partners;
+}
+async function hydrateProfiles(){
+  const ids=[...new Set(reviews.map(r=>String(r.user_id||'')).filter(Boolean))];
+  if(currentUser?.id)ids.push(String(currentUser.id));
+  try{
+    const rows=await KFSupabase.getPublicProfiles([...new Set(ids)]);
+    publicProfiles=new Map(rows.map(x=>[String(x.id),x]));
+  }catch(e){console.warn('Partner public profiles:',e);publicProfiles=new Map()}
+}
+async function loadReviews(){
+  if(!window.KFSupabase?.configured)return;
+  const {data,error}=await KFSupabase.client.from('partner_reviews')
+    .select('id,partner_id,user_id,text,created_at,updated_at')
+    .order('created_at',{ascending:true});
+  if(error){
+    reviewReady=false;reviews=[];
+    if(error.code!=='42P01'&&error.code!=='PGRST205')console.warn('Partner reviews:',error);
+    return;
+  }
+  reviewReady=true;reviews=data||[];
+  await hydrateProfiles();
+}
+async function refreshReviews(){
+  await loadReviews();render();
+}
+
+imgInput.onchange=async()=>{
+  const f=imgInput.files&&imgInput.files[0];if(!f)return;
+  try{
+    image=await imageToData(f,1800);
+    previewImage.src=image;previewImage.classList.add('show');
+  }catch(e){
+    image='';imgInput.value='';previewImage.classList.remove('show');alert(e.message||'Не удалось обработать изображение.');
+  }
+};
+
+previewBtn.onclick=()=>{previewContent.innerHTML=card({id:'preview',nick:nickInput.value||'Никнейм',desc:descInput.value,mainLink:mainLinkInput.value,vk:mainLinkInput.value,discord:discordInput.value,email:emailInput.value,image,pinned:false},true);previewModal.classList.add('open')};
+document.getElementById('closePreviewBtn').onclick=()=>previewModal.classList.remove('open');
 cancelBtn.onclick=reset;
-previewBtn.onclick=()=>openPreview(card({id:'preview',nick:nick.value||'Никнейм',desc:desc.value,mainLink:mainLink.value,vk:mainLink.value,discord:discord.value,email:email.value,image}));
-saveBtn.onclick=()=>{if(!isAdmin)return;const n=nick.value.trim(),link=mainLink.value.trim(),disc=discord.value.trim(),mail=email.value.trim();if(!n){alert('Укажите никнейм');return}const old=editingId?data.find(x=>x.id===editingId):null;const item={id:editingId||Date.now(),nick:n,desc:desc.value.trim(),mainLink:link,vk:link,discord:disc,email:mail,image:image||(old&&old.image)||''};if(editingId){const i=data.findIndex(x=>x.id===editingId);data[i]={...data[i],...item}}else data.push(item);save();reset();render()};
-window.delContact=id=>{if(!isAdmin||!confirm('Удалить контакт?'))return;data=data.filter(x=>x.id!==id);if(editingId===id)reset();save();render()};
-render();
-</script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
+
+saveBtn.onclick=async()=>{
+  if(!isAdmin)return;
+  const n=nickInput.value.trim();
+  if(!n){alert('Укажите никнейм');return}
+  const before=partners.map(x=>({...x}));
+  const old=editingId?partners.find(x=>String(x.id)===String(editingId)):null;
+  const item={
+    id:editingId||Date.now(),
+    nick:n,
+    desc:descInput.value.trim(),
+    mainLink:mainLinkInput.value.trim(),
+    vk:mainLinkInput.value.trim(),
+    discord:discordInput.value.trim(),
+    email:emailInput.value.trim(),
+    image:image||(old&&old.image)||'',
+    pinned:!!old?.pinned,
+    createdAt:old?.createdAt||new Date().toISOString()
+  };
+  if(editingId){
+    const i=partners.findIndex(x=>String(x.id)===String(editingId));
+    partners[i]={...partners[i],...item};
+  }else partners.push(item);
+
+  const wasEdit=!!editingId;
+  saveBtn.disabled=true;showStatus('Сохранение...');
+  try{
+    await savePartners();
+    reset();render();showStatus(wasEdit?'Изменения сохранены.':'Партнер опубликован.');
+  }catch(e){
+    partners=before;render();showStatus(e.message||'Не удалось сохранить партнера.',false);
+  }finally{saveBtn.disabled=false}
+};
+
+window.editPartner=id=>{
+  id=decId(id);
+  if(!isAdmin)return;
+  const x=partners.find(a=>String(a.id)===String(id));if(!x)return;
+  editingId=x.id;
+  nickInput.value=x.nick||'';descInput.value=x.desc||'';mainLinkInput.value=vkOf(x);discordInput.value=discordOf(x);emailInput.value=emailOf(x);
+  image=x.image||'';
+  if(image){previewImage.src=image;previewImage.classList.add('show')}else previewImage.classList.remove('show');
+  editorTitle.textContent='Редактировать партнера';saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex';
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+window.togglePin=async id=>{
+  id=decId(id);
+  if(!isAdmin)return;
+  const i=partners.findIndex(x=>String(x.id)===String(id));if(i<0)return;
+  const before=partners.map(x=>({...x}));
+  partners[i]={...partners[i],pinned:!partners[i].pinned};
+  render();
+  try{await savePartners();render()}
+  catch(e){partners=before;render();alert(e.message||'Не удалось изменить закрепление.')}
+};
+
+window.deletePartner=async id=>{
+  id=decId(id);
+  if(!isAdmin||!confirm('Удалить партнера? Отзывы к этой записи также будут удалены.'))return;
+  const before=partners.map(x=>({...x}));
+  partners=partners.filter(x=>String(x.id)!==String(id));
+  render();
+  try{
+    await savePartners();
+    if(reviewReady){
+      const {error}=await KFSupabase.client.from('partner_reviews').delete().eq('partner_id',String(id));
+      if(error)console.warn(error);
+      await refreshReviews();
+    }
+    if(String(editingId)===String(id))reset();
+  }catch(e){partners=before;render();alert(e.message||'Не удалось удалить партнера.')}
+};
+
+function insertAtCursor(id,text){
+  const ta=document.getElementById(id);if(!ta)return;
+  const start=ta.selectionStart??ta.value.length,end=ta.selectionEnd??ta.value.length;
+  ta.value=ta.value.slice(0,start)+text+ta.value.slice(end);
+  ta.focus();ta.selectionStart=ta.selectionEnd=start+text.length;
+}
+window.openSmilePicker=id=>{smileTargetId=id;smileModal.classList.add('open')};
+document.getElementById('closeSmileBtn').onclick=()=>{smileModal.classList.remove('open');smileTargetId=null};
+smileModal.onclick=e=>{if(e.target===smileModal){smileModal.classList.remove('open');smileTargetId=null}};
+smileGrid.innerHTML=smiles.map((s,i)=>`<button class="smile-pick" type="button" title="${esc(s.title)}" onclick="pickSmile(${i})"><img src="${s.file}" alt="${esc(s.title)}"></button>`).join('');
+window.pickSmile=i=>{if(smileTargetId)insertAtCursor(smileTargetId,`[[aow:${i}]]`);smileModal.classList.remove('open');smileTargetId=null};
+
+window.publishReview=async partnerId=>{
+  partnerId=decId(partnerId);
+  if(!currentUser){location.href='login.html';return}
+  if(!reviewReady){alert('Сначала выполните SQL 0.0.55 для отзывов партнеров.');return}
+  const ta=document.getElementById(`reviewText-${partnerId}`);
+  const text=String(ta?.value||'').trim();
+  if(!text){alert('Напишите отзыв.');return}
+  if(text.length>1500){alert('Отзыв слишком длинный. Максимум 1500 символов.');return}
+  const {data,error}=await KFSupabase.client.from('partner_reviews').insert({
+    partner_id:String(partnerId),user_id:currentUser.id,text
+  }).select('id,partner_id,user_id,text,created_at,updated_at').single();
+  if(error){alert(error.message||'Не удалось опубликовать отзыв.');return}
+  reviews.push(data);
+  if(ta)ta.value='';
+  await hydrateProfiles();render();
+};
+
+window.deleteReview=async id=>{
+  const r=reviews.find(x=>Number(x.id)===Number(id));
+  if(!r||!canDeleteReview(r)||!confirm('Удалить отзыв?'))return;
+  const {error}=await KFSupabase.client.from('partner_reviews').delete().eq('id',id);
+  if(error){alert(error.message||'Не удалось удалить отзыв.');return}
+  reviews=reviews.filter(x=>Number(x.id)!==Number(id));render();
+};
+
+async function initPartners(){
+  if(!window.KFSupabase?.configured){
+    roleNote.textContent='Supabase не настроен.';
+    list.innerHTML='<div class="panel empty">Нет подключения к базе данных.</div>';
+    return;
+  }
+  await KFSupabase.ready;
+  try{currentUser=await KFSupabase.getCurrentProfile()}catch{}
+  isAdmin=!!currentUser&&currentUser.role==='admin';
+  if(isAdmin){editor.classList.add('show');roleNote.textContent='Администратор может добавлять, редактировать, удалять и закреплять партнеров.'}
+  else roleNote.textContent=currentUser?'Вы можете оставлять отзывы о партнерах.':'Просмотр доступен всем. Для отзыва необходимо войти или зарегистрироваться.';
+
+  try{
+    const fresh=await KFSupabase.getStore('kungfuContacts',[]);
+    partners=Array.isArray(fresh)?fresh:[];
+  }catch(e){
+    list.innerHTML=`<div class="panel empty">${esc(e.message||'Не удалось загрузить партнеров.')}</div>`;
+    return;
+  }
+
+  await loadReviews();
+  if(currentUser&&!publicProfiles.has(String(currentUser.id)))await hydrateProfiles();
+  render();
+
+  if(reviewReady&&KFSupabase.client){
+    reviewChannel=KFSupabase.client.channel('partner-reviews-0.0.55')
+      .on('postgres_changes',{event:'*',schema:'public',table:'partner_reviews'},()=>refreshReviews())
+      .subscribe();
+  }
+}
+initPartners();
+</script>
 <script src="decor-0.0.48.js?v=0.0.48"></script>
-</body></html>
+<script src="music-player-0.0.54.js?v=0.0.54"></script>
+</body>
+</html>

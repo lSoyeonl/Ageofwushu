@@ -1,0 +1,31 @@
+ЛЕГЕНДЫ КУНГ-ФУ — PRE-DEPLOY REPORT 0.0.55
+
+[OK] supabase-config.js: syntax
+[OK] supabase-sync.js: syntax
+[OK] image-tools-0.0.48.js: syntax
+[OK] decor-0.0.48.js: syntax
+[OK] reactions-0.0.48.js: syntax
+[OK] music-player-0.0.54.js: syntax
+[OK] Inline JS всех страниц
+[OK] Партнеры читаются напрямую из Supabase
+[OK] Партнеры сохраняются с await Supabase
+[OK] Нет localStorage записи партнеров
+[OK] Вертикальная колонка партнеров
+[OK] Закрепление партнеров
+[OK] Закрепленные идут первыми
+[OK] Отзывы зарегистрированных
+[OK] 88 smiles в отзывах
+[OK] Гости не могут публиковать отзыв
+[OK] Удаление своего/админского отзыва
+[OK] Realtime отзывов
+[OK] SQL partner_reviews
+[OK] RLS отзывов
+[OK] Migration 0.0.55
+[OK] Root SQL для текущего проекта
+[OK] Backup включает отзывы
+[OK] Версия 0.0.55
+[OK] Все локальные ресурсы существуют
+
+ВАЖНО:
+Перед использованием отзывов один раз выполнить SUPABASE_PARTNER_REVIEWS_0.0.55.sql в Supabase SQL Editor.
+Публикация/редактирование/закрепление партнеров использует существующий kungfuContacts и дополнительного SQL не требует.
