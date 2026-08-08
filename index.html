@@ -1025,14 +1025,22 @@ button,input{font:inherit}
 }
 .community-card b{display:block;color:#ffe2a0;font-size:16px}
 .community-card span{display:block;color:#c9d9df;font-size:13px;margin-top:4px}
+.community-card.bots-home-card{
+  width:48%;
+  justify-self:end;
+  min-height:70px;
+  padding:12px 14px;
+}
+.community-card.bots-home-card .c-icon{width:40px;height:40px;flex-basis:40px;font-size:18px}
+.community-card.bots-home-card b{font-size:15px}
+.community-card.bots-home-card span{font-size:11px}
 .community-card.hideouts-home-card{
-  grid-column:1 / -1;
-  width:calc(50% - 7px);
-  justify-self:center;
+  width:100%;
+  justify-self:stretch;
 }
 @media(max-width:820px){
   .community-bar{width:90vw;grid-template-columns:1fr}
-  .community-card.hideouts-home-card{width:100%;grid-column:auto}
+  .community-card.bots-home-card,.community-card.hideouts-home-card{width:100%;grid-column:auto;justify-self:stretch;min-height:76px}
 }
 
 
@@ -1352,6 +1360,10 @@ button,input{font:inherit}
       <a class="community-card" href="forum.html">
         <div class="c-icon">◈</div>
         <div><b>Форум сообщества</b><span>Создавайте темы и отвечайте другим игрокам</span></div>
+      </a>
+      <a class="community-card bots-home-card" href="bots.html">
+        <div class="c-icon">◉</div>
+        <div><b>Боты</b><span>Каталог ботов</span></div>
       </a>
       <a class="community-card hideouts-home-card" href="hideouts.html">
         <div class="c-icon">◇</div>

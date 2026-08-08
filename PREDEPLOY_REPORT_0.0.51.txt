@@ -1,0 +1,41 @@
+ЛЕГЕНДЫ КУНГ-ФУ — PRE-DEPLOY REPORT 0.0.51
+
+Проверяется перед упаковкой сборки автоматически.
+
+Основные требования 0.0.51:
+- bots.html присутствует.
+- Главная ссылается на bots.html.
+- Кнопка «Боты» имеет отдельный компактный desktop-стиль.
+- Контент «Боты» использует ключ kungfuBots.
+- Публикация доступна только администратору через существующие RLS site_store.
+- Реакции используют существующую content_reactions и smiles.
+- Комментариев в bots.html нет.
+- Rich editor: 5–30 px, Oswald 300/400, цвет, выравнивание, изображение, список, таблица, несколько изображений.
+- Все URL валидируются на http/https.
+- Основное изображение бота отображается квадратным.
+- Новая SQL migration не требуется.
+
+
+АВТОМАТИЧЕСКИЕ ПРОВЕРКИ:
+[OK] decor-0.0.48.js: syntax
+[OK] image-tools-0.0.48.js: syntax
+[OK] reactions-0.0.48.js: syntax
+[OK] supabase-config.example.js: syntax
+[OK] supabase-config.js: syntax
+[OK] supabase-sync.js: syntax
+[OK] Inline JS всех HTML
+[OK] Главная содержит кнопку Боты
+[OK] Компактная desktop-кнопка
+[OK] Bots Supabase key
+[OK] Админ-only editor
+[OK] Reactions smiles
+[OK] Нет формы комментариев
+[OK] Rich editor
+[OK] Несколько изображений
+[OK] Основное изображение квадратное
+[OK] Ссылка на бота
+[OK] Discord
+[OK] Получить ссылку Discord
+[OK] Нет новой SQL migration для bots
+[OK] Версия 0.0.51
+[OK] Все локальные ресурсы существуют
