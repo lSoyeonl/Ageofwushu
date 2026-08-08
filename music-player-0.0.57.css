@@ -1,0 +1,55 @@
+/* Легенды Кунг-Фу 0.0.57 — стабильный музыкальный плеер */
+.kf-music{
+  position:fixed;right:18px;bottom:18px;z-index:10030;
+  width:min(350px,calc(100vw - 30px));overflow:hidden;
+  border:1px solid rgba(228,180,94,.42);border-radius:14px;
+  background:linear-gradient(180deg,rgba(5,28,41,.97),rgba(3,18,28,.98));
+  box-shadow:0 14px 34px rgba(0,0,0,.38);color:#fff;
+  font-family:'Oswald','Arial Narrow',Arial,sans-serif;backdrop-filter:blur(12px)
+}
+.kf-music.collapsed{width:auto;border-radius:999px}
+.kf-music.collapsed .kf-music-panel,
+.kf-music.collapsed .kf-music-toggle-text,
+.kf-music.collapsed .kf-music-collapse{display:none}
+.kf-music-bar{display:flex;align-items:center;min-height:50px}
+.kf-music-toggle{
+  display:flex;align-items:center;gap:9px;min-width:0;flex:1;min-height:50px;
+  padding:7px 9px 7px 11px;border:0;background:transparent;color:#ffe2a0;cursor:pointer;
+  font:600 15px/1.1 'Oswald','Arial Narrow',Arial,sans-serif;text-align:left
+}
+.kf-music.collapsed .kf-music-toggle{width:47px;min-width:47px;flex:0 0 47px;padding:0;justify-content:center}
+.kf-music-note{
+  display:grid;place-items:center;width:31px;height:31px;flex:0 0 31px;
+  border:1px solid rgba(255,226,160,.42);border-radius:50%;
+  background:rgba(228,180,94,.08);font-size:17px
+}
+.kf-music-toggle-text{min-width:0;flex:1}
+.kf-music-title{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kf-music-state{display:block;margin-top:3px;color:#9fb7c1;font-size:11px;font-weight:400}
+.kf-music-collapse{font-size:15px;color:#b7c8d0}
+.kf-music-mute{
+  width:42px;height:42px;flex:0 0 42px;margin-right:5px;padding:7px;border-radius:50%;
+  border:1px solid rgba(228,180,94,.22);background:#102b3b;color:#ffe2a0;cursor:pointer;
+  display:grid;place-items:center
+}
+.kf-music-mute:hover{border-color:rgba(255,226,160,.55)}
+.kf-music-mute svg{display:block;width:26px;height:26px}
+.kf-music.collapsed .kf-music-mute{width:40px;height:40px;flex-basis:40px;margin-right:5px}
+.kf-music-panel{padding:0 12px 12px;border-top:1px solid rgba(255,255,255,.06)}
+.kf-music-track{margin:10px 0 7px;color:#ffe2a0;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kf-music-time{font-size:11px;color:#9fb7c1;margin-bottom:6px}
+.kf-music-progress{width:100%;accent-color:#d7a44f;cursor:pointer}
+.kf-music-controls{display:grid;grid-template-columns:40px 50px 40px 1fr;gap:7px;align-items:center;margin-top:7px}
+.kf-music-btn{height:35px;border-radius:9px;border:1px solid rgba(228,180,94,.25);background:#153247;color:#ffe2a0;cursor:pointer;font-size:14px}
+.kf-music-btn:hover{border-color:rgba(255,226,160,.55)}
+.kf-music-play{background:linear-gradient(#f2cf88,#c89441);color:#261808;border:0;font-size:16px;font-weight:700}
+.kf-music-volume{width:100%;accent-color:#d7a44f}
+.kf-music-hint{margin-top:7px;color:#8ea6b0;font-size:10px;line-height:1.35}
+.kf-music-error{color:#ffb6b6!important}
+@media(max-width:820px){
+  .kf-music{right:10px;bottom:10px;width:min(325px,calc(100vw - 20px))}
+  .kf-music.collapsed{width:auto}
+  .kf-music.collapsed .kf-music-toggle{width:44px;min-width:44px;flex-basis:44px}
+  .kf-music.collapsed .kf-music-mute{width:38px;height:38px;flex-basis:38px}
+}
+@media(prefers-reduced-motion:reduce){.kf-music *{transition:none!important}}

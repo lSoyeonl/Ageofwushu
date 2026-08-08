@@ -116,7 +116,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="supabase-sync.js?v=0.0.48"></script>
 <link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.56.css?v=0.0.56">
+<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
 </head>
 <body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a>
@@ -139,5 +139,5 @@ const id=Number(new URLSearchParams(location.search).get('id'));const data=JSON.
 document.getElementById('detail').innerHTML=x?`<span class="tag">${esc(x.category)}</span><h1>${esc(x.name)}</h1>${x.image?`<img src="${x.image}">`:''}<p>${esc(x.content).replace(/\n/g,'<br>')}</p><a class="btn secondary back" href="schools.html">← Назад</a>`:'<div class="empty">Материал не найден.</div>';
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.56.js?v=0.0.56"></script>
+<script src="music-player-0.0.57.js?v=0.0.57"></script>
 </body></html>

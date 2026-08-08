@@ -36,7 +36,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="supabase-sync.js?v=0.0.48"></script>
 <link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.56.css?v=0.0.56">
+<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
 </head><body><header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
   <a href="taiwan.html">О Тайвани</a>
@@ -100,5 +100,5 @@ document.getElementById('previewBtn').onclick=()=>{const title=document.getEleme
 document.getElementById('saveBtn').onclick=()=>{if(!isAdmin)return;const title=document.getElementById('title').value.trim(),content=cleanRich(document.getElementById('rich').innerHTML);if(!title||!document.getElementById('rich').innerText.trim()){alert('Заполните заголовок и содержание');return}const item={id:editingId||Date.now(),type:document.getElementById('type').value,title,content,extraLink:document.getElementById('extraLink').value.trim(),images:draftImages.slice(),image:draftImages[0]||''};if(editingId){const i=items.findIndex(x=>x.id===editingId);items[i]={...items[i],...item}}else items.push(item);selected=item.id;save();reset();render()};window.delItem=id=>{if(!isAdmin||!confirm('Удалить материал?'))return;items=items.filter(x=>x.id!==id);selected=items.length?items[0].id:null;save();render()};renderTypes();renderDraftGallery();render();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.56.js?v=0.0.56"></script>
+<script src="music-player-0.0.57.js?v=0.0.57"></script>
 </body></html>
