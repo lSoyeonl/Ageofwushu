@@ -15,7 +15,7 @@ a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;displa
 <script src="supabase-sync.js?v=0.0.48"></script>
 <link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.54.css?v=0.0.54">
+<link rel="stylesheet" href="music-player-0.0.56.css?v=0.0.56">
 </head>
 <body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav"><a href="index.html">Главная</a><a href="updates.html">Обновления</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="account.html">Аккаунт</a></nav></header>
@@ -93,10 +93,10 @@ exportBtn.onclick=async()=>{
       KFSupabase.client.from('site_store').select('key,value_json,updated_at,updated_by').order('key'),
       KFSupabase.client.from('profiles').select('id,nickname,email,bio,avatar_url,role,created_at,last_seen_at').order('created_at'),
       KFSupabase.client.from('content_reactions').select('content_key,entry_id,user_id,reaction,created_at,updated_at').order('id'),
-      KFSupabase.client.from('partner_reviews').select('id,partner_id,user_id,text,created_at,updated_at').order('id')
+      KFSupabase.client.from('partner_reviews').select('id,partner_id,user_id,text,rating,created_at,updated_at').order('id')
     ]);
     if(storeRes.error)throw storeRes.error;if(profileRes.error)throw profileRes.error;if(reactionRes.error)throw reactionRes.error;if(partnerReviewRes.error)throw partnerReviewRes.error;
-    download({format:'kungfu-supabase-content-0.0.55',createdAt:new Date().toISOString(),site_store:storeRes.data||[],profiles:profileRes.data||[],content_reactions:reactionRes.data||[],partner_reviews:partnerReviewRes.data||[]},`kungfu_content_${stamp()}.json`);
+    download({format:'kungfu-supabase-content-0.0.56',createdAt:new Date().toISOString(),site_store:storeRes.data||[],profiles:profileRes.data||[],content_reactions:reactionRes.data||[],partner_reviews:partnerReviewRes.data||[]},`kungfu_content_${stamp()}.json`);
     exportStatus.textContent='JSON контента скачан.';
   }catch(e){exportStatus.textContent=e.message||String(e)}
 };
@@ -104,7 +104,7 @@ exportBtn.onclick=async()=>{
 importFile.onchange=async e=>{
   imported=null;importBtn.disabled=true;
   const f=e.target.files&&e.target.files[0];if(!f)return;
-  try{imported=JSON.parse(await f.text());if(!['kungfu-supabase-content-0.0.55','kungfu-supabase-content-0.0.48','kungfu-supabase-content-0.0.47'].includes(imported.format))throw new Error('Неподдерживаемый формат.');importBtn.disabled=false;importStatus.textContent='Копия готова к восстановлению.'}
+  try{imported=JSON.parse(await f.text());if(!['kungfu-supabase-content-0.0.56','kungfu-supabase-content-0.0.55','kungfu-supabase-content-0.0.48','kungfu-supabase-content-0.0.47'].includes(imported.format))throw new Error('Неподдерживаемый формат.');importBtn.disabled=false;importStatus.textContent='Копия готова к восстановлению.'}
   catch(e){importStatus.textContent=e.message||'Неверный JSON.'}
 };
 
@@ -123,7 +123,7 @@ importBtn.onclick=async()=>{
       if(error)throw error;
     }
     for(const r of imported.partner_reviews||[]){
-      const {error}=await KFSupabase.client.from('partner_reviews').upsert({id:r.id,partner_id:String(r.partner_id),user_id:r.user_id,text:r.text,created_at:r.created_at||new Date().toISOString(),updated_at:r.updated_at||new Date().toISOString()},{onConflict:'id'});
+      const {error}=await KFSupabase.client.from('partner_reviews').upsert({id:r.id,partner_id:String(r.partner_id),user_id:r.user_id,text:r.text,rating:(r.rating==null?null:Number(r.rating)),created_at:r.created_at||new Date().toISOString(),updated_at:r.updated_at||new Date().toISOString()},{onConflict:'id'});
       if(error)throw error;
     }
     await KFSupabase.refreshStore();
@@ -134,5 +134,5 @@ importBtn.onclick=async()=>{
 init();
 </script>
 <script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.54.js?v=0.0.54"></script>
+<script src="music-player-0.0.56.js?v=0.0.56"></script>
 </body></html>

@@ -36,6 +36,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="supabase-sync.js?v=0.0.48"></script>
 <link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
+<link rel="stylesheet" href="music-player-0.0.56.css?v=0.0.56">
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -132,4 +133,5 @@ item.code=document.getElementById('code').value.trim(); if(!item.name){alert('У
 window.removeEntry=id=>{if(!isAdmin||!confirm('Удалить запись?'))return;entries=entries.filter(x=>x.id!==id);if(editingId===id)resetForm();selectedId=entries.length?entries[0].id:null;save();render()};renderTypes();render();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script src="decor-0.0.48.js?v=0.0.48"></script>
+<script src="music-player-0.0.56.js?v=0.0.56"></script>
 </body></html>

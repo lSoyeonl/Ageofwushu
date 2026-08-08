@@ -306,14 +306,14 @@ drop policy if exists "content_reactions_insert_own_or_admin" on public.content_
 create policy "content_reactions_insert_own_or_admin"
 on public.content_reactions for insert
 to authenticated
-with check (user_id = auth.uid() or public.is_admin());
+with check ((user_id = auth.uid() or public.is_admin()) and rating between 1 and 5);
 
 drop policy if exists "content_reactions_update_own_or_admin" on public.content_reactions;
 create policy "content_reactions_update_own_or_admin"
 on public.content_reactions for update
 to authenticated
 using (user_id = auth.uid() or public.is_admin())
-with check (user_id = auth.uid() or public.is_admin());
+with check ((user_id = auth.uid() or public.is_admin()) and (rating is null or rating between 1 and 5));
 
 drop policy if exists "content_reactions_delete_own_or_admin" on public.content_reactions;
 create policy "content_reactions_delete_own_or_admin"
@@ -341,6 +341,7 @@ create table if not exists public.partner_reviews (
   partner_id text not null,
   user_id uuid not null references auth.users(id) on delete cascade,
   text text not null check (char_length(text) between 1 and 1500),
+  rating smallint check (rating is null or rating between 1 and 5),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -360,14 +361,14 @@ drop policy if exists "partner_reviews_insert_own" on public.partner_reviews;
 create policy "partner_reviews_insert_own"
 on public.partner_reviews for insert
 to authenticated
-with check (user_id = auth.uid());
+with check (user_id = auth.uid() and (rating is null or rating between 1 and 5));
 
 drop policy if exists "partner_reviews_update_own_or_admin" on public.partner_reviews;
 create policy "partner_reviews_update_own_or_admin"
 on public.partner_reviews for update
 to authenticated
 using (user_id = auth.uid() or public.is_admin())
-with check (user_id = auth.uid() or public.is_admin());
+with check ((user_id = auth.uid() or public.is_admin()) and (rating is null or rating between 1 and 5));
 
 drop policy if exists "partner_reviews_delete_own_or_admin" on public.partner_reviews;
 create policy "partner_reviews_delete_own_or_admin"

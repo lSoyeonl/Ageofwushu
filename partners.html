@@ -40,16 +40,57 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 .mail{display:inline-flex;margin-top:7px;color:#9fdfff;text-decoration:underline}.contact-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.contact-link{display:inline-flex;padding:7px 10px;border-radius:8px;border:1px solid rgba(126,204,234,.18);background:rgba(126,204,234,.055);color:#9fdfff}.contact-text{color:#d4e2e8}
 .partner-desc{color:#d6e2e7;line-height:1.6;font-size:15px;white-space:pre-wrap}
 
-.reviews{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.075)}
-.reviews-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.reviews-head h3{margin:0}
-.review-list{display:grid;gap:9px;margin-top:10px}.review{padding:11px 12px;border-left:2px solid rgba(228,180,94,.42);background:rgba(255,255,255,.025);border-radius:0 9px 9px 0}
-.review-author{display:flex;align-items:center;gap:9px}.review-avatar{width:34px;height:34px;flex:0 0 34px;border-radius:50%;overflow:hidden;display:grid;place-items:center;border:1px solid rgba(255,226,160,.34);background:linear-gradient(145deg,#17384a,#071824);color:#ffe2a0;font-size:12px;font-weight:600}.review-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-.review-name{color:#f5dfb7;font-weight:600}.review-date{margin-top:2px;color:#8fa7b1;font-size:11px}.review-text{margin-top:8px;color:#d6e2e7;line-height:1.55;overflow-wrap:anywhere}
-.review-form{margin-top:12px;padding:12px;border:1px solid rgba(228,180,94,.14);border-radius:11px;background:rgba(3,20,31,.42)}.review-form textarea{min-height:76px}
-.review-as{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#bcd0d8;font-size:12px}
-.review-login{margin-top:10px;color:#a9bcc5;font-size:13px}
-.review-actions{display:flex;gap:7px;flex-wrap:wrap}.review-actions .btn{min-height:34px;margin-top:7px;padding:0 11px;font-size:12px}
-.aow-inline-smile{height:40px;max-width:70px;object-fit:contain;vertical-align:middle;margin:2px 3px}
+.reviews{margin-top:14px;padding-top:10px;border-top:1px solid rgba(255,255,255,.075)}
+.partner-rating{display:flex;align-items:center;gap:8px;margin:7px 0 4px;min-height:24px;color:#dce7eb;font-size:13px}
+.rating-stars,.review-stars{display:inline-flex;gap:2px;color:#f4c55e;letter-spacing:.5px;white-space:nowrap}
+.rating-stars .off,.review-stars .off{color:#566873}
+.rating-number{color:#ffe2a0;font-weight:700}.rating-count{color:#8fa7b1;font-size:11px}
+.reviews-toggle{
+  width:100%;min-height:42px;padding:7px 10px;border:1px solid rgba(228,180,94,.15);
+  border-radius:10px;background:rgba(4,24,35,.55);color:#fff;cursor:pointer;
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;text-align:left
+}
+.reviews-toggle:hover{border-color:rgba(228,180,94,.34);background:rgba(10,39,53,.64)}
+.reviews-toggle-title{font-weight:700;color:#ffe2a0}
+.reviews-toggle-summary{justify-self:start;display:flex;align-items:center;gap:7px;color:#b8c9d1;font-size:12px}
+.reviews-toggle-arrow{font-size:14px;color:#d6b86c;transition:transform .18s ease}
+.reviews.open .reviews-toggle-arrow{transform:rotate(180deg)}
+.reviews-body{display:none;padding-top:9px}.reviews.open .reviews-body{display:block}
+.review-list{display:grid;gap:6px}
+.review{
+  padding:8px 9px;border:1px solid rgba(255,255,255,.055);background:rgba(255,255,255,.022);
+  border-radius:9px;cursor:default
+}
+.review-top{display:flex;align-items:center;gap:8px;min-width:0}
+.review-author{display:flex;align-items:center;gap:7px;min-width:0;flex:1}
+.review-avatar{
+  width:28px;height:28px;flex:0 0 28px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
+  border:1px solid rgba(255,226,160,.28);background:linear-gradient(145deg,#17384a,#071824);
+  color:#ffe2a0;font-size:10px;font-weight:600
+}
+.review-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.review-name{color:#f5dfb7;font-weight:600;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.review-date{margin-left:auto;color:#839ba5;font-size:10px;white-space:nowrap}
+.review-text{
+  margin:6px 0 0 35px;color:#d6e2e7;line-height:1.38;font-size:12px;overflow-wrap:anywhere;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden
+}
+.review.expanded .review-text{-webkit-line-clamp:unset;display:block}
+.review-more{margin:4px 0 0 35px;color:#d4b76e;font-size:10px;cursor:pointer;border:0;background:transparent;padding:0}
+.review-form{margin-top:8px;padding:9px 10px;border:1px solid rgba(228,180,94,.12);border-radius:9px;background:rgba(3,20,31,.38)}
+.review-form textarea{min-height:64px;font-size:13px}
+.review-as{display:flex;align-items:center;gap:7px;margin-bottom:6px;color:#bcd0d8;font-size:11px}
+.review-rating-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:7px}
+.review-rating-label{font-size:12px;color:#dce7eb;font-weight:700}
+.star-picker{display:flex;gap:3px}
+.star-pick{
+  width:29px;height:29px;padding:0;border:1px solid rgba(228,180,94,.16);border-radius:7px;
+  background:#102b3b;color:#697a82;font-size:19px;line-height:1;cursor:pointer
+}
+.star-pick.active,.star-pick:hover{color:#f4c55e;border-color:rgba(244,197,94,.55);background:rgba(228,180,94,.1)}
+.review-login{margin-top:8px;color:#a9bcc5;font-size:12px}
+.review-actions{display:flex;gap:6px;flex-wrap:wrap}.review-actions .btn{min-height:31px;margin-top:6px;padding:0 9px;font-size:11px}
+.aow-inline-smile{height:30px;max-width:54px;object-fit:contain;vertical-align:middle;margin:1px 2px}
 .smile-modal{display:none;position:fixed;inset:0;z-index:1001;background:rgba(0,0,0,.72);padding:22px;align-items:center;justify-content:center}.smile-modal.open{display:flex}.smile-box{width:min(760px,96vw);max-height:80vh;overflow:auto;padding:18px;border:1px solid rgba(228,180,94,.4);border-radius:16px;background:#071824}.smile-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.smile-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:7px}.smile-pick{height:58px;border:1px solid rgba(228,180,94,.18);border-radius:8px;background:#102b3b;cursor:pointer;padding:4px}.smile-pick img{width:100%;height:100%;object-fit:contain}
 
 @media(max-width:900px){.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.smile-grid{grid-template-columns:repeat(6,1fr)}}
@@ -60,7 +101,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="supabase-sync.js?v=0.0.48"></script>
 <link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.54.css?v=0.0.54">
+<link rel="stylesheet" href="music-player-0.0.56.css?v=0.0.56">
 </head>
 <body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
@@ -147,6 +188,8 @@ let image='';
 let reviewReady=true;
 let smileTargetId=null;
 let reviewChannel=null;
+const openReviews=new Set();
+const reviewRatings=new Map();
 
 const smiles=Array.from({length:88},(_,i)=>({file:`smiles/smile_${String(i+1).padStart(3,'0')}.gif`,title:`Смайл ${i+1}`}));
 
@@ -160,6 +203,7 @@ function avatarUrl(v){try{const u=new URL(String(v||''),location.href);return u.
 function fmtDate(v){try{return new Date(v).toLocaleString('ru-RU')}catch{return String(v||'')}}
 function encId(v){return encodeURIComponent(String(v))}
 function decId(v){try{return decodeURIComponent(String(v))}catch{return String(v)}}
+function domId(v){return String(v).replace(/[^a-zA-Z0-9_-]/g,'_')}
 
 function contactValue(label,value){
   const v=String(value||'').trim();if(!v)return '';
@@ -188,32 +232,82 @@ function authorHtml(userId){
 }
 function reviewsFor(partnerId){return reviews.filter(r=>String(r.partner_id)===String(partnerId))}
 function canDeleteReview(r){return !!currentUser&&(isAdmin||String(r.user_id)===String(currentUser.id))}
+function ratingStats(partnerId){
+  const rated=reviewsFor(partnerId).filter(r=>Number(r.rating)>=1&&Number(r.rating)<=5);
+  if(!rated.length)return {avg:0,count:0};
+  const avg=rated.reduce((sum,r)=>sum+Number(r.rating),0)/rated.length;
+  return {avg,count:rated.length};
+}
+function starsHtml(value,cls='rating-stars'){
+  const n=Math.max(0,Math.min(5,Math.round(Number(value)||0)));
+  return `<span class="${cls}" aria-label="${Number(value||0).toFixed(1)} из 5">${Array.from({length:5},(_,i)=>`<span class="${i<n?'':'off'}">★</span>`).join('')}</span>`;
+}
+function ratingSummary(partnerId){
+  const s=ratingStats(partnerId);
+  return s.count
+    ?`${starsHtml(s.avg)}<span class="rating-number">${s.avg.toFixed(1)}</span><span class="rating-count">${s.count} оцен.</span>`
+    :`${starsHtml(0)}<span class="rating-count">Нет оценок</span>`;
+}
 
 function reviewBlock(partner){
+  const partnerKey=String(partner.id);
   const rows=reviewsFor(partner.id);
+  const stats=ratingStats(partner.id);
+  const isOpen=openReviews.has(partnerKey);
+  const did=domId(partner.id);
+  const selected=reviewRatings.get(partnerKey)||0;
   const form=currentUser&&reviewReady?`
     <div class="review-form">
       <div class="review-as">${authorHtml(currentUser.id)}<span>Ваш отзыв</span></div>
-      <textarea id="reviewText-${partner.id}" maxlength="1500" placeholder="Напишите отзыв о партнере..."></textarea>
+      <div class="review-rating-row">
+        <span class="review-rating-label">Ваша оценка:</span>
+        <div class="star-picker" id="ratingPicker-${did}">
+          ${Array.from({length:5},(_,i)=>`<button class="star-pick ${i<selected?'active':''}" type="button" title="${i+1} из 5" onclick="setReviewRating('${encId(partner.id)}',${i+1})">★</button>`).join('')}
+        </div>
+      </div>
+      <textarea id="reviewText-${did}" maxlength="1500" placeholder="Коротко напишите отзыв о партнере..."></textarea>
       <div class="review-actions">
-        <button class="btn secondary" type="button" onclick="openSmilePicker('reviewText-${partner.id}')">Смайлы Age of Wushu</button>
+        <button class="btn secondary" type="button" onclick="openSmilePicker('reviewText-${did}')">Смайлы Age of Wushu</button>
         <button class="btn" type="button" onclick="publishReview('${encId(partner.id)}')">Опубликовать отзыв</button>
       </div>
     </div>`:currentUser&&!reviewReady
-      ?`<div class="review-login">Отзывы станут доступны после выполнения SQL-файла <b>SUPABASE_PARTNER_REVIEWS_0.0.55.sql</b>.</div>`
-      :`<div class="review-login">Чтобы оставить отзыв, <a href="login.html" style="color:#ffe2a0;text-decoration:underline">войдите</a> или <a href="register.html" style="color:#ffe2a0;text-decoration:underline">зарегистрируйтесь</a>.</div>`;
+      ?`<div class="review-login">Для оценок и отзывов выполните SQL-файл <b>SUPABASE_PARTNER_RATING_0.0.56.sql</b>.</div>`
+      :`<div class="review-login">Чтобы поставить оценку и оставить отзыв, <a href="login.html" style="color:#ffe2a0;text-decoration:underline">войдите</a> или <a href="register.html" style="color:#ffe2a0;text-decoration:underline">зарегистрируйтесь</a>.</div>`;
 
-  return `<section class="reviews">
-    <div class="reviews-head"><h3>Отзывы <span class="muted">(${rows.length})</span></h3></div>
-    <div class="review-list">${rows.length?rows.map(r=>`<div class="review" data-review-id="${r.id}">
-      ${authorHtml(r.user_id)}
-      <div class="review-date">${esc(fmtDate(r.created_at))}</div>
-      <div class="review-text">${renderReviewText(r.text)}</div>
-      ${canDeleteReview(r)?`<div class="review-actions"><button class="btn danger" type="button" onclick="deleteReview(${r.id})">Удалить отзыв</button></div>`:''}
-    </div>`).join(''):'<div class="muted" style="margin-top:8px">Отзывов пока нет.</div>'}</div>
-    ${form}
+  return `<section class="reviews ${isOpen?'open':''}" id="reviews-${did}">
+    <button class="reviews-toggle" type="button" aria-expanded="${isOpen?'true':'false'}" onclick="toggleReviews('${encId(partner.id)}')">
+      <span class="reviews-toggle-title">Отзывы (${rows.length})</span>
+      <span class="reviews-toggle-summary">${stats.count?`${starsHtml(stats.avg,'review-stars')} ${stats.avg.toFixed(1)}`:'Пока без оценок'}</span>
+      <span class="reviews-toggle-arrow">▾</span>
+    </button>
+    <div class="reviews-body">
+      <div class="review-list">${rows.length?rows.map(r=>`<div class="review" data-review-id="${r.id}">
+        <div class="review-top">
+          ${authorHtml(r.user_id)}
+          ${Number(r.rating)>=1?starsHtml(r.rating,'review-stars'):''}
+          <div class="review-date">${esc(fmtDate(r.created_at))}</div>
+        </div>
+        <div class="review-text">${renderReviewText(r.text)}</div>
+        ${String(r.text||'').length>180?`<button class="review-more" type="button" onclick="this.closest('.review').classList.toggle('expanded');this.textContent=this.closest('.review').classList.contains('expanded')?'Свернуть':'Развернуть'">Развернуть</button>`:''}
+        ${canDeleteReview(r)?`<div class="review-actions" style="margin-left:35px"><button class="btn danger" type="button" onclick="deleteReview(${r.id})">Удалить</button></div>`:''}
+      </div>`).join(''):'<div class="muted" style="padding:5px 2px">Отзывов пока нет.</div>'}</div>
+      ${form}
+    </div>
   </section>`;
 }
+
+window.toggleReviews=id=>{
+  id=decId(id);
+  const k=String(id);
+  if(openReviews.has(k))openReviews.delete(k);else openReviews.add(k);
+  render();
+};
+window.setReviewRating=(id,value)=>{
+  id=decId(id);const k=String(id);const v=Math.max(1,Math.min(5,Number(value)||0));
+  reviewRatings.set(k,v);
+  const picker=document.getElementById(`ratingPicker-${domId(id)}`);
+  if(picker)[...picker.querySelectorAll('.star-pick')].forEach((b,i)=>b.classList.toggle('active',i<v));
+};
 
 function card(x,preview=false){
   const mail=emailOf(x),vk=vkOf(x),discord=discordOf(x);
@@ -222,6 +316,7 @@ function card(x,preview=false){
       ${x.image?`<img class="avatar" src="${esc(x.image)}" loading="lazy" alt="${esc(x.nick||'Партнер')}">`:'<div class="avatar"></div>'}
       <div>
         <div class="partner-head"><h2>${esc(x.nick||'Партнер')}</h2>${x.pinned?'<span class="pin-tag">📌 Закреплено</span>':''}</div>
+        ${preview?'':`<div class="partner-rating">${ratingSummary(x.id)}</div>`}
         <div class="partner-desc">${esc(x.desc||'')}</div>
         <div class="contact-links">${contactValue('Вконтакте',vk)}${contactValue('Дискорд',discord)}</div>
         ${mail?`<a class="mail" href="mailto:${esc(mail)}">${esc(mail)}</a>`:''}
@@ -268,7 +363,7 @@ async function hydrateProfiles(){
 async function loadReviews(){
   if(!window.KFSupabase?.configured)return;
   const {data,error}=await KFSupabase.client.from('partner_reviews')
-    .select('id,partner_id,user_id,text,created_at,updated_at')
+    .select('id,partner_id,user_id,text,rating,created_at,updated_at')
     .order('created_at',{ascending:true});
   if(error){
     reviewReady=false;reviews=[];
@@ -383,17 +478,22 @@ window.pickSmile=i=>{if(smileTargetId)insertAtCursor(smileTargetId,`[[aow:${i}]]
 
 window.publishReview=async partnerId=>{
   partnerId=decId(partnerId);
+  const partnerKey=String(partnerId);
   if(!currentUser){location.href='login.html';return}
-  if(!reviewReady){alert('Сначала выполните SQL 0.0.55 для отзывов партнеров.');return}
-  const ta=document.getElementById(`reviewText-${partnerId}`);
+  if(!reviewReady){alert('Сначала выполните SQL 0.0.56 для оценок партнеров.');return}
+  const rating=Number(reviewRatings.get(partnerKey)||0);
+  if(rating<1||rating>5){alert('Поставьте оценку партнеру от 1 до 5 звезд.');return}
+  const ta=document.getElementById(`reviewText-${domId(partnerId)}`);
   const text=String(ta?.value||'').trim();
   if(!text){alert('Напишите отзыв.');return}
   if(text.length>1500){alert('Отзыв слишком длинный. Максимум 1500 символов.');return}
   const {data,error}=await KFSupabase.client.from('partner_reviews').insert({
-    partner_id:String(partnerId),user_id:currentUser.id,text
-  }).select('id,partner_id,user_id,text,created_at,updated_at').single();
+    partner_id:String(partnerId),user_id:currentUser.id,text,rating
+  }).select('id,partner_id,user_id,text,rating,created_at,updated_at').single();
   if(error){alert(error.message||'Не удалось опубликовать отзыв.');return}
   reviews.push(data);
+  reviewRatings.delete(partnerKey);
+  openReviews.add(partnerKey);
   if(ta)ta.value='';
   await hydrateProfiles();render();
 };
@@ -431,7 +531,7 @@ async function initPartners(){
   render();
 
   if(reviewReady&&KFSupabase.client){
-    reviewChannel=KFSupabase.client.channel('partner-reviews-0.0.55')
+    reviewChannel=KFSupabase.client.channel('partner-reviews-0.0.56')
       .on('postgres_changes',{event:'*',schema:'public',table:'partner_reviews'},()=>refreshReviews())
       .subscribe();
   }
@@ -439,6 +539,6 @@ async function initPartners(){
 initPartners();
 </script>
 <script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.54.js?v=0.0.54"></script>
+<script src="music-player-0.0.56.js?v=0.0.56"></script>
 </body>
 </html>
