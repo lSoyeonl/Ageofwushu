@@ -51,13 +51,29 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 function avatarUrl(v){try{const u=new URL(String(v||''),location.href);return u.protocol==='https:'?u.href:''}catch{return ''}}
 function initials(name){const parts=String(name||'Игрок').trim().split(/\s+/).filter(Boolean);return (parts.slice(0,2).map(x=>x[0]).join('')||'И').toUpperCase()}
 function registrationDate(v){if(!v)return '—';try{return new Date(v).toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'})}catch{return '—'}}
-const PRESET_AVATARS=Array.from({length:22},(_,i)=>`avatars/avatar-${String(i+1).padStart(2,'0')}.png`);
+const PRESET_AVATARS=Array.from({length:22},(_,i)=>`avatar-${String(i+1).padStart(2,'0')}.png`);
 function presetUrl(rel){return new URL(rel,location.href).href}
+function legacyPresetRootUrl(value){
+  const raw=String(value||'');
+  const m=raw.match(/(?:^|\/)avatars\/(avatar-\d{2}\.png)(?:[?#].*)?$/i);
+  return m?presetUrl(m[1]):'';
+}
+async function migrateLegacyPresetAvatar(){
+  const replacement=legacyPresetRootUrl(profile?.avatarUrl);
+  if(!replacement)return;
+  try{
+    profile=await KFSupabase.updateMyAvatar(replacement);
+  }catch(e){
+    console.warn('Не удалось автоматически перенести старую готовую иконку:',e);
+    profile={...profile,avatarUrl:replacement};
+  }
+}
 
 (async()=>{
   await KFSupabase.ready;const box=document.getElementById('profileBox');let profile=null;
   try{if(KFSupabase.configured)profile=await KFSupabase.getCurrentProfile()}catch(e){box.innerHTML='<p style="color:#ffd0d0">Не удалось загрузить профиль: '+esc(e.message||'ошибка')+'</p>';return}
   if(!profile){box.innerHTML='<p style="color:#c6d5dc">Вы пока не вошли в аккаунт.</p><p><a href="login.html" style="color:#ffe2a0">Войти →</a></p><p><a href="register.html" style="color:#ffe2a0">Создать аккаунт →</a></p>';return}
+  await migrateLegacyPresetAvatar();
 
   function renderProfile(){
     const src=avatarUrl(profile.avatarUrl);
