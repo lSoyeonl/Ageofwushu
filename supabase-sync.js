@@ -1,6 +1,6 @@
 (function(){
-  if(window.__KF_SUPABASE_V0059__)return;
-  window.__KF_SUPABASE_V0059__=true;
+  if(window.__KF_SUPABASE_V0060__)return;
+  window.__KF_SUPABASE_V0060__=true;
 
   const cfg=window.KF_SUPABASE_CONFIG||{};
   const configured=
@@ -16,10 +16,31 @@
   const nativeGet=Storage.prototype.getItem;
   const nativeRemove=Storage.prototype.removeItem;
   const memory=window.__KF_SUPABASE_MEMORY__||(window.__KF_SUPABASE_MEMORY__={});
+  const remoteSnapshots=window.__KF_SUPABASE_REMOTE_SNAPSHOTS__||(window.__KF_SUPABASE_REMOTE_SNAPSHOTS__={});
   let suppress=false;
   let client=null;
   let currentProfile=parse(nativeGet.call(localStorage,'kungfuCurrentUser'),null);
   let realtimeChannel=null;
+
+  function deepClone(value){
+    if(value===undefined)return undefined;
+    try{return structuredClone(value)}
+    catch{
+      try{return JSON.parse(JSON.stringify(value))}
+      catch{return value}
+    }
+  }
+
+  function setRemoteSnapshot(key,value){
+    if(value===undefined)delete remoteSnapshots[key];
+    else remoteSnapshots[key]=deepClone(value);
+  }
+
+  function getRemoteSnapshot(key,fallback=undefined){
+    return Object.prototype.hasOwnProperty.call(remoteSnapshots,key)
+      ? deepClone(remoteSnapshots[key])
+      : deepClone(fallback);
+  }
 
   const discordSettingsKey='kungfuDiscordNotifications';
   const contentNotifyMap={
@@ -158,12 +179,14 @@
     }
     for(const k of localKeys){
       if(!remote.has(k)){
+        setRemoteSnapshot(k,undefined);
         cacheRemove(k);
         changed=true;
       }
     }
 
     for(const [key,value] of remote){
+      setRemoteSnapshot(key,value);
       const local=parse(nativeGet.call(localStorage,key),undefined);
       if(!same(local,value)){cacheSet(key,value);changed=true}
       else memory[key]=value;
@@ -194,7 +217,13 @@
 
   async function maybeNotifyNewContent(key,previous,next){
     const meta=contentNotifyMap[key];
-    if(!meta||currentProfile?.role!=='admin')return;
+    if(!meta)return;
+
+    let profile=currentProfile;
+    if(profile?.role!=='admin'){
+      try{profile=await getCurrentProfile()}catch{}
+    }
+    if(profile?.role!=='admin')return;
 
     const raw=memory[discordSettingsKey]??parse(nativeGet.call(localStorage,discordSettingsKey),null);
     const settings=normalizeDiscordSettings(raw);
@@ -241,15 +270,21 @@
     if(userError)throw userError;
     if(!user)throw new Error('Необходимо войти в аккаунт.');
 
+    const cachedFallback=Object.prototype.hasOwnProperty.call(memory,key)
+      ? memory[key]
+      : parse(nativeGet.call(localStorage,key),undefined);
     const previous=Object.prototype.hasOwnProperty.call(options,'previous')
-      ? options.previous
-      : (Object.prototype.hasOwnProperty.call(memory,key)?memory[key]:parse(nativeGet.call(localStorage,key),undefined));
+      ? deepClone(options.previous)
+      : getRemoteSnapshot(key,cachedFallback);
+
     const prepared=await prepareValue(value,true);
     const row={key,value_json:prepared,updated_at:new Date().toISOString(),updated_by:user.id};
     const {error}=await client.from('site_store').upsert(row,{onConflict:'key'});
     if(error)throw error;
+
     cacheSet(key,prepared);
     await maybeNotifyNewContent(key,previous,prepared);
+    setRemoteSnapshot(key,prepared);
     return prepared;
   }
 
@@ -262,7 +297,8 @@
     if(!configured)throw new Error('Supabase не настроен: публикация не сохранена.');
 
     const parsed=parse(value,value);
-    const previous=parse(nativeGet.call(localStorage,key),undefined);
+    const cachedPrevious=parse(nativeGet.call(localStorage,key),undefined);
+    const previous=getRemoteSnapshot(key,cachedPrevious);
     cacheSet(key,parsed);
 
     // Public pages sometimes create default UI arrays before Auth/bootstrap
@@ -291,6 +327,7 @@
       try{
         const {error}=await client.from('site_store').delete().eq('key',key);
         if(error)throw error;
+        setRemoteSnapshot(key,undefined);
       }catch(e){
         console.error(e);
         alert(e.message||'Не удалось удалить данные в Supabase.');
@@ -364,7 +401,10 @@
   }
 
   async function saveStore(key,value){
-    const previous=Object.prototype.hasOwnProperty.call(memory,key)?memory[key]:parse(nativeGet.call(localStorage,key),undefined);
+    const fallback=Object.prototype.hasOwnProperty.call(memory,key)
+      ? memory[key]
+      : parse(nativeGet.call(localStorage,key),undefined);
+    const previous=getRemoteSnapshot(key,fallback);
     return await writeRemote(key,value,{previous});
   }
 
@@ -373,7 +413,13 @@
     const {data,error}=await client.from('site_store').select('value_json').eq('key',key).maybeSingle();
     if(error&&error.code!=='PGRST116')throw error;
     const value=data?data.value_json:fallback;
-    if(data)cacheSet(key,value);else cacheRemove(key);
+    if(data){
+      setRemoteSnapshot(key,value);
+      cacheSet(key,value);
+    }else{
+      setRemoteSnapshot(key,undefined);
+      cacheRemove(key);
+    }
     return value;
   }
 
@@ -522,12 +568,17 @@
 
   function subscribeRealtime(){
     if(!client||realtimeChannel)return;
-    realtimeChannel=client.channel('kungfu-site-store-0.0.59')
+    realtimeChannel=client.channel('kungfu-site-store-0.0.60')
       .on('postgres_changes',{event:'*',schema:'public',table:'site_store'},payload=>{
         const row=payload.new||payload.old;
         if(!row||!isManagedKey(row.key))return;
-        if(payload.eventType==='DELETE')cacheRemove(row.key);
-        else cacheSet(row.key,row.value_json);
+        if(payload.eventType==='DELETE'){
+          setRemoteSnapshot(row.key,undefined);
+          cacheRemove(row.key);
+        }else{
+          setRemoteSnapshot(row.key,row.value_json);
+          cacheSet(row.key,row.value_json);
+        }
         window.dispatchEvent(new CustomEvent('kf-supabase-synced',{detail:{key:row.key}}));
       })
       .subscribe();
@@ -561,8 +612,8 @@
 
     // Legacy pages read the mirrored cache synchronously. Reload once after the
     // first successful bootstrap if the remote DB changed that cache.
-    if(changed&&!sessionStorage.getItem('kf058-boot-'+location.pathname)){
-      sessionStorage.setItem('kf058-boot-'+location.pathname,'1');
+    if(changed&&!sessionStorage.getItem('kf060-boot-'+location.pathname)){
+      sessionStorage.setItem('kf060-boot-'+location.pathname,'1');
       setTimeout(()=>location.reload(),40);
     }
     return {configured:true};

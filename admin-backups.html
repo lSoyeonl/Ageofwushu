@@ -43,7 +43,7 @@ a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;displa
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.59"></script>
+<script src="supabase-sync.js?v=0.0.60"></script>
 <link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
 <link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
@@ -52,7 +52,7 @@ a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;displa
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav"><a href="index.html">Главная</a><a href="updates.html">Обновления</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="account.html">Аккаунт</a></nav></header>
 <main class="wrap" id="app">
 <section class="panel"><h1>Резервные копии</h1>
-<p class="muted">В версии <b id="siteVersion">0.0.59</b> код сайта хранится в GitHub, а живые пользователи, контент, реакции и изображения — в Supabase.</p>
+<p class="muted">В версии <b id="siteVersion">0.0.60</b> код сайта хранится в GitHub, а живые пользователи, контент, реакции и изображения — в Supabase.</p>
 <div class="status" id="status">Проверка подключения...</div></section>
 
 <section class="grid">
@@ -226,7 +226,7 @@ async function init(){
   const me=await KFSupabase.getCurrentProfile().catch(()=>null);
   if(!me||me.role!=='admin'){app.classList.add('hidden');denied.classList.remove('hidden');return}
   statusBox.textContent='Supabase подключён. Администратор: '+me.email;
-  try{const v=await KFSupabase.getStore('kungfuSiteVersion','0.0.59');siteVersion.textContent=String(v||'0.0.59').replace(/^"|"$/g,'')}catch{}
+  try{const v=await KFSupabase.getStore('kungfuSiteVersion','0.0.60');siteVersion.textContent=String(v||'0.0.60').replace(/^"|"$/g,'')}catch{}
   try{
     discordSections=KFSupabase.getDiscordSections();
     const ds=await KFSupabase.getDiscordNotifications();
