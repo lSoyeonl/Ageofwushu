@@ -1,6 +1,6 @@
 (function(){
-  if(window.__KF_SUPABASE_V0058__)return;
-  window.__KF_SUPABASE_V0058__=true;
+  if(window.__KF_SUPABASE_V0059__)return;
+  window.__KF_SUPABASE_V0059__=true;
 
   const cfg=window.KF_SUPABASE_CONFIG||{};
   const configured=
@@ -23,20 +23,61 @@
 
   const discordSettingsKey='kungfuDiscordNotifications';
   const contentNotifyMap={
-    kungfuUpdates:{section:'Обновления',page:'updates.html',fields:['title']},
-    kungfuTaiwanContent:{section:'О Тайвани',page:'taiwan.html',fields:['title']},
-    kungfuPirateContent:{section:'О Пиратке',page:'pirate.html',fields:['title']},
-    kungfuBeginnerGuides:{section:'Справочник Новичкам',page:'beginners.html',fields:['title','name']},
-    kungfuSchoolsForcesSects:{section:'Школы, Силы, Секты',page:'schools.html',fields:['name','title']},
-    kungfuMeridians:{section:'Меридианы',page:'meridians.html',fields:['name','title']},
-    kungfuNeigongs:{section:'Нейгуны',page:'neigongs.html',fields:['name','title']},
-    kungfuSkills:{section:'Навыки',page:'skills.html',fields:['name','title']},
-    kungfuItems:{section:'Предметы',page:'items.html',fields:['name','title']},
-    kungfuArtifacts:{section:'Артефакты',page:'artifacts.html',fields:['name','title']},
-    kungfuHideouts:{section:'Тайники: боссы и обход',page:'hideouts.html',fields:['name','title']},
-    kungfuBots:{section:'Боты',page:'bots.html',fields:['name','title']},
-    kungfuContacts:{section:'Партнеры',page:'partners.html',fields:['nick','name','title']}
+    kungfuUpdates:{section:'Обновления',page:'updates.html',fields:['title'],emoji:'🔥',headline:'Новое обновление'},
+    kungfuTaiwanContent:{section:'О Тайвани',page:'taiwan.html',fields:['title'],emoji:'🐉',headline:'Новый материал о Тайване'},
+    kungfuPirateContent:{section:'О Пиратке',page:'pirate.html',fields:['title'],emoji:'🏴',headline:'Новый материал о Пиратке'},
+    kungfuBeginnerGuides:{section:'Справочник Новичкам',page:'beginners.html',fields:['title','name'],emoji:'📘',headline:'Новый материал для новичков'},
+    kungfuSchoolsForcesSects:{section:'Школы, Силы, Секты',page:'schools.html',fields:['name','title'],emoji:'🏯',headline:'Новая запись о школе, силе или секте'},
+    kungfuMeridians:{section:'Меридианы',page:'meridians.html',fields:['name','title'],emoji:'🌀',headline:'Новый меридиан'},
+    kungfuNeigongs:{section:'Нейгуны',page:'neigongs.html',fields:['name','title'],emoji:'☯️',headline:'Новый нейгун'},
+    kungfuSkills:{section:'Навыки',page:'skills.html',fields:['name','title'],emoji:'⚔️',headline:'Новый навык'},
+    kungfuItems:{section:'Предметы',page:'items.html',fields:['name','title'],emoji:'🎒',headline:'Новый предмет'},
+    kungfuArtifacts:{section:'Артефакты',page:'artifacts.html',fields:['name','title'],emoji:'💎',headline:'Новый артефакт'},
+    kungfuHideouts:{section:'Тайники: боссы и обход',page:'hideouts.html',fields:['name','title'],emoji:'🗝️',headline:'Новый тайник'},
+    kungfuBots:{section:'Боты',page:'bots.html',fields:['name','title'],emoji:'🤖',headline:'Новый бот'},
+    kungfuContacts:{section:'Партнеры',page:'partners.html',fields:['nick','name','title'],emoji:'🤝',headline:'Новый партнер'}
   };
+
+  function defaultDiscordTemplate(meta){
+    return `${meta.emoji||'📢'} **${meta.headline||'Новая публикация'}**\nРаздел: **{section}**\n[{title}]({url})`;
+  }
+
+  function discordDefaults(){
+    const templates={};
+    for(const [key,meta] of Object.entries(contentNotifyMap)){
+      templates[key]={enabled:true,template:defaultDiscordTemplate(meta)};
+    }
+    return {
+      enabled:false,
+      senderName:'',
+      senderAvatarUrl:'',
+      templates
+    };
+  }
+
+  function normalizeDiscordSettings(value){
+    const base=discordDefaults();
+    const src=value&&typeof value==='object'?value:{};
+    const out={
+      enabled:src.enabled===true,
+      senderName:String(src.senderName||'').trim().slice(0,80),
+      senderAvatarUrl:String(src.senderAvatarUrl||'').trim().slice(0,500),
+      templates:{}
+    };
+    for(const [key,meta] of Object.entries(contentNotifyMap)){
+      const row=src.templates&&typeof src.templates==='object'?src.templates[key]:null;
+      out.templates[key]={
+        enabled:row?.enabled!==false,
+        template:String(row?.template||defaultDiscordTemplate(meta)).slice(0,1800)
+      };
+    }
+    return out;
+  }
+
+  function renderDiscordTemplate(template,values){
+    const safe=String(template||'').slice(0,1800);
+    return safe.replace(/\{(section|title|url|date)\}/g,(_,name)=>String(values[name]??''));
+  }
 
   function isManagedKey(key){
     return typeof key==='string' &&
@@ -154,8 +195,13 @@
   async function maybeNotifyNewContent(key,previous,next){
     const meta=contentNotifyMap[key];
     if(!meta||currentProfile?.role!=='admin')return;
-    const settings=memory[discordSettingsKey]??parse(nativeGet.call(localStorage,discordSettingsKey),null);
-    if(!settings||settings.enabled!==true)return;
+
+    const raw=memory[discordSettingsKey]??parse(nativeGet.call(localStorage,discordSettingsKey),null);
+    const settings=normalizeDiscordSettings(raw);
+    if(settings.enabled!==true)return;
+
+    const sectionSettings=settings.templates[key];
+    if(!sectionSettings||sectionSettings.enabled===false)return;
     if(!Array.isArray(previous)||!Array.isArray(next))return;
 
     const oldIds=new Set(previous.map(entryIdentity));
@@ -164,11 +210,22 @@
 
     for(const item of added.slice(-5)){
       try{
-        await invokeDiscord({
-          title:notificationTitle(item,meta),
+        const title=notificationTitle(item,meta);
+        const publicUrl=new URL(meta.page,location.href).href;
+        const content=renderDiscordTemplate(sectionSettings.template,{
           section:meta.section,
-          url:new URL(meta.page,location.href).href,
-          entryId:item?.id==null?'':String(item.id)
+          title,
+          url:publicUrl,
+          date:new Date().toLocaleDateString('ru-RU')
+        });
+        await invokeDiscord({
+          title,
+          section:meta.section,
+          url:publicUrl,
+          entryId:item?.id==null?'':String(item.id),
+          content,
+          username:settings.senderName,
+          avatarUrl:settings.senderAvatarUrl
         });
         window.dispatchEvent(new CustomEvent('kf-discord-notified',{detail:{key,item}}));
       }catch(e){
@@ -406,21 +463,47 @@
   }
 
   async function getDiscordNotifications(){
-    const value=await getStore(discordSettingsKey,{enabled:false});
-    return value&&typeof value==='object'?{enabled:value.enabled===true}:{enabled:false};
+    const value=await getStore(discordSettingsKey,discordDefaults());
+    return normalizeDiscordSettings(value);
   }
 
-  async function setDiscordNotifications(enabled){
-    return await saveStore(discordSettingsKey,{enabled:!!enabled});
+  async function setDiscordNotifications(value){
+    const next=typeof value==='boolean'
+      ? {...await getDiscordNotifications(),enabled:value}
+      : normalizeDiscordSettings(value);
+    return await saveStore(discordSettingsKey,next);
   }
 
-  async function testDiscordNotification(){
+  async function testDiscordNotification(sectionKey='kungfuUpdates',draftSettings=null){
+    const settings=normalizeDiscordSettings(draftSettings||await getDiscordNotifications());
+    const meta=contentNotifyMap[sectionKey]||contentNotifyMap.kungfuUpdates;
+    const row=settings.templates[sectionKey]||{enabled:true,template:defaultDiscordTemplate(meta)};
+    const title='Тестовая публикация';
+    const url=new URL(meta.page,location.href).href;
+    const content=renderDiscordTemplate(row.template,{
+      section:meta.section,
+      title,
+      url,
+      date:new Date().toLocaleDateString('ru-RU')
+    });
     return await invokeDiscord({
-      title:'Тестовое уведомление',
-      section:'Руководство Легенды Кунг-Фу',
-      url:new URL('index.html',location.href).href,
+      title,
+      section:meta.section,
+      url,
+      content,
+      username:settings.senderName,
+      avatarUrl:settings.senderAvatarUrl,
       test:true
     });
+  }
+
+  function getDiscordSections(){
+    return Object.entries(contentNotifyMap).map(([key,meta])=>({
+      key,
+      section:meta.section,
+      page:meta.page,
+      defaultTemplate:defaultDiscordTemplate(meta)
+    }));
   }
 
   async function getPublicProfiles(ids=[]){
@@ -439,7 +522,7 @@
 
   function subscribeRealtime(){
     if(!client||realtimeChannel)return;
-    realtimeChannel=client.channel('kungfu-site-store-0.0.58')
+    realtimeChannel=client.channel('kungfu-site-store-0.0.59')
       .on('postgres_changes',{event:'*',schema:'public',table:'site_store'},payload=>{
         const row=payload.new||payload.old;
         if(!row||!isManagedKey(row.key))return;
@@ -490,7 +573,7 @@
     get client(){return client},
     ready,
     register,login,adminLogin,logout,getCurrentProfile,updateMyAvatar,updateMyBio,getPublicProfiles,
-    getStore,saveStore,getDiscordNotifications,setDiscordNotifications,testDiscordNotification,
+    getStore,saveStore,getDiscordNotifications,setDiscordNotifications,testDiscordNotification,getDiscordSections,
     uploadImageDataUrl:uploadDataUrl,
     uploadImageDataUrlStrict:uploadDataUrl,
     prepareValue,

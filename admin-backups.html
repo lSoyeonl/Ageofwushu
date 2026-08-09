@@ -8,11 +8,42 @@
 :root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.94)),url("background.png") center/cover fixed no-repeat}
 a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.94);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}.brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.nav a{font-size:14px;font-weight:700}.wrap{width:min(1180px,calc(100% - 30px));margin:34px auto 70px}.panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(5,27,40,.94),rgba(3,18,28,.97));padding:20px;margin-top:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin-top:10px;border:0;border-radius:9px;padding:0 14px;background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:600;cursor:pointer}.btn.secondary{background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)}.btn.danger{background:#50252a;color:#ffd7d7}.muted{color:var(--muted);line-height:1.55}.status,.warn{padding:11px;border-radius:10px;margin-top:10px;line-height:1.5;font-size:13px}.status{border:1px solid rgba(126,204,234,.16);background:rgba(126,204,234,.05);color:#cbe4ed}.warn{border:1px solid rgba(255,190,110,.2);background:rgba(160,100,35,.08);color:#f5dfbf}.hidden{display:none!important}input[type=file]{width:100%;padding:10px;background:#071824;color:#fff;border:1px solid var(--line);border-radius:9px}.table-wrap{overflow:auto;margin-top:12px}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;font-size:13px}th{color:#ffe2a0}
-@media(max-width:900px){.grid{grid-template-columns:1fr}.brand span{display:none}.nav{gap:8px}}
+
+.discord-settings{margin-top:14px}
+.discord-global{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.discord-field label{display:block;margin-bottom:5px;color:#ffe2a0;font-size:13px;font-weight:700}
+.discord-field input,.discord-template textarea{
+  width:100%;border:1px solid rgba(228,180,94,.28);border-radius:9px;
+  background:#071824;color:#fff;padding:10px 11px;outline:0
+}
+.discord-field input:focus,.discord-template textarea:focus{border-color:rgba(255,226,160,.7)}
+.discord-templates{display:grid;gap:10px;margin-top:14px}
+.discord-template{border:1px solid rgba(228,180,94,.2);border-radius:12px;background:rgba(3,21,32,.56);overflow:hidden}
+.discord-template summary{
+  list-style:none;display:flex;align-items:center;gap:10px;cursor:pointer;
+  padding:11px 12px;color:#ffe2a0;font-weight:700
+}
+.discord-template summary::-webkit-details-marker{display:none}
+.discord-template summary::after{content:"▾";margin-left:auto;color:#9eb2bc}
+.discord-template[open] summary::after{content:"▴"}
+.discord-template-body{padding:0 12px 12px}
+.discord-template textarea{min-height:105px;resize:vertical;font-family:inherit;line-height:1.45}
+.discord-template-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:9px}
+.discord-template-row input[type=checkbox]{width:18px;height:18px}
+.discord-help{font-size:11px;color:#9fb2bb;line-height:1.45;margin-top:7px}
+.discord-preview{
+  margin-top:9px;padding:10px;border:1px dashed rgba(126,204,234,.22);border-radius:9px;
+  background:rgba(126,204,234,.035);color:#dce9ee;white-space:pre-wrap;overflow-wrap:anywhere;
+  font-size:12px;line-height:1.45
+}
+.discord-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.discord-section-test{min-height:34px;margin-top:7px;font-size:12px}
+
+@media(max-width:900px){.grid,.discord-global{grid-template-columns:1fr}.brand span{display:none}.nav{gap:8px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.58"></script>
+<script src="supabase-sync.js?v=0.0.59"></script>
 <link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
 <link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
@@ -21,7 +52,7 @@ a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;displa
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav"><a href="index.html">Главная</a><a href="updates.html">Обновления</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="account.html">Аккаунт</a></nav></header>
 <main class="wrap" id="app">
 <section class="panel"><h1>Резервные копии</h1>
-<p class="muted">В версии <b id="siteVersion">0.0.58</b> код сайта хранится в GitHub, а живые пользователи, контент, реакции и изображения — в Supabase.</p>
+<p class="muted">В версии <b id="siteVersion">0.0.59</b> код сайта хранится в GitHub, а живые пользователи, контент, реакции и изображения — в Supabase.</p>
 <div class="status" id="status">Проверка подключения...</div></section>
 
 <section class="grid">
@@ -48,7 +79,43 @@ a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;displa
 </article>
 </section>
 
-<section class="panel"><h2>Discord уведомления о новых публикациях</h2><p class="muted">Webhook хранится только в Supabase Edge Function. На сайте сохраняется лишь переключатель уведомлений.</p><label style="display:flex;align-items:center;gap:9px;margin-top:10px"><input id="discordEnabled" type="checkbox" style="width:18px;height:18px"> Отправлять новые публикации в Discord</label><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="discordSaveBtn" type="button">Сохранить</button><button class="btn secondary" id="discordTestBtn" type="button">Отправить тест</button></div><div class="status" id="discordStatus">Проверка настройки...</div></section>
+<section class="panel">
+<h2>Discord уведомления о новых публикациях</h2>
+<p class="muted">Здесь настраиваются отдельные шаблоны для каждого раздела. URL вебхука по-прежнему хранится только в секрете Supabase и на сайт не попадает.</p>
+
+<div class="discord-settings">
+  <label style="display:flex;align-items:center;gap:9px;margin-top:10px">
+    <input id="discordEnabled" type="checkbox" style="width:18px;height:18px">
+    Включить автоматические Discord-уведомления
+  </label>
+
+  <div class="discord-global">
+    <div class="discord-field">
+      <label for="discordSenderName">Имя отправителя</label>
+      <input id="discordSenderName" maxlength="80" placeholder="Оставьте пустым — будет имя самого webhook">
+    </div>
+    <div class="discord-field">
+      <label for="discordAvatarUrl">URL аватара отправителя</label>
+      <input id="discordAvatarUrl" type="url" maxlength="500" placeholder="https://...">
+    </div>
+  </div>
+
+  <div class="discord-help">
+    В шаблоне доступны переменные: <b>{title}</b> — название публикации,
+    <b>{section}</b> — раздел, <b>{url}</b> — ссылка, <b>{date}</b> — дата отправки.
+    Можно использовать Discord Markdown и любые эмодзи.
+  </div>
+
+  <div class="discord-templates" id="discordTemplates"></div>
+
+  <div class="discord-toolbar">
+    <button class="btn" id="discordSaveBtn" type="button">Сохранить все шаблоны</button>
+    <button class="btn secondary" id="discordTestBtn" type="button">Тест первого включенного шаблона</button>
+    <button class="btn secondary" id="discordResetBtn" type="button">Сбросить шаблоны</button>
+  </div>
+  <div class="status" id="discordStatus">Проверка настройки...</div>
+</div>
+</section>
 
 <section class="panel"><h2>Пользователи</h2><div class="table-wrap"><table><thead><tr><th>Никнейм</th><th>E-mail</th><th>Роль</th><th>Создан</th></tr></thead><tbody id="usersTable"></tbody></table></div></section>
 </main>
@@ -68,13 +135,90 @@ const dbBackupsLink=document.getElementById('dbBackupsLink');
 const storageLink=document.getElementById('storageLink');
 const siteVersion=document.getElementById('siteVersion');
 const discordEnabled=document.getElementById('discordEnabled');
+const discordSenderName=document.getElementById('discordSenderName');
+const discordAvatarUrl=document.getElementById('discordAvatarUrl');
+const discordTemplates=document.getElementById('discordTemplates');
 const discordSaveBtn=document.getElementById('discordSaveBtn');
 const discordTestBtn=document.getElementById('discordTestBtn');
+const discordResetBtn=document.getElementById('discordResetBtn');
 const discordStatus=document.getElementById('discordStatus');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 let imported=null;
+let discordSections=[];
+let discordSettings=null;
 function download(obj,name){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
 function stamp(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}`}
+
+function renderDiscordSample(template,section){
+  const vars={
+    title:'Тестовая публикация',
+    section:section||'Раздел',
+    url:'https://lsoyeonl.github.io/Ageofwushu/',
+    date:new Date().toLocaleDateString('ru-RU')
+  };
+  return String(template||'').replace(/\{(title|section|url|date)\}/g,(_,k)=>vars[k]||'');
+}
+function collectDiscordSettings(){
+  const templates={};
+  for(const sec of discordSections){
+    const key=sec.key;
+    const enabled=document.getElementById(`discord-section-enabled-${key}`)?.checked!==false;
+    const template=document.getElementById(`discord-template-${key}`)?.value||sec.defaultTemplate;
+    templates[key]={enabled,template};
+  }
+  return {
+    enabled:discordEnabled.checked,
+    senderName:discordSenderName.value.trim(),
+    senderAvatarUrl:discordAvatarUrl.value.trim(),
+    templates
+  };
+}
+function updateDiscordPreview(key){
+  const sec=discordSections.find(x=>x.key===key);
+  if(!sec)return;
+  const ta=document.getElementById(`discord-template-${key}`);
+  const preview=document.getElementById(`discord-preview-${key}`);
+  if(preview)preview.textContent=renderDiscordSample(ta?.value||sec.defaultTemplate,sec.section);
+}
+function buildDiscordTemplates(settings){
+  discordTemplates.innerHTML='';
+  for(const [index,sec] of discordSections.entries()){
+    const row=settings.templates?.[sec.key]||{enabled:true,template:sec.defaultTemplate};
+    const details=document.createElement('details');
+    details.className='discord-template';
+    if(index===0)details.open=true;
+    details.innerHTML=`
+      <summary>${esc(sec.section)}</summary>
+      <div class="discord-template-body">
+        <div class="discord-template-row">
+          <label style="display:flex;align-items:center;gap:8px">
+            <input id="discord-section-enabled-${esc(sec.key)}" type="checkbox" ${row.enabled!==false?'checked':''}>
+            Отправлять уведомления из этого раздела
+          </label>
+        </div>
+        <textarea id="discord-template-${esc(sec.key)}" maxlength="1800">${esc(row.template||sec.defaultTemplate)}</textarea>
+        <div class="discord-help">Переменные: {title}, {section}, {url}, {date}</div>
+        <div class="discord-preview" id="discord-preview-${esc(sec.key)}"></div>
+        <button class="btn secondary discord-section-test" type="button" data-discord-test="${esc(sec.key)}">Отправить тест этого шаблона</button>
+      </div>`;
+    discordTemplates.appendChild(details);
+    const ta=details.querySelector('textarea');
+    ta.addEventListener('input',()=>updateDiscordPreview(sec.key));
+    details.querySelector('[data-discord-test]').addEventListener('click',()=>testDiscordSection(sec.key));
+    updateDiscordPreview(sec.key);
+  }
+}
+async function testDiscordSection(key){
+  discordStatus.textContent='Отправка теста...';
+  try{
+    const draft=collectDiscordSettings();
+    await KFSupabase.testDiscordNotification(key,draft);
+    const sec=discordSections.find(x=>x.key===key);
+    discordStatus.textContent=`Тест шаблона «${sec?.section||key}» отправлен в Discord.`;
+  }catch(e){
+    discordStatus.textContent='Ошибка теста: '+(e.message||String(e));
+  }
+}
 
 async function init(){
   await KFSupabase.ready;
@@ -82,8 +226,17 @@ async function init(){
   const me=await KFSupabase.getCurrentProfile().catch(()=>null);
   if(!me||me.role!=='admin'){app.classList.add('hidden');denied.classList.remove('hidden');return}
   statusBox.textContent='Supabase подключён. Администратор: '+me.email;
-  try{const v=await KFSupabase.getStore('kungfuSiteVersion','0.0.58');siteVersion.textContent=String(v||'0.0.58').replace(/^"|"$/g,'')}catch{}
-  try{const ds=await KFSupabase.getDiscordNotifications();discordEnabled.checked=!!ds.enabled;discordStatus.textContent=ds.enabled?'Автоматические Discord-уведомления включены.':'Автоматические Discord-уведомления выключены.'}catch(e){discordStatus.textContent=e.message||'Не удалось прочитать настройку Discord.'}
+  try{const v=await KFSupabase.getStore('kungfuSiteVersion','0.0.59');siteVersion.textContent=String(v||'0.0.59').replace(/^"|"$/g,'')}catch{}
+  try{
+    discordSections=KFSupabase.getDiscordSections();
+    const ds=await KFSupabase.getDiscordNotifications();
+    discordSettings=ds;
+    discordEnabled.checked=!!ds.enabled;
+    discordSenderName.value=ds.senderName||'';
+    discordAvatarUrl.value=ds.senderAvatarUrl||'';
+    buildDiscordTemplates(ds);
+    discordStatus.textContent=ds.enabled?'Автоматические Discord-уведомления включены.':'Автоматические Discord-уведомления выключены.';
+  }catch(e){discordStatus.textContent=e.message||'Не удалось прочитать настройку Discord.'}
 
   const ref=String(window.KF_SUPABASE_CONFIG.url||'').match(/^https:\/\/([^.]+)\.supabase\.co/i)?.[1]||'';
   if(ref){
@@ -105,7 +258,7 @@ exportBtn.onclick=async()=>{
       KFSupabase.client.from('partner_reviews').select('id,partner_id,user_id,text,rating,created_at,updated_at').order('id')
     ]);
     if(storeRes.error)throw storeRes.error;if(profileRes.error)throw profileRes.error;if(reactionRes.error)throw reactionRes.error;if(partnerReviewRes.error)throw partnerReviewRes.error;
-    download({format:'kungfu-supabase-content-0.0.58',createdAt:new Date().toISOString(),site_store:storeRes.data||[],profiles:profileRes.data||[],content_reactions:reactionRes.data||[],partner_reviews:partnerReviewRes.data||[]},`kungfu_content_${stamp()}.json`);
+    download({format:'kungfu-supabase-content-0.0.59',createdAt:new Date().toISOString(),site_store:storeRes.data||[],profiles:profileRes.data||[],content_reactions:reactionRes.data||[],partner_reviews:partnerReviewRes.data||[]},`kungfu_content_${stamp()}.json`);
     exportStatus.textContent='JSON контента скачан.';
   }catch(e){exportStatus.textContent=e.message||String(e)}
 };
@@ -113,12 +266,38 @@ exportBtn.onclick=async()=>{
 importFile.onchange=async e=>{
   imported=null;importBtn.disabled=true;
   const f=e.target.files&&e.target.files[0];if(!f)return;
-  try{imported=JSON.parse(await f.text());if(!['kungfu-supabase-content-0.0.58','kungfu-supabase-content-0.0.56','kungfu-supabase-content-0.0.55','kungfu-supabase-content-0.0.48','kungfu-supabase-content-0.0.47'].includes(imported.format))throw new Error('Неподдерживаемый формат.');importBtn.disabled=false;importStatus.textContent='Копия готова к восстановлению.'}
+  try{imported=JSON.parse(await f.text());if(!['kungfu-supabase-content-0.0.59','kungfu-supabase-content-0.0.58','kungfu-supabase-content-0.0.56','kungfu-supabase-content-0.0.55','kungfu-supabase-content-0.0.48','kungfu-supabase-content-0.0.47'].includes(imported.format))throw new Error('Неподдерживаемый формат.');importBtn.disabled=false;importStatus.textContent='Копия готова к восстановлению.'}
   catch(e){importStatus.textContent=e.message||'Неверный JSON.'}
 };
 
-discordSaveBtn.onclick=async()=>{discordSaveBtn.disabled=true;discordStatus.textContent='Сохранение...';try{await KFSupabase.setDiscordNotifications(discordEnabled.checked);discordStatus.textContent=discordEnabled.checked?'Автоматические Discord-уведомления включены.':'Автоматические Discord-уведомления выключены.'}catch(e){discordStatus.textContent=e.message||'Не удалось сохранить настройку.'}finally{discordSaveBtn.disabled=false}};
-discordTestBtn.onclick=async()=>{discordTestBtn.disabled=true;discordStatus.textContent='Отправка теста...';try{await KFSupabase.testDiscordNotification();discordStatus.textContent='Тест отправлен в Discord.'}catch(e){discordStatus.textContent='Ошибка теста: '+(e.message||String(e))}finally{discordTestBtn.disabled=false}};
+discordSaveBtn.onclick=async()=>{
+  discordSaveBtn.disabled=true;discordStatus.textContent='Сохранение шаблонов...';
+  try{
+    discordSettings=await KFSupabase.setDiscordNotifications(collectDiscordSettings());
+    discordStatus.textContent=discordSettings.enabled
+      ?'Настройки сохранены. Автоматические Discord-уведомления включены.'
+      :'Настройки сохранены. Автоматические Discord-уведомления выключены.';
+  }catch(e){discordStatus.textContent=e.message||'Не удалось сохранить настройку.'}
+  finally{discordSaveBtn.disabled=false}
+};
+discordTestBtn.onclick=async()=>{
+  discordTestBtn.disabled=true;
+  try{
+    const draft=collectDiscordSettings();
+    const first=discordSections.find(sec=>draft.templates?.[sec.key]?.enabled!==false)||discordSections[0];
+    if(!first)throw new Error('Нет доступных шаблонов.');
+    await testDiscordSection(first.key);
+  }finally{discordTestBtn.disabled=false}
+};
+discordResetBtn.onclick=async()=>{
+  if(!confirm('Сбросить тексты всех Discord-шаблонов на стандартные?'))return;
+  const current=collectDiscordSettings();
+  const reset={...current,templates:{}};
+  for(const sec of discordSections)reset.templates[sec.key]={enabled:true,template:sec.defaultTemplate};
+  discordSettings=reset;
+  buildDiscordTemplates(reset);
+  discordStatus.textContent='Шаблоны сброшены локально. Нажмите «Сохранить все шаблоны», чтобы записать их в Supabase.';
+};
 
 importBtn.onclick=async()=>{
   if(!imported)return;

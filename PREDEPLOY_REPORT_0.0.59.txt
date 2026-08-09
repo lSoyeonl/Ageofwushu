@@ -1,0 +1,36 @@
+ЛЕГЕНДЫ КУНГ-ФУ — PRE-DEPLOY REPORT 0.0.59
+
+[OK] supabase-sync.js: syntax
+[OK] supabase-config.js: syntax
+[OK] music-player-0.0.57.js: syntax
+[OK] image-tools-0.0.48.js: syntax
+[OK] decor-0.0.48.js: syntax
+[OK] reactions-0.0.48.js: syntax
+[OK] Inline JS всех HTML
+[OK] Edge Function TypeScript syntax
+[OK] Версия 0.0.59
+[OK] 13 отдельных Discord шаблонов
+[OK] Шаблоны сохраняются в site_store
+[OK] Переменные title/section/url/date
+[OK] Имя отправителя
+[OK] Аватар отправителя
+[OK] Тест каждого раздела
+[OK] Предпросмотр шаблона
+[OK] Раздел можно отключить отдельно
+[OK] Сброс шаблонов
+[OK] Edge Function принимает content
+[OK] Edge Function принимает username/avatar
+[OK] Webhook URL не попал в браузерный код
+[OK] Все активные HTML используют sync 0.0.59
+[OK] Все локальные ресурсы существуют
+
+УСТАНОВКА:
+1. Загрузить GitHub-патч 0.0.59 с заменой файлов.
+2. Supabase → Edge Functions → discord-publish → Code → index.ts.
+3. Заменить код содержимым SUPABASE_EDGE_DISCORD_PUBLISH_0.0.59.ts.
+4. Deploy function.
+5. Секрет DISCORD_WEBHOOK_URL повторно создавать НЕ нужно.
+6. SQL для 0.0.59 НЕ нужен.
+
+НАСТРОЙКА:
+Аккаунт → Резервные копии → Discord уведомления.
