@@ -58,14 +58,14 @@ function legacyPresetRootUrl(value){
   const m=raw.match(/(?:^|\/)avatars\/(avatar-\d{2}\.png)(?:[?#].*)?$/i);
   return m?presetUrl(m[1]):'';
 }
-async function migrateLegacyPresetAvatar(){
-  const replacement=legacyPresetRootUrl(profile?.avatarUrl);
-  if(!replacement)return;
+async function migrateLegacyPresetAvatar(currentProfile){
+  const replacement=legacyPresetRootUrl(currentProfile?.avatarUrl);
+  if(!replacement)return currentProfile;
   try{
-    profile=await KFSupabase.updateMyAvatar(replacement);
+    return await KFSupabase.updateMyAvatar(replacement);
   }catch(e){
     console.warn('Не удалось автоматически перенести старую готовую иконку:',e);
-    profile={...profile,avatarUrl:replacement};
+    return {...currentProfile,avatarUrl:replacement};
   }
 }
 
@@ -73,7 +73,7 @@ async function migrateLegacyPresetAvatar(){
   await KFSupabase.ready;const box=document.getElementById('profileBox');let profile=null;
   try{if(KFSupabase.configured)profile=await KFSupabase.getCurrentProfile()}catch(e){box.innerHTML='<p style="color:#ffd0d0">Не удалось загрузить профиль: '+esc(e.message||'ошибка')+'</p>';return}
   if(!profile){box.innerHTML='<p style="color:#c6d5dc">Вы пока не вошли в аккаунт.</p><p><a href="login.html" style="color:#ffe2a0">Войти →</a></p><p><a href="register.html" style="color:#ffe2a0">Создать аккаунт →</a></p>';return}
-  await migrateLegacyPresetAvatar();
+  profile=await migrateLegacyPresetAvatar(profile);
 
   function renderProfile(){
     const src=avatarUrl(profile.avatarUrl);
@@ -99,6 +99,11 @@ async function migrateLegacyPresetAvatar(){
     const bioEditor=document.getElementById('bioEditor'),bioInput=document.getElementById('bioInput');document.getElementById('editBioBtn').onclick=()=>{bioEditor.classList.add('show');bioInput.focus()};document.getElementById('cancelBioBtn').onclick=()=>{bioInput.value=profile.bio||'';bioEditor.classList.remove('show')};document.getElementById('saveBioBtn').onclick=async()=>{const btn=document.getElementById('saveBioBtn'),bioStatus=document.getElementById('bioStatus');btn.disabled=true;bioStatus.style.color='#cbe4ed';bioStatus.textContent='Сохранение...';try{profile=await KFSupabase.updateMyBio(bioInput.value);renderProfile();const s=document.getElementById('bioStatus');if(s){s.style.color='#c8f4d8';s.textContent='Описание сохранено.'}}catch(e){bioStatus.style.color='#ffd0d0';bioStatus.textContent=e.message||'Не удалось сохранить описание.';btn.disabled=false}};
     document.getElementById('logoutBtn').onclick=async()=>{await KFSupabase.logout();location.href='index.html'};
   }
-  renderProfile();
+  try{
+    renderProfile();
+  }catch(e){
+    console.error('Ошибка страницы аккаунта:',e);
+    box.innerHTML='<p style="color:#ffd0d0">Не удалось отобразить профиль: '+esc(e?.message||String(e))+'</p><p style="color:#c6d5dc">Обновите страницу. Если ошибка повторится — сообщите администратору.</p>';
+  }
 })();
 </script><script src="decor-0.0.48.js?v=0.0.48"></script><script src="music-player-0.0.57.js?v=0.0.57"></script></body></html>
