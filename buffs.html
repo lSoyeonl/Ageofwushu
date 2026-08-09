@@ -41,6 +41,13 @@ textarea{min-height:100px;resize:vertical}input:focus,textarea:focus,select:focu
 .empty{padding:26px;text-align:center;color:#9db0b8;border:1px dashed rgba(255,226,160,.18);border-radius:12px}
 .preview-modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);padding:22px;align-items:center;justify-content:center}.preview-modal.open{display:flex}.preview-box{width:min(480px,96vw);max-height:88vh;overflow:auto;padding:22px;border:1px solid rgba(228,180,94,.42);border-radius:18px;background:linear-gradient(180deg,#0a2636,#061721);box-shadow:0 25px 80px rgba(0,0,0,.55)}
 .preview-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}
+
+.buff-card-media{display:grid;grid-template-columns:78px minmax(0,1fr);gap:10px;align-items:start}
+.buff-card-image{width:78px;height:78px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,226,160,.18);background:#061822}.buff-card-image-placeholder{width:78px;height:78px;display:grid;place-items:center;text-align:center;padding:5px;border-radius:10px;border:1px dashed rgba(255,226,160,.16);background:#061822;color:#8297a0;font-size:9px}
+.buff-image-preview{display:none;width:150px;height:150px;object-fit:cover;margin-top:8px;border-radius:11px;border:1px solid rgba(228,180,94,.22);background:#071824}
+.buff-image-preview.show{display:block}
+.required-mark{color:#ffb6b6;font-weight:800}
+
 @media(max-width:1220px){.buff-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:980px){.two-col{grid-template-columns:1fr}.toc{position:relative;top:auto;max-height:none}.buff-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}}
 @media(max-width:650px){.grid2{grid-template-columns:1fr}.buff-grid{grid-template-columns:1fr}.page-head h1{font-size:34px}}
@@ -97,6 +104,12 @@ textarea{min-height:100px;resize:vertical}input:focus,textarea:focus,select:focu
         <label for="description">Описание Баффа</label>
         <textarea id="description" maxlength="4000" placeholder="Что делает эффект, как работает, важные особенности"></textarea>
       </div>
+      <div class="field">
+        <label for="buffImageFile">Изображение <span class="required-mark">*</span></label>
+        <input id="buffImageFile" type="file" accept="image/*">
+        <div class="muted" style="font-size:11px;margin-top:5px">Обязательное изображение. Оно будет показано в компактной карточке.</div>
+        <img id="buffImagePreview" class="buff-image-preview" alt="Предпросмотр изображения">
+      </div>
       <button class="btn secondary" type="button" id="previewBtn">Предпросмотр</button>
       <button class="btn" type="button" id="saveBtn">Опубликовать</button>
       <button class="btn secondary" type="button" id="cancelBtn" style="display:none">Отменить</button>
@@ -124,12 +137,13 @@ textarea{min-height:100px;resize:vertical}input:focus,textarea:focus,select:focu
   </div>
 </div>
 
+<script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script>
 const KEY='kungfuBuffs';
 const TYPES=['Бафф','Дебафф'];
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-let currentUser=null,isAdmin=false,entries=[],selectedId=null,editingId=null;
+let currentUser=null,isAdmin=false,entries=[],selectedId=null,editingId=null,image='';
 
 function clone(v){return JSON.parse(JSON.stringify(v))}
 function typeClass(type){return type==='Дебафф'?'debuff':''}
@@ -147,11 +161,16 @@ async function saveEntries(){
 
 function card(item,preview=false){
   return `<article id="buff-card-${item.id}" class="panel buff-card ${String(item.id)===String(selectedId)&&!preview?'active':''}">
-    <div class="buff-top">
-      <h2>${esc(item.name||'Без названия')}</h2>
-      <span class="type-tag ${typeClass(item.type)}">${esc(item.type||'Бафф')}</span>
+    <div class="buff-card-media">
+      ${item.image?`<img class="buff-card-image" src="${esc(item.image)}" alt="${esc(item.name||'Бафф')}" loading="lazy">`:'<div class="buff-card-image-placeholder">Добавьте изображение</div>'}
+      <div>
+        <div class="buff-top">
+          <h2>${esc(item.name||'Без названия')}</h2>
+          <span class="type-tag ${typeClass(item.type)}">${esc(item.type||'Бафф')}</span>
+        </div>
+        ${item.otherNames?`<div class="other-names"><b>Другие:</b> ${esc(item.otherNames)}</div>`:''}
+      </div>
     </div>
-    ${item.otherNames?`<div class="other-names"><b>Другие:</b> ${esc(item.otherNames)}</div>`:''}
     <div class="buff-desc">${esc(item.description||'Описание не добавлено.').replace(/\n/g,'<br>')}</div>
     ${isAdmin&&!preview?`<div class="entry-actions">
       <button class="btn secondary" type="button" onclick="editEntry('${encodeURIComponent(String(item.id))}')">Редактировать</button>
@@ -207,6 +226,10 @@ function resetForm(){
   $('otherNames').value='';
   $('description').value='';
   $('type').value='Бафф';
+  image='';
+  $('buffImageFile').value='';
+  $('buffImagePreview').removeAttribute('src');
+  $('buffImagePreview').classList.remove('show');
   $('editorTitle').textContent='Добавить запись';
   $('saveBtn').textContent='Опубликовать';
   $('cancelBtn').style.display='none';
@@ -224,6 +247,15 @@ window.editEntry=enc=>{
   $('otherNames').value=item.otherNames||'';
   $('description').value=item.description||'';
   $('type').value=item.type||'Бафф';
+  image=item.image||'';
+  if(image){
+    $('buffImagePreview').src=image;
+    $('buffImagePreview').classList.add('show');
+  }else{
+    $('buffImagePreview').removeAttribute('src');
+    $('buffImagePreview').classList.remove('show');
+  }
+  $('buffImageFile').value='';
   $('editorTitle').textContent='Редактировать запись';
   $('saveBtn').textContent='Сохранить изменения';
   $('cancelBtn').style.display='inline-flex';
@@ -231,13 +263,31 @@ window.editEntry=enc=>{
 };
 $('cancelBtn').onclick=resetForm;
 
+
+$('buffImageFile').onchange=async()=>{
+  const file=$('buffImageFile').files&&$('buffImageFile').files[0];
+  if(!file)return;
+  try{
+    image=await imageToData(file,1600);
+    $('buffImagePreview').src=image;
+    $('buffImagePreview').classList.add('show');
+  }catch(e){
+    image='';
+    $('buffImageFile').value='';
+    $('buffImagePreview').removeAttribute('src');
+    $('buffImagePreview').classList.remove('show');
+    alert(e.message||'Не удалось обработать изображение.');
+  }
+};
+
 $('previewBtn').onclick=()=>{
   const item={
     id:'preview',
     name:$('name').value.trim()||'Название',
     otherNames:$('otherNames').value.trim(),
     description:$('description').value.trim()||'Описание Баффа',
-    type:$('type').value
+    type:$('type').value,
+    image:image||''
   };
   $('previewContent').innerHTML=card(item,true);
   $('previewModal').classList.add('open');
@@ -251,15 +301,18 @@ $('saveBtn').onclick=async()=>{
   const description=$('description').value.trim();
   if(!name){alert('Укажите название.');return}
   if(!description){alert('Добавьте описание эффекта.');return}
+  const existing=editingId?entries.find(x=>String(x.id)===String(editingId)):null;
+  const finalImage=image||existing?.image||'';
+  if(!finalImage){alert('Добавьте обязательное изображение Баффа / Дебаффа.');return}
 
   const before=clone(entries);
-  const existing=editingId?entries.find(x=>String(x.id)===String(editingId)):null;
   const item={
     id:editingId||Date.now(),
     name,
     otherNames:$('otherNames').value.trim(),
     description,
     type:$('type').value,
+    image:finalImage,
     createdAt:existing?.createdAt||new Date().toISOString(),
     updatedAt:new Date().toISOString(),
     authorRole:'admin'
@@ -331,6 +384,7 @@ async function init(){
 }
 init();
 </script>
+<script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
 <script src="decor-0.0.48.js?v=0.0.48"></script>
 <script src="music-player-0.0.57.js?v=0.0.57"></script>
 </body>

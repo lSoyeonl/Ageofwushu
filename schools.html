@@ -103,6 +103,7 @@ previewBtn.onclick=()=>openPreview(card({id:'preview',category:category.value,na
 saveBtn.onclick=()=>{if(!isAdmin)return;const n=name.value.trim(),c=contentText.value.trim();if(!n||!c){alert('Заполните название и содержание');return}const old=editingId?data.find(x=>x.id===editingId):null;const item={id:editingId||Date.now(),category:category.value,name:n,content:c,howToJoin:howToJoin.value.trim(),links:links.value.trim(),image:mainImage||(old&&old.image)||'',neigongCards:draftNeigongs.map(x=>({...x})),skillCards:draftSkills.map(x=>({...x}))};if(editingId){const i=data.findIndex(x=>x.id===editingId);data[i]={...data[i],...item}}else data.push(item);save();reset();render()};
 window.delEntry=id=>{if(!isAdmin||!confirm('Удалить материал?'))return;data=data.filter(x=>x.id!==id);if(editingId===id)reset();save();render()};renderDrafts();render();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
+<script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
 <script src="decor-0.0.48.js?v=0.0.48"></script>
 <script src="music-player-0.0.57.js?v=0.0.57"></script>
 </body></html>

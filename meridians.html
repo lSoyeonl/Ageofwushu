@@ -123,6 +123,7 @@ item.code=document.getElementById('code').value.trim();
 item.properties=document.getElementById('properties').value.trim(); if(!item.name){alert('Укажите название');return}if(current&&!selectedImage)item.image=current.image||''; if(editingId){const i=entries.findIndex(x=>x.id===editingId);if(i>=0)entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;save();resetForm();render()};
 window.removeEntry=id=>{if(!isAdmin||!confirm('Удалить запись?'))return;entries=entries.filter(x=>x.id!==id);if(editingId===id)resetForm();selectedId=entries.length?entries[0].id:null;save();render()};renderTypes();render();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
+<script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
 <script src="decor-0.0.48.js?v=0.0.48"></script>
 <script src="music-player-0.0.57.js?v=0.0.57"></script>
 </body></html>

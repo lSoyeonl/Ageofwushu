@@ -1,0 +1,33 @@
+ЛЕГЕНДЫ КУНГ-ФУ — PRE-DEPLOY REPORT 0.0.62
+
+[OK] supabase-sync.js: syntax
+[OK] supabase-config.js: syntax
+[OK] image-tools-0.0.48.js: syntax
+[OK] decor-0.0.48.js: syntax
+[OK] reactions-0.0.48.js: syntax
+[OK] music-player-0.0.57.js: syntax
+[OK] rich-table-tools-0.0.62.js: syntax
+[OK] draft-recovery-0.0.62.js: syntax
+[OK] Inline JS всех HTML
+[OK] Версия 0.0.62
+[OK] Таблицы: добавить строку
+[OK] Таблицы: добавить колонку
+[OK] Таблицы: объединить соседние колонки
+[OK] Таблицы: разъединить
+[OK] Табличная панель подключена в 4 разделах
+[OK] Черновик: восстановить/удалить
+[OK] Черновик: 7 дней
+[OK] Черновик подключен в нужных 4 разделах
+[OK] Баффы: изображение обязательно
+[OK] Баффы: image-tools подключен
+[OK] Баффы: картинка в карточке
+[OK] Профиль: 22 готовых иконки
+[OK] Профиль: выбор иконки
+[OK] Профиль: загрузка своей картинки
+[OK] Все локальные ресурсы существуют
+
+Новый SQL: НЕ требуется.
+Discord Edge Function: менять НЕ требуется.
+supabase-config.js: в GitHub-патч НЕ включать.
+Новая папка: avatars/ (22 PNG).
+Новые файлы: rich-table-tools-0.0.62.js, draft-recovery-0.0.62.js.

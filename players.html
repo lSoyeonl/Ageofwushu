@@ -86,6 +86,7 @@ window.toggleLike=id=>{if(!canUse){alert('Поставить ❤️ могут �
 window.delPlayer=id=>{const x=players.find(a=>a.id===id);if(!x||!u||!(isAdmin||u.nickname===x.owner))return;if(!confirm('Удалить карточку игрока?'))return;players=players.filter(a=>a.id!==id);save();render()};
 render();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
+<script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
 <script src="decor-0.0.48.js?v=0.0.48"></script>
 <script src="music-player-0.0.57.js?v=0.0.57"></script>
 </body></html>
