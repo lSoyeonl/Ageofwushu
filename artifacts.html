@@ -5,7 +5,7 @@
 <style>
 :root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.png") center/cover fixed no-repeat}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.webp") center/cover fixed no-repeat}
 a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
 .top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.93);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
 .brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}
@@ -35,12 +35,11 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 @media(max-width:1120px){.catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:720px){.catalog-grid{grid-template-columns:1fr}.artifact-head{grid-template-columns:92px minmax(0,1fr)}.artifact-thumb{width:92px;height:92px}}
 
-</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -123,7 +122,7 @@ function bindDateModes(){
     mode.onchange=()=>{const absent=mode.value==='absent';input.disabled=absent;if(absent)input.value=''};
   });
 }
-function displayImage(item){return item.image?`<img class="artifact-thumb" src="${item.image}" alt="${esc(item.name||'')}">`:`<div class="artifact-thumb"></div>`}
+function displayImage(item){return item.image?`<img class="artifact-thumb" src="${item.image}" alt="${esc(item.name||'')}" loading="lazy" decoding="async">`:`<div class="artifact-thumb"></div>`}
 function artifactCard(item){
   const dates=[
     item.chinaDate?`<div class="artifact-meta-row"><b>Китай:</b> ${esc(formatDate(item.chinaDate))}</div>`:'',
@@ -175,7 +174,7 @@ document.getElementById('code').value=item.code||'';
 document.getElementById('price').value=item.price||'';
 setDateField('chinaDate',item.chinaDate||'');setDateField('taiwanDate',item.taiwanDate||'');setDateField('pirateDate',item.pirateDate||''); selectedImage=item.image||'';if(selectedImage){imagePreview.src=selectedImage;imagePreview.classList.add('show')}else imagePreview.classList.remove('show'); window.scrollTo({top:0,behavior:'smooth'})};
 document.getElementById('cancelEdit').onclick=resetForm;
-document.getElementById('previewBtn').onclick=()=>{const name=document.getElementById('name').value.trim()||'Без названия',type=document.getElementById('type').value;let html=`<article class="panel compact-card"><div class="compact-top">${selectedImage?`<img class="compact-img" src="${selectedImage}">`:'<div class="compact-img"></div>'}<div class="compact-body"><h2>${esc(name)}</h2><div class="tags"><span class="tag">Тип: ${esc(type)}</span></div>${document.getElementById('description')?`<div class="desc">${esc(document.getElementById('description').value).replace(/\n/g,'<br>')}</div>`:''}${document.getElementById('code')&&document.getElementById('code').value?`<div class="code-under-description"><b>Код:</b> ${esc(document.getElementById('code').value)}</div>`:''}${document.getElementById('price').value?`<div class="props"><b>Цена:</b> ${esc(document.getElementById('price').value)}</div>`:''}${dateValue('chinaDate')?`<div class="muted" style="margin-top:8px"><b>Дата добавления на Китае:</b> ${esc(formatDate(dateValue('chinaDate')))}</div>`:''}${dateValue('taiwanDate')?`<div class="muted" style="margin-top:8px"><b>Дата добавления на Тайване:</b> ${esc(formatDate(dateValue('taiwanDate')))}</div>`:''}${dateValue('pirateDate')?`<div class="muted" style="margin-top:8px"><b>Дата добавления на Пиратке:</b> ${esc(formatDate(dateValue('pirateDate')))}</div>`:''}</div></div></article>`;openPreview(html)};
+document.getElementById('previewBtn').onclick=()=>{const name=document.getElementById('name').value.trim()||'Без названия',type=document.getElementById('type').value;let html=`<article class="panel compact-card"><div class="compact-top">${selectedImage?`<img class="compact-img" src="${selectedImage}" loading="lazy" decoding="async">`:'<div class="compact-img"></div>'}<div class="compact-body"><h2>${esc(name)}</h2><div class="tags"><span class="tag">Тип: ${esc(type)}</span></div>${document.getElementById('description')?`<div class="desc">${esc(document.getElementById('description').value).replace(/\n/g,'<br>')}</div>`:''}${document.getElementById('code')&&document.getElementById('code').value?`<div class="code-under-description"><b>Код:</b> ${esc(document.getElementById('code').value)}</div>`:''}${document.getElementById('price').value?`<div class="props"><b>Цена:</b> ${esc(document.getElementById('price').value)}</div>`:''}${dateValue('chinaDate')?`<div class="muted" style="margin-top:8px"><b>Дата добавления на Китае:</b> ${esc(formatDate(dateValue('chinaDate')))}</div>`:''}${dateValue('taiwanDate')?`<div class="muted" style="margin-top:8px"><b>Дата добавления на Тайване:</b> ${esc(formatDate(dateValue('taiwanDate')))}</div>`:''}${dateValue('pirateDate')?`<div class="muted" style="margin-top:8px"><b>Дата добавления на Пиратке:</b> ${esc(formatDate(dateValue('pirateDate')))}</div>`:''}</div></div></article>`;openPreview(html)};
 document.getElementById('saveEntry').onclick=async()=>{if(!isAdmin)return;const current=editingId?entries.find(x=>x.id===editingId):null;const item={id:editingId||Date.now(),image:selectedImage};item.name=document.getElementById('name').value.trim();
 item.otherNames=document.getElementById('otherNames').value.trim();
 item.description=document.getElementById('description').value.trim();
@@ -187,6 +186,5 @@ window.removeEntry=async id=>{if(!isAdmin||!confirm('Удалить запись
 async function initArtifacts(){try{if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');await KFSupabase.ready;currentUser=await KFSupabase.getCurrentProfile();isAdmin=!!currentUser&&currentUser.role==='admin';if(isAdmin){document.getElementById('editor').classList.add('show');document.getElementById('adminBadge').innerHTML='<span class="admin-badge">АДМИН</span>';document.getElementById('roleNote').textContent='Только администратор может добавлять, редактировать и удалять артефакты.'}else{document.getElementById('editor').classList.remove('show');document.getElementById('adminBadge').innerHTML='';document.getElementById('roleNote').textContent='Просмотр доступен всем. Редактирование и удаление — только администратору.'}const remoteEntries=await KFSupabase.getStore('kungfuArtifacts',[]);const remoteTypes=await KFSupabase.getStore('kungfuArtifactTypes',['Без типа']);entries=Array.isArray(remoteEntries)?remoteEntries:[];types=Array.isArray(remoteTypes)&&remoteTypes.length?remoteTypes:['Без типа'];selectedId=entries.length?entries[0].id:null;bindDateModes();renderTypes();render()}catch(e){document.getElementById('editor').classList.remove('show');document.getElementById('roleNote').textContent=e.message||'Не удалось загрузить артефакты.';bindDateModes();renderTypes();render()}}initArtifacts();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body></html>

@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="favicon.png">
 <style>
 :root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824;--danger:#55262b}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.74),rgba(3,14,22,.95)),url("background.png") center/cover fixed no-repeat}a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.74),rgba(3,14,22,.95)),url("background.webp") center/cover fixed no-repeat}a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
 .top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}.brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.nav a{font-size:14px;font-weight:700}.nav a:hover{color:var(--gold2)}
 .wrap{width:min(1320px,calc(100% - 30px));margin:34px auto 70px}.panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(5,27,40,.94),rgba(3,18,28,.97));box-shadow:0 16px 44px rgba(0,0,0,.28)}.page-head{padding:22px 24px}.page-head h1{font-size:42px;margin:0;color:var(--gold2)}.muted{color:var(--muted);line-height:1.55}.role-note,.save-status{margin-top:10px;padding:9px 11px;border:1px solid rgba(126,204,234,.16);border-radius:9px;color:#bcd9e4;background:rgba(126,204,234,.05);font-size:12px}.save-status:empty{display:none}.admin-badge{display:inline-flex;padding:3px 7px;border-radius:999px;background:linear-gradient(#efc66d,#b98131);color:#241506;font-size:9px;font-weight:700;margin-left:6px;vertical-align:middle}
 .editor{display:none;margin-top:14px;padding:18px}.editor.show{display:block}.editor h2{margin:0 0 8px;color:var(--gold2)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-top:11px}label{display:block;margin-bottom:5px;color:#dce7eb;font-weight:700;font-size:13px}input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.28);border-radius:9px;background:#071824;color:#fff;outline:0;padding:10px 11px}textarea{min-height:92px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-shadow:0 0 0 3px rgba(228,180,94,.06)}
@@ -24,13 +24,11 @@
 @media(max-width:620px){.wrap{width:min(100% - 18px,1320px);margin-top:18px}.page-head h1{font-size:31px}.grid2,.bot-top,.table-tools{grid-template-columns:1fr}.bot-image{width:min(100%,300px)}.top{padding:8px 12px}.brand span{font-size:14px}.brand img{width:44px;height:44px}.bot-card{padding:14px}}
 .content-admin-badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,#f2cf7c,#b88131);color:#251706;font-size:10px;font-weight:800;line-height:1;vertical-align:middle;margin-left:7px;white-space:nowrap}
 </style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="reactions-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
 <header class="top">
@@ -119,7 +117,7 @@
 <div class="modal" id="previewModal"><div class="panel modal-card"><div class="modal-head"><h2>Предпросмотр</h2><button class="btn danger" type="button" id="closePreview">Закрыть</button></div><div id="previewContent"></div></div></div>
 
 <script src="image-tools-0.0.48.js?v=0.0.48"></script>
-<script src="reactions-0.0.48.js?v=0.0.48"></script>
+<script src="reactions-0.0.48.js?v=0.0.66"></script>
 <script>
 const KEY='kungfuBots';
 const $=id=>document.getElementById(id);
@@ -137,7 +135,7 @@ async function saveEntries(){if(!window.KFSupabase?.configured)throw new Error('
 function renderBotImage(){if(botImage){$('botImagePreview').src=botImage;$('botImagePreview').classList.add('show')}else{$('botImagePreview').removeAttribute('src');$('botImagePreview').classList.remove('show')}}
 $('botImageInput').onchange=async()=>{const f=$('botImageInput').files&&$('botImageInput').files[0];if(!f)return;try{botImage=await imageToData(f,1800);renderBotImage()}catch(e){alert(e.message||'Не удалось обработать изображение.');$('botImageInput').value=''}};
 
-function renderDraftGallery(){$('draftGallery').innerHTML=draftImages.map((src,i)=>`<div class="draft-img"><img src="${src}" alt="Изображение ${i+1}"><button type="button" onclick="removeDraftImage(${i})">×</button></div>`).join('')}
+function renderDraftGallery(){$('draftGallery').innerHTML=draftImages.map((src,i)=>`<div class="draft-img"><img src="${src}" alt="Изображение ${i+1}" loading="lazy" decoding="async"><button type="button" onclick="removeDraftImage(${i})">×</button></div>`).join('')}
 window.removeDraftImage=i=>{draftImages.splice(i,1);renderDraftGallery()};
 $('galleryInput').onchange=async()=>{const files=[...($('galleryInput').files||[])];if(!files.length)return;try{const remaining=Math.max(0,8-draftImages.length);for(const f of files.slice(0,remaining))draftImages.push(await imageToData(f,2000));renderDraftGallery();$('galleryInput').value=''}catch(e){alert(e.message||'Не удалось обработать изображения.')}};
 
@@ -148,7 +146,7 @@ function itemHtml(item,preview=false){
   const botLink=safeUrl(item.botLink),discord=safeUrl(item.discordLink),seller=safeUrl(item.sellerProfileLink);
   return `<article class="panel bot-card">
     <div class="bot-top">
-      ${item.image?`<img class="bot-image" src="${item.image}" alt="${esc(item.name||'Бот')}">`:'<div class="bot-image placeholder">Нет изображения</div>'}
+      ${item.image?`<img class="bot-image" src="${item.image}" alt="${esc(item.name||'Бот')}" loading="lazy" decoding="async">`:'<div class="bot-image placeholder">Нет изображения</div>'}
       <div><h2>${esc(item.name||'Бот без названия')}${!preview?'<span class="content-admin-badge">Админ</span>':''}</h2>
         <div class="link-grid">
           <div class="link-box"><b>Ссылка на бота</b>${botLink?`<a class="safe-link" href="${esc(botLink)}" target="_blank" rel="noopener noreferrer">Открыть ссылку →</a>`:'<span class="muted">Не указана</span>'}</div>
@@ -159,7 +157,7 @@ function itemHtml(item,preview=false){
       </div>
     </div>
     <div class="rich-section"><div class="rich-output">${cleanRich(item.description||'')||'<span class="muted">Описание пока не добавлено.</span>'}</div></div>
-    ${(item.images||[]).length?`<div class="content-gallery">${(item.images||[]).map(src=>`<img src="${src}" alt="Изображение ${esc(item.name||'бота')}">`).join('')}</div>`:''}
+    ${(item.images||[]).length?`<div class="content-gallery">${(item.images||[]).map(src=>`<img src="${src}" alt="Изображение ${esc(item.name||'бота')}" loading="lazy" decoding="async">`).join('')}</div>`:''}
     ${preview?'':`<div class="reactions-wrap"><div id="bot-reaction-${item.id}"></div><div class="no-comments">Комментарии в разделе «Боты» отключены.</div></div>`}
   </article>`;
 }
@@ -197,7 +195,6 @@ async function init(){
 init();
 </script>
 <script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@
 
 :root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.png") center/cover fixed no-repeat}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.webp") center/cover fixed no-repeat}
 a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
 .top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.93);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
 .brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}
@@ -35,12 +35,11 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 
 .composer{display:none}.composer.show{display:block}.server-columns{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px;align-items:start}.server-column{padding:16px}.server-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(228,180,94,.18)}.player-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.player{display:flex;flex-direction:column;min-width:0;padding:10px;border:1px solid rgba(228,180,94,.16);border-radius:12px;background:rgba(255,255,255,.025)}.avatar{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:10px;background:#071824;border:1px solid rgba(228,180,94,.16)}.player h3{font-size:18px;line-height:1.15;overflow-wrap:anywhere}.player .muted{font-size:12px;line-height:1.4;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;min-height:50px}.date{font-size:10px;color:#91a8b2;margin-top:4px}.contact{margin-top:7px;padding:6px 7px;border-radius:7px;background:rgba(126,204,234,.06);border:1px solid rgba(126,204,234,.16);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.contact a{color:#9fdfff;text-decoration:underline}.heart{display:inline-flex;align-items:center;gap:5px;margin-top:8px;min-height:31px;padding:0 9px;border:1px solid rgba(255,120,140,.25);border-radius:999px;background:rgba(110,30,45,.18);color:#ffd8df;cursor:pointer;font-weight:800}.heart.liked{background:rgba(170,40,65,.33);border-color:rgba(255,130,150,.48)}.heart:disabled{opacity:.55;cursor:not-allowed}.player .btn{width:100%;min-height:34px;margin-top:7px;font-size:12px}
 @media(max-width:1120px){.player-list{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:850px){.player-list{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:540px){.player-list{grid-template-columns:1fr}.player{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px}.avatar{width:96px;height:96px;aspect-ratio:auto}.player>div{min-width:0}}
-</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head><body><header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
   <a href="taiwan.html">О Тайвани</a>
@@ -79,7 +78,7 @@ let avatar='';image.onchange=async()=>{const f=image.files[0];if(!f)return;try{a
 let players=JSON.parse(localStorage.getItem('kungfuPlayers')||'[]');function save(){localStorage.setItem('kungfuPlayers',JSON.stringify(players))}
 function userKey(){return u?String(u.id||u.email||u.nickname):''}
 function contactHtml(v){const value=String(v||'').trim();if(!value)return '';return safeUrl(value)?`<div class="contact"><b>Связаться:</b> <a href="${safeUrl(value)}" target="_blank" rel="noopener">${esc(value)}</a></div>`:`<div class="contact"><b>Связаться:</b> ${esc(value)}</div>`}
-function card(x){const likes=Array.isArray(x.likes)?x.likes:[];const liked=canUse&&likes.includes(userKey());return `<article class="player">${x.avatar?`<img class="avatar" src="${x.avatar}">`:'<div class="avatar"></div>'}<div><span class="tag">${esc(x.server)}</span><h3 style="margin:7px 0">${esc(x.nick)}</h3><div class="date">Добавлен: ${esc(x.createdAt||'Ранее')}</div><p class="muted">${esc(x.description||'').replace(/\n/g,'<br>')}</p>${contactHtml(x.contact)}<button class="heart ${liked?'liked':''}" ${canUse?'':'disabled'} onclick="toggleLike(${x.id})" title="${canUse?'Поставить или убрать ❤️':'Только для зарегистрированных'}">❤️ <span>${likes.length}</span></button>${u&&(isAdmin||u.nickname===x.owner)?`<div><button class="btn danger" onclick="delPlayer(${x.id})">Удалить</button></div>`:''}</div></article>`}
+function card(x){const likes=Array.isArray(x.likes)?x.likes:[];const liked=canUse&&likes.includes(userKey());return `<article class="player">${x.avatar?`<img class="avatar" src="${x.avatar}" loading="lazy" decoding="async">`:'<div class="avatar"></div>'}<div><span class="tag">${esc(x.server)}</span><h3 style="margin:7px 0">${esc(x.nick)}</h3><div class="date">Добавлен: ${esc(x.createdAt||'Ранее')}</div><p class="muted">${esc(x.description||'').replace(/\n/g,'<br>')}</p>${contactHtml(x.contact)}<button class="heart ${liked?'liked':''}" ${canUse?'':'disabled'} onclick="toggleLike(${x.id})" title="${canUse?'Поставить или убрать ❤️':'Только для зарегистрированных'}">❤️ <span>${likes.length}</span></button>${u&&(isAdmin||u.nickname===x.owner)?`<div><button class="btn danger" onclick="delPlayer(${x.id})">Удалить</button></div>`:''}</div></article>`}
 function render(){const p=players.filter(x=>x.server==='Пиратка').slice().reverse(),t=players.filter(x=>x.server==='Тайвань').slice().reverse();pirateCount.textContent=p.length+' игроков';taiwanCount.textContent=t.length+' игроков';piratePlayers.innerHTML=p.length?p.map(card).join(''):'<div class="empty">Игроков пока нет.</div>';taiwanPlayers.innerHTML=t.length?t.map(card).join(''):'<div class="empty">Игроков пока нет.</div>'}
 add.onclick=()=>{if(!canUse)return;const n=nick.value.trim();if(!n){alert('Укажите никнейм');return}players.push({id:Date.now(),nick:n,server:server.value,contact:contact.value.trim(),description:description.value.trim(),avatar,owner:u.nickname,createdAt:new Date().toLocaleDateString('ru-RU'),likes:[]});save();avatar='';image.value='';nick.value='';contact.value='';description.value='';render()};
 window.toggleLike=id=>{if(!canUse){alert('Поставить ❤️ могут только зарегистрированные пользователи.');return}const x=players.find(a=>a.id===id);if(!x)return;x.likes=Array.isArray(x.likes)?x.likes:[];const key=userKey(),i=x.likes.indexOf(key);if(i>=0)x.likes.splice(i,1);else x.likes.push(key);save();render()};
@@ -87,6 +86,5 @@ window.delPlayer=id=>{const x=players.find(a=>a.id===id);if(!x||!u||!(isAdmin||u
 render();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body></html>

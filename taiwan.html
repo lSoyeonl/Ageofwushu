@@ -6,7 +6,7 @@
 
 :root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.png") center/cover fixed no-repeat}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.webp") center/cover fixed no-repeat}
 a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
 .top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.93);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
 .brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}
@@ -37,14 +37,12 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 
 .posts{display:grid;gap:14px;margin-top:16px}.post{padding:19px}.post h2{margin:0 0 7px}.safe-link{display:inline-flex;margin-top:10px;padding:8px 11px;border:1px solid rgba(228,180,94,.22);border-radius:8px;color:#ffe2a0;background:rgba(228,180,94,.06)}.checkline{display:flex;align-items:center;gap:8px;margin-top:12px}.checkline input{width:auto}.edit-note{display:none;color:#ffe2a0;margin-top:8px}.edit-note.show{display:block}
 .content-admin-badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,#f2cf7c,#b88131);color:#251706;font-size:10px;font-weight:800;line-height:1;vertical-align:middle;margin-left:7px;white-space:nowrap}
-</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="reactions-0.0.48.css?v=0.0.48">
-<script src="reactions-0.0.48.js?v=0.0.48"></script>
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="reactions-0.0.48.js?v=0.0.66"></script>
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -132,10 +130,10 @@ async function hydratePublishedPosts(){
   }catch(e){console.warn('Не удалось загрузить большой материал:',e)}
 }
 function imagesFor(x){const a=Array.isArray(x.images)?x.images.slice():[];if(!a.length&&x.image)a.push(x.image);return a}
-function renderDraft(){draftGallery.innerHTML=draftImages.map((src,i)=>`<div class="draft-img"><img src="${src}"><button type="button" onclick="removeDraft(${i})">×</button></div>`).join('')}
+function renderDraft(){draftGallery.innerHTML=draftImages.map((src,i)=>`<div class="draft-img"><img src="${src}" loading="lazy" decoding="async"><button type="button" onclick="removeDraft(${i})">×</button></div>`).join('')}
 window.removeDraft=i=>{draftImages.splice(i,1);renderDraft()};
 imagesInput.onchange=async()=>{for(const f of [...imagesInput.files]){try{draftImages.push(await imageToData(f))}catch(e){alert(e.message)}}imagesInput.value='';renderDraft()};
-function card(x,preview=false){const imgs=imagesFor(x);return `<article class="panel post">${x.important?'<span class="tag important-tag">Важное</span>':''}<h2>${esc(x.title||'Без заголовка')}${!preview?'<span class="content-admin-badge">Админ</span>':''}</h2>${imgs.length?`<div class="gallery">${imgs.map(src=>`<img src="${src}">`).join('')}</div>`:''}<div class="rich-output">${cleanRich(x.content||'')}</div>${x.link&&safeUrl(x.link)?`<a class="safe-link" href="${safeUrl(x.link)}" target="_blank" rel="noopener">Перейти по ссылке</a>`:''}${!preview?`<div id="kf-check-taiwan-${x.id}"></div>`:''}${isAdmin&&!preview?`<div class="entry-actions"><button class="btn secondary" onclick="editPost(${x.id})">Редактировать</button><button class="btn danger" onclick="delPost(${x.id})">Удалить</button></div>`:''}</article>`}
+function card(x,preview=false){const imgs=imagesFor(x);return `<article class="panel post">${x.important?'<span class="tag important-tag">Важное</span>':''}<h2>${esc(x.title||'Без заголовка')}${!preview?'<span class="content-admin-badge">Админ</span>':''}</h2>${imgs.length?`<div class="gallery">${imgs.map(src=>`<img src="${src}" loading="lazy" decoding="async">`).join('')}</div>`:''}<div class="rich-output">${cleanRich(x.content||'')}</div>${x.link&&safeUrl(x.link)?`<a class="safe-link" href="${safeUrl(x.link)}" target="_blank" rel="noopener">Перейти по ссылке</a>`:''}${!preview?`<div id="kf-check-taiwan-${x.id}"></div>`:''}${isAdmin&&!preview?`<div class="entry-actions"><button class="btn secondary" onclick="editPost(${x.id})">Редактировать</button><button class="btn danger" onclick="delPost(${x.id})">Удалить</button></div>`:''}</article>`}
 function render(){document.getElementById('posts').innerHTML=posts.length?posts.slice().reverse().map(x=>card(x)).join(''):'<div class="panel empty">Материалы пока не опубликованы.</div>';setTimeout(()=>{if(window.KFReactions)posts.forEach(x=>KFReactions.mountCheck('kf-check-taiwan-'+x.id,'kungfuTaiwanContent',x.id))},0)}
 function reset(){editingId=null;postTitle.value='';postLink.value='';important.checked=false;rich.innerHTML='';draftImages=[];renderDraft();editorTitle.textContent='Добавить материал';editNote.classList.remove('show');saveBtn.textContent='Опубликовать';cancelBtn.style.display='none'}
 window.editPost=id=>{if(!isAdmin)return;const x=posts.find(a=>a.id===id);if(!x)return;editingId=id;postTitle.value=x.title||'';postLink.value=x.link||'';important.checked=!!x.important;rich.innerHTML=x.content||'';draftImages=imagesFor(x);renderDraft();editorTitle.textContent='Редактировать материал';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'})}
@@ -149,6 +147,5 @@ renderDraft();render();hydratePublishedPosts();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script src="rich-table-tools-0.0.62.js?v=0.0.62"></script>
 <script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body></html>

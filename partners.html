@@ -10,7 +10,7 @@
 <style>
 :root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.png") center/cover fixed no-repeat}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.webp") center/cover fixed no-repeat}
 a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
 .top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.93);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
 .brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}
@@ -96,12 +96,11 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 @media(max-width:900px){.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.smile-grid{grid-template-columns:repeat(6,1fr)}}
 @media(max-width:620px){.grid2{grid-template-columns:1fr}.partner-main{grid-template-columns:1fr}.avatar{width:100%;height:auto;aspect-ratio:1/1;max-height:340px}.smile-grid{grid-template-columns:repeat(4,1fr)}}
 </style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
@@ -214,7 +213,7 @@ function renderReviewText(text){
   let safe=esc(text).replace(/\n/g,'<br>');
   return safe.replace(/\[\[aow:(\d+)\]\]/g,(m,n)=>{
     const x=smiles[Number(n)];
-    return x?`<img class="aow-inline-smile" src="${x.file}" title="${esc(x.title)}" alt="${esc(x.title)}">`:m;
+    return x?`<img class="aow-inline-smile" src="${x.file}" title="${esc(x.title)}" alt="${esc(x.title)}" loading="lazy" decoding="async">`:m;
   });
 }
 function authorInfo(userId){
@@ -228,7 +227,7 @@ function authorInfo(userId){
 }
 function authorHtml(userId){
   const a=authorInfo(userId),src=avatarUrl(a.avatarUrl);
-  return `<div class="review-author"><span class="review-avatar">${src?`<img src="${esc(src)}" alt="Аватар ${esc(a.nickname)}">`:esc(initials(a.nickname))}</span><div><div class="review-name">${esc(a.nickname)}</div></div></div>`;
+  return `<div class="review-author"><span class="review-avatar">${src?`<img src="${esc(src)}" alt="Аватар ${esc(a.nickname)}" loading="lazy" decoding="async">`:esc(initials(a.nickname))}</span><div><div class="review-name">${esc(a.nickname)}</div></div></div>`;
 }
 function reviewsFor(partnerId){return reviews.filter(r=>String(r.partner_id)===String(partnerId))}
 function canDeleteReview(r){return !!currentUser&&(isAdmin||String(r.user_id)===String(currentUser.id))}
@@ -473,7 +472,7 @@ function insertAtCursor(id,text){
 window.openSmilePicker=id=>{smileTargetId=id;smileModal.classList.add('open')};
 document.getElementById('closeSmileBtn').onclick=()=>{smileModal.classList.remove('open');smileTargetId=null};
 smileModal.onclick=e=>{if(e.target===smileModal){smileModal.classList.remove('open');smileTargetId=null}};
-smileGrid.innerHTML=smiles.map((s,i)=>`<button class="smile-pick" type="button" title="${esc(s.title)}" onclick="pickSmile(${i})"><img src="${s.file}" alt="${esc(s.title)}"></button>`).join('');
+smileGrid.innerHTML=smiles.map((s,i)=>`<button class="smile-pick" type="button" title="${esc(s.title)}" onclick="pickSmile(${i})"><img src="${s.file}" alt="${esc(s.title)}" loading="lazy" decoding="async"></button>`).join('');
 window.pickSmile=i=>{if(smileTargetId)insertAtCursor(smileTargetId,`[[aow:${i}]]`);smileModal.classList.remove('open');smileTargetId=null};
 
 window.publishReview=async partnerId=>{
@@ -539,7 +538,6 @@ async function initPartners(){
 initPartners();
 </script>
 <script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body>
 </html>

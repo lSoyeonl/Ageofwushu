@@ -1,0 +1,41 @@
+ЛЕГЕНДЫ КУНГ-ФУ — CLEAN / PRODUCTION 0.0.66
+
+КРИТИЧЕСКИ ВАЖНО:
+Этот CLEAN-архив специально НЕ содержит supabase-config.js.
+Сохраните существующий рабочий supabase-config.js в GitHub.
+Он должен остаться рядом с index.html.
+
+Рекомендуемый порядок:
+1. Скачайте/сохраните текущий supabase-config.js на всякий случай.
+2. В GitHub оставьте supabase-config.js.
+3. Удалите старые файлы сайта и папки, перечисленные в DELETE_FROM_OLD_GITHUB_0.0.66.txt.
+4. Загрузите всё содержимое CLEAN-архива в корень репозитория.
+5. Проверьте, что index.html и ваш старый supabase-config.js находятся рядом.
+6. Подождите GitHub Pages 1–2 минуты.
+7. ПК: Ctrl+F5. Телефон: полностью закрыть сайт и открыть заново.
+
+Supabase:
+- пользователи/Auth НЕ удаляются;
+- site_store/контент НЕ удаляется;
+- реакции НЕ удаляются;
+- Storage НЕ удаляется;
+- Edge Function discord-publish НЕ удаляется;
+- DISCORD_WEBHOOK_URL НЕ меняется;
+- SQL для 0.0.66 не нужен.
+
+Аватары:
+В 0.0.66 22 локальных PNG заменены одним avatar-sprite.webp.
+Если профиль раньше хранил avatar-XX.png или /avatars/avatar-XX.png,
+пользователю нужно один раз открыть «Аккаунт».
+Старый пресет автоматически вырежется из sprite и загрузится в Supabase Storage.
+
+Оптимизация:
+- production очищен от старых changelog/report/setup/sql;
+- удалена дублирующая папка music/;
+- background.png 3.66 МБ заменён background.webp ~0.36 МБ;
+- два MP3 320 kbps перекодированы в 128 kbps;
+- 22 пресет-аватара заменены одним sprite;
+- общие CSS объединены в site-core;
+- декор + music runtime объединены в site-effects;
+- карточные изображения получили lazy loading;
+- мобильные blur/shimmer/лишние фонари облегчены.

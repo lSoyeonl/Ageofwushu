@@ -10,7 +10,7 @@
 
 <style>
 :root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.38)}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.9)),url("background.png") center/cover no-repeat fixed}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.9)),url("background.webp") center/cover no-repeat fixed}
 .card{width:min(460px,100%);padding:30px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,rgba(5,27,40,.96),rgba(3,18,28,.98));box-shadow:0 26px 80px rgba(0,0,0,.48)}
 h1{margin:0;color:var(--gold2);font:500 38px Georgia,serif}
 p{color:#cbd9df;line-height:1.55}
@@ -20,12 +20,11 @@ button,a.btn{display:inline-flex;align-items:center;justify-content:center;min-h
 .err{min-height:20px;margin-top:10px;color:#ffb8a8;font-size:13px}
 .note{margin-top:18px;padding:12px;border:1px solid rgba(120,205,236,.18);border-radius:11px;background:rgba(120,205,236,.06);color:#bad6e0;font-size:12px;line-height:1.5}
 </style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
 <div class="card">
@@ -62,8 +61,6 @@ document.getElementById('go').addEventListener('click',async()=>{
   }
 });
 </script>
-<script src="image-tools-0.0.48.js?v=0.0.48"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body>
 </html>

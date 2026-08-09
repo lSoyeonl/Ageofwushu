@@ -50,7 +50,7 @@
     if(picker)return picker;
     picker=document.createElement('div');
     picker.className='kf-reaction-picker';
-    picker.innerHTML=`<div class="kf-reaction-picker-box"><div class="kf-reaction-picker-head"><b>Выберите реакцию</b><button type="button" data-close>×</button></div><div class="kf-reaction-smiles">${Array.from({length:88},(_,i)=>`<button type="button" data-smile="${i+1}" title="Смайл ${i+1}"><img src="${smileFile(i+1)}" alt=""></button>`).join('')}</div></div>`;
+    picker.innerHTML=`<div class="kf-reaction-picker-box"><div class="kf-reaction-picker-head"><b>Выберите реакцию</b><button type="button" data-close>×</button></div><div class="kf-reaction-smiles">${Array.from({length:88},(_,i)=>`<button type="button" data-smile="${i+1}" title="Смайл ${i+1}"><img src="${smileFile(i+1)}" alt="" decoding="async"></button>`).join('')}</div></div>`;
     picker.querySelector('[data-close]').onclick=()=>picker.classList.remove('open');
     picker.onclick=e=>{if(e.target===picker)picker.classList.remove('open')};
     document.body.appendChild(picker);
@@ -67,7 +67,7 @@
       const my=rows.find(r=>user&&String(r.user_id)===String(user.id));
       el.innerHTML=`<div class="kf-reaction-summary">${grouped.length?grouped.map(([reaction,count])=>{
         const n=Number(reaction.replace('smile:',''));
-        return Number.isFinite(n)?`<span class="kf-reaction-count"><img src="${smileFile(n)}" alt=""> ${count}</span>`:'';
+        return Number.isFinite(n)?`<span class="kf-reaction-count"><img src="${smileFile(n)}" alt="" loading="lazy" decoding="async"> ${count}</span>`:'';
       }).join(''):'<span class="kf-reaction-muted">Пока нет реакций</span>'}</div>
       <button type="button" class="kf-reaction-add">${my?'Изменить реакцию':'Добавить реакцию'}</button>`;
       el.querySelector('.kf-reaction-add').onclick=()=>{

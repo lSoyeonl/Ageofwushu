@@ -25,7 +25,7 @@ body{
   font-family:"Oswald","Arial Narrow",Arial,sans-serif;
   background:
     linear-gradient(rgba(3,14,22,.74),rgba(3,14,22,.91)),
-    url("background.png") center/cover fixed no-repeat;
+    url("background.webp") center/cover fixed no-repeat;
 }
 a{text-decoration:none;color:inherit}
 button,input,textarea,select{font:inherit}
@@ -106,12 +106,11 @@ textarea.input{min-height:130px;padding:13px;resize:vertical}
 }
 
 </style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
 <header class="top">
@@ -231,8 +230,6 @@ form.addEventListener('submit',async(e)=>{
   }catch(err){showMsg(err.message||'Не удалось создать аккаунт.',false)}
 });
 </script>
-<script src="image-tools-0.0.48.js?v=0.0.48"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body>
 </html>

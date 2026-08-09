@@ -10,7 +10,7 @@
 <style>
 :root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824;--danger:#55262b}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.74),rgba(3,14,22,.95)),url("background.png") center/cover fixed no-repeat}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.74),rgba(3,14,22,.95)),url("background.webp") center/cover fixed no-repeat}
 a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
 .top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
 .brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}
@@ -32,13 +32,11 @@ input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.28);border-ra
 @media(max-width:900px){.nav{display:none}.two-col{grid-template-columns:1fr}.toc{position:relative;top:auto;max-height:none}.hideout-top{grid-template-columns:160px 1fr}.boss-editor-grid,.boss-view-top{grid-template-columns:150px 1fr}.skill-view{grid-template-columns:1fr}.skill-cell{border-right:0;border-bottom:1px solid rgba(255,255,255,.07)}.skill-cell:last-child{border-bottom:0}}
 @media(max-width:620px){.wrap{width:min(100% - 18px,1320px);margin-top:18px}.page-head h1{font-size:31px}.grid2,.grid3,.boss-editor-grid,.hideout-top,.boss-view-top,.skill-cols{grid-template-columns:1fr}.hideout-image,.boss-image,.boss-photo-edit,.boss-photo-placeholder{width:min(100%,300px)}.skill-cols .wide{grid-column:auto}.rank-add{grid-template-columns:1fr}.top{padding:8px 12px}.brand span{font-size:14px}.brand img{width:44px;height:44px}.hideout-card{padding:14px}}
 </style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="reactions-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
 <header class="top">
@@ -101,7 +99,7 @@ input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.28);border-ra
 <div class="modal" id="previewModal"><div class="panel modal-card"><div style="display:flex;justify-content:flex-end"><button class="btn secondary" type="button" id="closePreview">Закрыть</button></div><div id="previewContent"></div></div></div>
 
 <script src="image-tools-0.0.48.js?v=0.0.48"></script>
-<script src="reactions-0.0.48.js?v=0.0.48"></script>
+<script src="reactions-0.0.48.js?v=0.0.66"></script>
 <script>
 const KEY='kungfuHideouts';
 const RANK_KEY='kungfuHideoutRanks';
@@ -191,7 +189,7 @@ window.removeSkill=(bossId,skillId)=>{const b=bosses.find(x=>x.id===bossId);if(!
 function bossView(b){
   const skills=(b.skills||[]).filter(s=>s.name||s.description||s.avoidance);
   return `<article class="boss-view"><div class="boss-view-top">
-    ${b.image?`<img class="boss-image" src="${b.image}" alt="${esc(b.name||'Босс')}">`:'<div class="boss-image placeholder">Нет изображения</div>'}
+    ${b.image?`<img class="boss-image" src="${b.image}" alt="${esc(b.name||'Босс')}" loading="lazy" decoding="async">`:'<div class="boss-image placeholder">Нет изображения</div>'}
     <div><h3>${esc(b.name||'Босс без имени')}</h3>
       <div class="skills-view">${skills.length?skills.map(s=>`<div class="skill-view">
         <div class="skill-cell"><div class="skill-label">Навык Босса</div><b>${esc(s.name||'Без названия')}</b></div>
@@ -204,7 +202,7 @@ function itemHtml(item,preview=false){
   const link=safeUrl(item.additionalLink);
   return `<article class="panel hideout-card">
     <div class="hideout-top">
-      ${item.image?`<img class="hideout-image" src="${item.image}" alt="${esc(item.name||'Тайник')}">`:'<div class="hideout-image placeholder">Нет изображения</div>'}
+      ${item.image?`<img class="hideout-image" src="${item.image}" alt="${esc(item.name||'Тайник')}" loading="lazy" decoding="async">`:'<div class="hideout-image placeholder">Нет изображения</div>'}
       <div><h2>${esc(item.name||'Тайник без названия')}</h2>
         <div class="meta"><span class="tag">Открывается с ранга: ${esc(item.rank||ranks[0]||'Не указан')}</span></div>
         ${item.otherNames?`<div class="muted"><b>Другие названия:</b> ${esc(item.otherNames)}</div>`:''}
@@ -280,7 +278,6 @@ async function init(){
 init();
 </script>
 <script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body>
 </html>

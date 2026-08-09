@@ -14,7 +14,7 @@ html{scroll-behavior:smooth}
 body{
   margin:0;min-height:100vh;color:#fff;
   font-family:"Oswald","Arial Narrow",Arial,sans-serif;
-  background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.png") center/cover fixed no-repeat;
+  background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.webp") center/cover fixed no-repeat;
 }
 a{text-decoration:none;color:inherit}
 button,input,textarea,select{font:inherit}
@@ -111,12 +111,11 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 
 .detail{padding:24px}.detail img{width:100%;max-height:480px;object-fit:cover;border-radius:14px;margin:14px 0}
 .detail p{color:#d7e3e8;line-height:1.7}.detail-info{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.detail-info section{padding:14px;border:1px solid rgba(228,180,94,.15);border-radius:11px;background:rgba(255,255,255,.025)}.detail-info h2{margin:0 0 8px;font-size:22px}@media(max-width:680px){.detail-info{grid-template-columns:1fr}}.back{display:inline-flex;margin-top:18px}
-</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a>
@@ -136,8 +135,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script>
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
 const id=Number(new URLSearchParams(location.search).get('id'));const data=JSON.parse(localStorage.getItem('kungfuSchoolsForcesSects')||'[]');const x=data.find(a=>a.id===id);
-document.getElementById('detail').innerHTML=x?`<span class="tag">${esc(x.category)}</span><h1>${esc(x.name)}</h1>${x.image?`<img src="${x.image}">`:''}<div class="detail-info"><section><h2>Описание</h2><p>${esc(x.content||'Описание пока не заполнено.').replace(/\n/g,'<br>')}</p></section><section><h2>Как вступить?</h2><p>${esc(x.howToJoin||'Информация пока не добавлена.').replace(/\n/g,'<br>')}</p></section></div><a class="btn secondary back" href="schools.html">← Назад</a>`:'<div class="empty">Материал не найден.</div>';
-</script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+document.getElementById('detail').innerHTML=x?`<span class="tag">${esc(x.category)}</span><h1>${esc(x.name)}</h1>${x.image?`<img src="${x.image}" loading="lazy" decoding="async">`:''}<div class="detail-info"><section><h2>Описание</h2><p>${esc(x.content||'Описание пока не заполнено.').replace(/\n/g,'<br>')}</p></section><section><h2>Как вступить?</h2><p>${esc(x.howToJoin||'Информация пока не добавлена.').replace(/\n/g,'<br>')}</p></section></div><a class="btn secondary back" href="schools.html">← Назад</a>`:'<div class="empty">Материал не найден.</div>';
+</script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body></html>

@@ -7,7 +7,7 @@
 
 <style>
 :root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.38);--muted:#c7d7de}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.92)),url("background.png") center/cover fixed no-repeat}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.92)),url("background.webp") center/cover fixed no-repeat}
 a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}.top{min-height:76px;padding:0 4vw;display:flex;align-items:center;gap:22px;background:rgba(3,16,26,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
 .brand{display:flex;align-items:center;gap:12px;margin-right:auto;color:var(--gold2);font-size:20px;font-weight:700}.brand img{width:54px;height:54px;object-fit:contain}.nav{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.nav a{font-weight:700}
 .wrap{width:min(1180px,calc(100% - 36px));margin:50px auto 80px}.panel{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,rgba(5,27,40,.92),rgba(3,18,28,.95));box-shadow:0 20px 60px rgba(0,0,0,.35)}
@@ -35,13 +35,12 @@ input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.32);border-ra
 .smile-modal{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.70);padding:22px;align-items:center;justify-content:center}.smile-modal.open{display:flex}.smile-box{width:min(760px,96vw);max-height:80vh;overflow:auto;padding:18px;border:1px solid rgba(228,180,94,.4);border-radius:16px;background:#071824}.smile-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.smile-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:7px}.smile-pick{height:58px;border:1px solid rgba(228,180,94,.18);border-radius:8px;background:#102b3b;cursor:pointer;padding:4px}.smile-pick img{width:100%;height:100%;object-fit:contain}
 @media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{display:none}.forum-head{flex-direction:column;align-items:flex-start}.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.smile-grid{grid-template-columns:repeat(6,1fr)}}@media(max-width:560px){.grid2{grid-template-columns:1fr}.smile-grid{grid-template-columns:repeat(4,1fr)}}
 </style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 <script src="image-tools-0.0.48.js?v=0.0.48"></script>
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
 </head>
 <body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
@@ -68,7 +67,7 @@ input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.32);border-ra
       <div class="grid2"><input id="topicTitle" placeholder="Название темы"><select id="topicCategory"></select></div>
       <textarea id="topicText" placeholder="Текст обсуждения"></textarea>
       <button class="btn secondary aow-smile-trigger" type="button" onclick="openSmilePicker('topicText')">Смайлы Age of Wushu</button>
-      <div class="filebox"><label>Картинка к обсуждению</label><input id="topicImage" type="file" accept="image/*"><div class="muted" style="font-size:11px;margin-top:6px">Изображение показывается в исходных пропорциях и никогда не растягивается выше своего естественного разрешения.</div><div class="preview" id="topicPreview"><img id="topicPreviewImg"></div></div>
+      <div class="filebox"><label>Картинка к обсуждению</label><input id="topicImage" type="file" accept="image/*"><div class="muted" style="font-size:11px;margin-top:6px">Изображение показывается в исходных пропорциях и никогда не растягивается выше своего естественного разрешения.</div><div class="preview" id="topicPreview"><img id="topicPreviewImg" loading="lazy" decoding="async"></div></div>
       <button class="btn" id="createTopic">Опубликовать</button><div id="forumStatus" class="muted" style="margin-top:8px;min-height:20px"></div>
     </div>
     <div id="topics"></div>
@@ -128,7 +127,7 @@ function authorHtml(ownerId,fallbackName,role,compact=false,fallbackAvatar=''){
   const a=authorInfo(ownerId,fallbackName,role,fallbackAvatar);
   const src=safeAvatar(a.avatar);
   return `<div class="forum-author ${compact?'compact':''}">
-    <span class="forum-avatar">${src?`<img src="${esc(src)}" alt="Аватар ${esc(a.name)}">`:`${esc(initials(a.name))}`}</span>
+    <span class="forum-avatar">${src?`<img src="${esc(src)}" alt="Аватар ${esc(a.name)}" loading="lazy" decoding="async">`:`${esc(initials(a.name))}`}</span>
     <div class="forum-author-name">${esc(a.name)}${a.role==='admin'?' <span class="admin-badge">Админ</span>':''}</div>
   </div>`;
 }
@@ -153,7 +152,7 @@ function renderMessage(text){
   let safe=esc(text).replace(/\n/g,'<br>');
   return safe.replace(/\[\[aow:(\d+)\]\]/g,(m,n)=>{
     const x=smiles[Number(n)];
-    return x?`<img class="aow-inline-smile" src="${x.file}" title="${esc(x.title)}" alt="${esc(x.title)}">`:m;
+    return x?`<img class="aow-inline-smile" src="${x.file}" title="${esc(x.title)}" alt="${esc(x.title)}" loading="lazy" decoding="async">`:m;
   });
 }
 function insertAtCursor(id,text){
@@ -164,7 +163,7 @@ function insertAtCursor(id,text){
 }
 window.openSmilePicker=id=>{smileTargetId=id;smileModal.classList.add('open')};
 window.closeSmilePicker=()=>{smileModal.classList.remove('open');smileTargetId=null};
-smileGrid.innerHTML=smiles.map((s,i)=>`<button class="smile-pick" title="${esc(s.title)}" onclick="pickSmile(${i})"><img src="${s.file}" alt="${esc(s.title)}"></button>`).join('');
+smileGrid.innerHTML=smiles.map((s,i)=>`<button class="smile-pick" title="${esc(s.title)}" onclick="pickSmile(${i})"><img src="${s.file}" alt="${esc(s.title)}" loading="lazy" decoding="async"></button>`).join('');
 window.pickSmile=i=>{if(smileTargetId)insertAtCursor(smileTargetId,`[[aow:${i}]]`);closeSmilePicker()};
 
 async function readShared(key,fallback){
@@ -326,6 +325,5 @@ async function initForum(){
 initForum();
 </script>
 <script src="image-tools-0.0.48.js?v=0.0.48"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body></html>

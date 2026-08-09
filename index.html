@@ -42,7 +42,7 @@ button,input{font:inherit}
   min-height:100svh;
   overflow:hidden;
   isolation:isolate;
-  background:#0a5a80 url("background.png") center center / cover no-repeat;
+  background:#0a5a80 url("background.webp") center center / cover no-repeat;
 }
 
 .hero-bg{
@@ -1241,13 +1241,12 @@ button,input{font:inherit}
 }
 
 </style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 <link rel="stylesheet" href="home-mobile-0.0.49.css?v=0.0.49">
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
 </head>
 <body class="home-page">
 
@@ -1284,7 +1283,7 @@ button,input{font:inherit}
   <i class="spark" style="left:73%;top:27%;animation-delay:1s"></i>
   <i class="spark" style="left:82%;top:42%;animation-delay:3s"></i>
   <i class="spark" style="left:57%;top:16%;animation-delay:4s"></i>
-  <img src="background.png" class="hero-bg" alt="Легенды Кунг-Фу">
+  <img src="background.webp" class="hero-bg" alt="Легенды Кунг-Фу">
   <div class="water-shimmer"></div>
 <div id="particles"></div>
 
@@ -1403,7 +1402,7 @@ button,input{font:inherit}
         
 <small>Отсканируйте QR-код или нажмите на него</small>
       </div>
-      <a href="https://yoomoney.ru/fundraise/1JGO3PMF9RM.260807" target="_blank" rel="noopener noreferrer" aria-label="Открыть страницу пожертвования"><img src="card-qr.png" class="qr" alt="QR-код для пожертвования через YooMoney"></a>
+      <a href="https://yoomoney.ru/fundraise/1JGO3PMF9RM.260807" target="_blank" rel="noopener noreferrer" aria-label="Открыть страницу пожертвования"><img src="card-qr.png" class="qr" alt="QR-код для пожертвования через YooMoney" loading="lazy" decoding="async"></a>
     </aside>
   </main>
 </section>
@@ -1544,9 +1543,6 @@ for(let i=0;i<total;i++){
   el.textContent=weekday+' · '+fullDate;
 })();
 </script>
-
-<script src="image-tools-0.0.48.js?v=0.0.48"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body>
 </html>

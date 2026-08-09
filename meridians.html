@@ -5,7 +5,7 @@
 <style>
 :root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.png") center/cover fixed no-repeat}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.webp") center/cover fixed no-repeat}
 a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
 .top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.93);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
 .brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}
@@ -29,12 +29,11 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 .rich-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.rich-toolbar button,.rich-toolbar select,.rich-toolbar input[type=color]{min-height:34px;border:1px solid rgba(228,180,94,.25);border-radius:7px;background:#102b3b;color:#fff;padding:0 9px;cursor:pointer}.rich-editor{min-height:180px;padding:12px;border:1px solid rgba(228,180,94,.30);border-radius:10px;background:#071824;color:#fff;outline:0;line-height:1.55}.rich-editor table,.rich-output table{width:100%;border-collapse:collapse;margin:12px 0}.rich-editor td,.rich-editor th,.rich-output td,.rich-output th{border:1px solid rgba(228,180,94,.35);padding:7px 8px;vertical-align:top}.rich-editor th,.rich-output th{background:rgba(228,180,94,.10);color:#ffe2a0}.rich-output{line-height:1.58;color:#d7e3e8}.safe-link{display:inline-flex;margin-top:10px;padding:7px 10px;border:1px solid rgba(228,180,94,.22);border-radius:8px;color:#ffe2a0;background:rgba(228,180,94,.06)}
 @media(max-width:900px){.two-col{grid-template-columns:1fr}.toc{position:relative;top:auto;max-height:none}.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.grid3{grid-template-columns:1fr}.draft-gallery{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.compact-top{flex-direction:column}.compact-img{width:100%;height:220px}.grid2{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.draft-gallery{grid-template-columns:1fr}}
-</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.61"></script>
-<link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
-<link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
-<link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
+<script src="supabase-sync.js?v=0.0.66"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -94,7 +93,7 @@ function renderTypes(){const sel=document.getElementById('type'),cur=sel.value;s
 document.getElementById('addType').onclick=()=>{if(!isAdmin)return;const i=document.getElementById('newType'),v=i.value.trim();if(!v)return;if(types.some(x=>x.toLowerCase()===v.toLowerCase())){alert('Такой тип уже существует');return}types.push(v);saveTypes();i.value='';renderTypes();document.getElementById('type').value=v};
 window.removeType=enc=>{if(!isAdmin)return;const v=decodeURIComponent(enc);if(entries.some(x=>(x.type||types[0])===v)){alert('Нельзя удалить тип, пока есть записи этого типа.');return}types=types.filter(x=>x!==v);if(!types.length)types=['Общее'];saveTypes();renderTypes()};
 
-function displayImage(item){return item.image?`<img class="compact-img" src="${item.image}" alt="${esc(item.name||'')}">`:`<div class="compact-img"></div>`}
+function displayImage(item){return item.image?`<img class="compact-img" src="${item.image}" alt="${esc(item.name||'')}" loading="lazy" decoding="async">`:`<div class="compact-img"></div>`}
 function render(){const q=document.getElementById('search').value.trim().toLowerCase();const list=entries.filter(x=>[x.name,x.code,x.description,x.type].some(v=>String(v||'').toLowerCase().includes(q)));document.getElementById('tocList').innerHTML=list.length?types.map(type=>{const rows=list.filter(x=>(x.type||types[0])===type);if(!rows.length)return '';return `<div class="toc-group">${esc(type)}</div>`+rows.map(x=>`<a class="toc-item ${x.id===selectedId?'active':''}" onclick="selectEntry(${x.id})"><b>${esc(x.name||'Без названия')}</b><small>${esc(type)}</small></a>`).join('')}).join(''):'<div class="muted">Ничего не найдено</div>';
 const item=entries.find(x=>x.id===selectedId)||list[0];if(item&&!entries.find(x=>x.id===selectedId))selectedId=item.id;document.getElementById('content').innerHTML=item?`<article class="panel compact-card"><div class="compact-top">${displayImage(item)}<div class="compact-body"><h2>${esc(item.name||'Без названия')}</h2><div class="tags"><span class="tag">Тип: ${esc(item.type||types[0])}</span>${item.affiliation?`<span class="tag">Принадлежность: ${esc(item.affiliation)}</span>`:''}${item.level?`<span class="tag">Уровень: ${esc(item.level)}</span>`:''}</div>${item.description?`<div class="desc">${esc(item.description).replace(/\n/g,'<br>')}</div>`:''}${item.code?`<div class="code-under-description"><b>Код:</b> ${esc(item.code)}</div>`:''}${item.properties?`<div class="props"><b>Свойства</b><br>${esc(item.properties).replace(/\n/g,'<br>')}</div>`:''}<div class="entry-actions ${isAdmin?'show':''}"><button class="btn secondary" onclick="editEntry(${item.id})">Редактировать</button><button class="btn danger" onclick="removeEntry(${item.id})">Удалить</button></div></div></div></article>`:'<div class="panel empty">Пока нет контента.</div>'}
 window.selectEntry=id=>{selectedId=id;render()};document.getElementById('search').oninput=render;
@@ -113,7 +112,7 @@ document.getElementById('description').value=item.description||'';
 document.getElementById('code').value=item.code||'';
 document.getElementById('properties').value=item.properties||''; selectedImage=item.image||'';if(selectedImage){imagePreview.src=selectedImage;imagePreview.classList.add('show')}else imagePreview.classList.remove('show'); window.scrollTo({top:0,behavior:'smooth'})};
 document.getElementById('cancelEdit').onclick=resetForm;
-document.getElementById('previewBtn').onclick=()=>{const name=document.getElementById('name').value.trim()||'Без названия',type=document.getElementById('type').value;let html=`<article class="panel compact-card"><div class="compact-top">${selectedImage?`<img class="compact-img" src="${selectedImage}">`:'<div class="compact-img"></div>'}<div class="compact-body"><h2>${esc(name)}</h2><div class="tags"><span class="tag">Тип: ${esc(type)}</span></div>${document.getElementById('description')?`<div class="desc">${esc(document.getElementById('description').value).replace(/\n/g,'<br>')}</div>`:''}${document.getElementById('code')&&document.getElementById('code').value?`<div class="code-under-description"><b>Код:</b> ${esc(document.getElementById('code').value)}</div>`:''}</div></div></article>`;openPreview(html)};
+document.getElementById('previewBtn').onclick=()=>{const name=document.getElementById('name').value.trim()||'Без названия',type=document.getElementById('type').value;let html=`<article class="panel compact-card"><div class="compact-top">${selectedImage?`<img class="compact-img" src="${selectedImage}" loading="lazy" decoding="async">`:'<div class="compact-img"></div>'}<div class="compact-body"><h2>${esc(name)}</h2><div class="tags"><span class="tag">Тип: ${esc(type)}</span></div>${document.getElementById('description')?`<div class="desc">${esc(document.getElementById('description').value).replace(/\n/g,'<br>')}</div>`:''}${document.getElementById('code')&&document.getElementById('code').value?`<div class="code-under-description"><b>Код:</b> ${esc(document.getElementById('code').value)}</div>`:''}</div></div></article>`;openPreview(html)};
 document.getElementById('saveEntry').onclick=()=>{if(!isAdmin)return;const current=editingId?entries.find(x=>x.id===editingId):null;const item={id:editingId||Date.now(),image:selectedImage};item.name=document.getElementById('name').value.trim();
 item.type=document.getElementById('type').value.trim();
 item.affiliation=document.getElementById('affiliation').value.trim();
@@ -124,6 +123,5 @@ item.properties=document.getElementById('properties').value.trim(); if(!item.nam
 window.removeEntry=id=>{if(!isAdmin||!confirm('Удалить запись?'))return;entries=entries.filter(x=>x.id!==id);if(editingId===id)resetForm();selectedId=entries.length?entries[0].id:null;save();render()};renderTypes();render();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
-<script src="decor-0.0.48.js?v=0.0.48"></script>
-<script src="music-player-0.0.57.js?v=0.0.57"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body></html>
