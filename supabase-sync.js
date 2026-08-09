@@ -1,6 +1,6 @@
 (function(){
-  if(window.__KF_SUPABASE_V0060__)return;
-  window.__KF_SUPABASE_V0060__=true;
+  if(window.__KF_SUPABASE_V0061__)return;
+  window.__KF_SUPABASE_V0061__=true;
 
   const cfg=window.KF_SUPABASE_CONFIG||{};
   const configured=
@@ -56,6 +56,7 @@
     kungfuArtifacts:{section:'Артефакты',page:'artifacts.html',fields:['name','title'],emoji:'💎',headline:'Новый артефакт'},
     kungfuHideouts:{section:'Тайники: боссы и обход',page:'hideouts.html',fields:['name','title'],emoji:'🗝️',headline:'Новый тайник'},
     kungfuBots:{section:'Боты',page:'bots.html',fields:['name','title'],emoji:'🤖',headline:'Новый бот'},
+    kungfuBuffs:{section:'Баффы',page:'buffs.html',fields:['name','otherNames','title'],emoji:'✨',headline:'Новый бафф или дебафф'},
     kungfuContacts:{section:'Партнеры',page:'partners.html',fields:['nick','name','title'],emoji:'🤝',headline:'Новый партнер'}
   };
 
@@ -568,7 +569,7 @@
 
   function subscribeRealtime(){
     if(!client||realtimeChannel)return;
-    realtimeChannel=client.channel('kungfu-site-store-0.0.60')
+    realtimeChannel=client.channel('kungfu-site-store-0.0.61')
       .on('postgres_changes',{event:'*',schema:'public',table:'site_store'},payload=>{
         const row=payload.new||payload.old;
         if(!row||!isManagedKey(row.key))return;

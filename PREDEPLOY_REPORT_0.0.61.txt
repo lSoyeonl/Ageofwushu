@@ -1,0 +1,31 @@
+ЛЕГЕНДЫ КУНГ-ФУ — PRE-DEPLOY REPORT 0.0.61
+
+[OK] supabase-sync.js: syntax
+[OK] supabase-config.js: syntax
+[OK] music-player-0.0.57.js: syntax
+[OK] image-tools-0.0.48.js: syntax
+[OK] decor-0.0.48.js: syntax
+[OK] reactions-0.0.48.js: syntax
+[OK] Inline JS всех HTML
+[OK] Версия 0.0.61
+[OK] Баффы есть на главной
+[OK] Выход рядом со Входом
+[OK] Баффы 4 в строке
+[OK] Бафф / Дебафф
+[OK] Все 4 поля Баффов
+[OK] Баффы сохраняются в site_store
+[OK] Баффы в Discord шаблонах
+[OK] Админ — Обновления
+[OK] Админ — О Пиратке
+[OK] Админ — О Тайвани
+[OK] Админ — Боты
+[OK] Админ — Форум
+[OK] Все страницы используют sync 0.0.61
+[OK] Все локальные ресурсы существуют
+
+Установка:
+1. Загрузить патч в корень GitHub.
+2. Проверить, что buffs.html лежит рядом с index.html.
+3. SQL не требуется.
+4. Discord Edge Function менять не требуется.
+5. supabase-config.js в патче отсутствует.

@@ -37,7 +37,7 @@ input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.32);border-ra
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.60"></script>
+<script src="supabase-sync.js?v=0.0.61"></script>
 <link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
 <script src="image-tools-0.0.48.js?v=0.0.48"></script>
@@ -129,7 +129,7 @@ function authorHtml(ownerId,fallbackName,role,compact=false,fallbackAvatar=''){
   const src=safeAvatar(a.avatar);
   return `<div class="forum-author ${compact?'compact':''}">
     <span class="forum-avatar">${src?`<img src="${esc(src)}" alt="Аватар ${esc(a.name)}">`:`${esc(initials(a.name))}`}</span>
-    <div class="forum-author-name">${esc(a.name)}${a.role==='admin'?' <span class="admin-badge">АДМИН</span>':''}</div>
+    <div class="forum-author-name">${esc(a.name)}${a.role==='admin'?' <span class="admin-badge">Админ</span>':''}</div>
   </div>`;
 }
 function isUuid(v){return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(v||''))}
