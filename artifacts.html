@@ -37,7 +37,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.48"></script>
+<script src="supabase-sync.js?v=0.0.58"></script>
 <link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
 <link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
@@ -91,16 +91,16 @@ async function filesToData(fileList,limit=8){
   return out;
 }
 
-const currentUser=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null');const isAdmin=!!currentUser&&(currentUser.role||'user')==='admin';
-if(isAdmin){document.getElementById('editor').classList.add('show');document.getElementById('adminBadge').innerHTML='<span class="admin-badge">АДМИН</span>';document.getElementById('roleNote').innerHTML='Можно добавлять, редактировать и предварительно просматривать контент.';}else document.getElementById('roleNote').textContent='Просмотр доступен всем. Добавление и редактирование — только администратору.';
+let currentUser=null;let isAdmin=false;
 let selectedImage='';const imageInput=document.getElementById('imageInput'),imagePreview=document.getElementById('imagePreview');
 imageInput.onchange=async()=>{const f=imageInput.files&&imageInput.files[0];if(!f)return;try{selectedImage=await imageToData(f);imagePreview.src=selectedImage;imagePreview.classList.add('show')}catch(e){alert(e.message);imageInput.value=''}};
-let entries=JSON.parse(localStorage.getItem('kungfuArtifacts')||'[]'),selectedId=entries.length?entries[0].id:null,editingId=null;
-let types=JSON.parse(localStorage.getItem('kungfuArtifactTypes')||'null');if(!types||!Array.isArray(types)||!types.length){types=["Без типа"];localStorage.setItem('kungfuArtifactTypes',JSON.stringify(types))}
-function save(){localStorage.setItem('kungfuArtifacts',JSON.stringify(entries))}function saveTypes(){localStorage.setItem('kungfuArtifactTypes',JSON.stringify(types))}
+let entries=[],selectedId=null,editingId=null;
+let types=['Без типа'];
+async function save(){entries=await KFSupabase.saveStore('kungfuArtifacts',entries);return entries}
+async function saveTypes(){types=await KFSupabase.saveStore('kungfuArtifactTypes',types);return types}
 function renderTypes(){const sel=document.getElementById('type'),cur=sel.value;sel.innerHTML=types.map(x=>`<option>${esc(x)}</option>`).join('');if(types.includes(cur))sel.value=cur;document.getElementById('typeChips').innerHTML=isAdmin?types.map(x=>`<span class="chip">${esc(x)} <button type="button" onclick="removeType('${encodeURIComponent(x)}')">×</button></span>`).join(''):''}
-document.getElementById('addType').onclick=()=>{if(!isAdmin)return;const i=document.getElementById('newType'),v=i.value.trim();if(!v)return;if(types.some(x=>x.toLowerCase()===v.toLowerCase())){alert('Такой тип уже существует');return}types.push(v);saveTypes();i.value='';renderTypes();document.getElementById('type').value=v};
-window.removeType=enc=>{if(!isAdmin)return;const v=decodeURIComponent(enc);if(entries.some(x=>(x.type||types[0])===v)){alert('Нельзя удалить тип, пока есть записи этого типа.');return}types=types.filter(x=>x!==v);if(!types.length)types=['Общее'];saveTypes();renderTypes()};
+document.getElementById('addType').onclick=async()=>{if(!isAdmin)return;const i=document.getElementById('newType'),v=i.value.trim();if(!v)return;if(types.some(x=>x.toLowerCase()===v.toLowerCase())){alert('Такой тип уже существует');return}const before=types.slice();types.push(v);try{await saveTypes();i.value='';renderTypes();document.getElementById('type').value=v}catch(e){types=before;alert(e.message||'Не удалось сохранить тип')}};
+window.removeType=async enc=>{if(!isAdmin)return;const v=decodeURIComponent(enc);if(entries.some(x=>(x.type||types[0])===v)){alert('Нельзя удалить тип, пока есть записи этого типа.');return}const before=types.slice();types=types.filter(x=>x!==v);if(!types.length)types=['Общее'];try{await saveTypes();renderTypes()}catch(e){types=before;alert(e.message||'Не удалось удалить тип')}};
 function formatDate(v){if(!v)return '';if(v==='absent')return 'Отсутствует';const [y,m,d]=v.split('-');return `${d}.${m}.${y}`}
 function dateValue(id){
   const mode=document.getElementById(id+'Mode');
@@ -176,14 +176,15 @@ document.getElementById('price').value=item.price||'';
 setDateField('chinaDate',item.chinaDate||'');setDateField('taiwanDate',item.taiwanDate||'');setDateField('pirateDate',item.pirateDate||''); selectedImage=item.image||'';if(selectedImage){imagePreview.src=selectedImage;imagePreview.classList.add('show')}else imagePreview.classList.remove('show'); window.scrollTo({top:0,behavior:'smooth'})};
 document.getElementById('cancelEdit').onclick=resetForm;
 document.getElementById('previewBtn').onclick=()=>{const name=document.getElementById('name').value.trim()||'Без названия',type=document.getElementById('type').value;let html=`<article class="panel compact-card"><div class="compact-top">${selectedImage?`<img class="compact-img" src="${selectedImage}">`:'<div class="compact-img"></div>'}<div class="compact-body"><h2>${esc(name)}</h2><div class="tags"><span class="tag">Тип: ${esc(type)}</span></div>${document.getElementById('description')?`<div class="desc">${esc(document.getElementById('description').value).replace(/\n/g,'<br>')}</div>`:''}${document.getElementById('code')&&document.getElementById('code').value?`<div class="code-under-description"><b>Код:</b> ${esc(document.getElementById('code').value)}</div>`:''}${document.getElementById('price').value?`<div class="props"><b>Цена:</b> ${esc(document.getElementById('price').value)}</div>`:''}${dateValue('chinaDate')?`<div class="muted" style="margin-top:8px"><b>Дата добавления на Китае:</b> ${esc(formatDate(dateValue('chinaDate')))}</div>`:''}${dateValue('taiwanDate')?`<div class="muted" style="margin-top:8px"><b>Дата добавления на Тайване:</b> ${esc(formatDate(dateValue('taiwanDate')))}</div>`:''}${dateValue('pirateDate')?`<div class="muted" style="margin-top:8px"><b>Дата добавления на Пиратке:</b> ${esc(formatDate(dateValue('pirateDate')))}</div>`:''}</div></div></article>`;openPreview(html)};
-document.getElementById('saveEntry').onclick=()=>{if(!isAdmin)return;const current=editingId?entries.find(x=>x.id===editingId):null;const item={id:editingId||Date.now(),image:selectedImage};item.name=document.getElementById('name').value.trim();
+document.getElementById('saveEntry').onclick=async()=>{if(!isAdmin)return;const current=editingId?entries.find(x=>x.id===editingId):null;const item={id:editingId||Date.now(),image:selectedImage};item.name=document.getElementById('name').value.trim();
 item.otherNames=document.getElementById('otherNames').value.trim();
 item.description=document.getElementById('description').value.trim();
 item.type=document.getElementById('type').value.trim();
 item.code=document.getElementById('code').value.trim();
 item.price=document.getElementById('price').value.trim();
-item.chinaDate=dateValue('chinaDate');item.taiwanDate=dateValue('taiwanDate');item.pirateDate=dateValue('pirateDate'); if(!item.name){alert('Укажите название');return}if(current&&!selectedImage)item.image=current.image||''; if(editingId){const i=entries.findIndex(x=>x.id===editingId);if(i>=0)entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;save();resetForm();render()};
-window.removeEntry=id=>{if(!isAdmin||!confirm('Удалить запись?'))return;entries=entries.filter(x=>x.id!==id);if(editingId===id)resetForm();selectedId=entries.length?entries[0].id:null;save();render()};bindDateModes();renderTypes();render();
+item.chinaDate=dateValue('chinaDate');item.taiwanDate=dateValue('taiwanDate');item.pirateDate=dateValue('pirateDate');if(!item.name){alert('Укажите название');return}if(current&&!selectedImage)item.image=current.image||'';const before=entries.map(x=>({...x}));if(editingId){const i=entries.findIndex(x=>x.id===editingId);if(i>=0)entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;try{await save();resetForm();render()}catch(e){entries=before;render();alert(e.message||'Не удалось сохранить артефакт')}};
+window.removeEntry=async id=>{if(!isAdmin||!confirm('Удалить запись?'))return;const before=entries.slice();entries=entries.filter(x=>x.id!==id);if(editingId===id)resetForm();selectedId=entries.length?entries[0].id:null;try{await save();render()}catch(e){entries=before;render();alert(e.message||'Не удалось удалить артефакт')}};
+async function initArtifacts(){try{if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');await KFSupabase.ready;currentUser=await KFSupabase.getCurrentProfile();isAdmin=!!currentUser&&currentUser.role==='admin';if(isAdmin){document.getElementById('editor').classList.add('show');document.getElementById('adminBadge').innerHTML='<span class="admin-badge">АДМИН</span>';document.getElementById('roleNote').textContent='Только администратор может добавлять, редактировать и удалять артефакты.'}else{document.getElementById('editor').classList.remove('show');document.getElementById('adminBadge').innerHTML='';document.getElementById('roleNote').textContent='Просмотр доступен всем. Редактирование и удаление — только администратору.'}const remoteEntries=await KFSupabase.getStore('kungfuArtifacts',[]);const remoteTypes=await KFSupabase.getStore('kungfuArtifactTypes',['Без типа']);entries=Array.isArray(remoteEntries)?remoteEntries:[];types=Array.isArray(remoteTypes)&&remoteTypes.length?remoteTypes:['Без типа'];selectedId=entries.length?entries[0].id:null;bindDateModes();renderTypes();render()}catch(e){document.getElementById('editor').classList.remove('show');document.getElementById('roleNote').textContent=e.message||'Не удалось загрузить артефакты.';bindDateModes();renderTypes();render()}}initArtifacts();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script src="decor-0.0.48.js?v=0.0.48"></script>
 <script src="music-player-0.0.57.js?v=0.0.57"></script>

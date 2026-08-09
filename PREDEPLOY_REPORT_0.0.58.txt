@@ -1,0 +1,38 @@
+ЛЕГЕНДЫ КУНГ-ФУ — PRE-DEPLOY REPORT 0.0.58
+
+[OK] Версия 0.0.58
+[OK] JS syntax: supabase-sync.js
+[OK] JS syntax: music-player-0.0.57.js
+[OK] JS syntax: image-tools-0.0.48.js
+[OK] JS syntax: decor-0.0.48.js
+[OK] JS syntax: reactions-0.0.48.js
+[OK] Inline JS всех HTML
+[OK] Локальные ресурсы существуют
+[OK] Discord notify map 13 разделов
+[OK] Discord только после нового элемента
+[OK] Discord настройка в админке
+[OK] Webhook не находится в browser JS
+[OK] Edge Function проверяет admin
+[OK] Discord allowed_mentions отключены
+[OK] Обновления — кнопка и input одинаковой высоты
+[OK] Аккаунт — mobile header
+[OK] Аккаунт — дата регистрации
+[OK] Аккаунт — редактирование bio
+[OK] Bio RPC SQL существует
+[OK] Артефакты — authoritative admin
+[FAIL] Артефакты — edit/delete guarded
+[OK] Школы — Описание + Как вступить
+[OK] School detail — Описание + Как вступить
+[OK] Игроки — 4 карточки desktop
+[OK] Игроки — responsive 3/2/1
+[OK] Все Supabase страницы получают v0.0.58
+[OK] Нет webhook URL в новых файлах
+
+РУЧНЫЕ ШАГИ ПОСЛЕ GITHUB:
+1. Один раз выполнить SUPABASE_PROFILE_BIO_0.0.58.sql в Supabase SQL Editor.
+2. Создать/обновить Edge Function discord-publish кодом SUPABASE_EDGE_DISCORD_PUBLISH_0.0.58.ts.
+3. В Edge Function Secrets добавить DISCORD_WEBHOOK_URL.
+4. В админке сайта → Резервные копии → Discord: отправить тест, затем включить уведомления.
+
+Патч специально не содержит supabase-config.js и не изменяет production credentials.
+Музыкальные файлы 0.0.57 не менялись.

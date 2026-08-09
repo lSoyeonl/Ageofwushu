@@ -1,6 +1,6 @@
 (function(){
-  if(window.__KF_SUPABASE_V0048__)return;
-  window.__KF_SUPABASE_V0048__=true;
+  if(window.__KF_SUPABASE_V0058__)return;
+  window.__KF_SUPABASE_V0058__=true;
 
   const cfg=window.KF_SUPABASE_CONFIG||{};
   const configured=
@@ -20,6 +20,23 @@
   let client=null;
   let currentProfile=parse(nativeGet.call(localStorage,'kungfuCurrentUser'),null);
   let realtimeChannel=null;
+
+  const discordSettingsKey='kungfuDiscordNotifications';
+  const contentNotifyMap={
+    kungfuUpdates:{section:'Обновления',page:'updates.html',fields:['title']},
+    kungfuTaiwanContent:{section:'О Тайвани',page:'taiwan.html',fields:['title']},
+    kungfuPirateContent:{section:'О Пиратке',page:'pirate.html',fields:['title']},
+    kungfuBeginnerGuides:{section:'Справочник Новичкам',page:'beginners.html',fields:['title','name']},
+    kungfuSchoolsForcesSects:{section:'Школы, Силы, Секты',page:'schools.html',fields:['name','title']},
+    kungfuMeridians:{section:'Меридианы',page:'meridians.html',fields:['name','title']},
+    kungfuNeigongs:{section:'Нейгуны',page:'neigongs.html',fields:['name','title']},
+    kungfuSkills:{section:'Навыки',page:'skills.html',fields:['name','title']},
+    kungfuItems:{section:'Предметы',page:'items.html',fields:['name','title']},
+    kungfuArtifacts:{section:'Артефакты',page:'artifacts.html',fields:['name','title']},
+    kungfuHideouts:{section:'Тайники: боссы и обход',page:'hideouts.html',fields:['name','title']},
+    kungfuBots:{section:'Боты',page:'bots.html',fields:['name','title']},
+    kungfuContacts:{section:'Партнеры',page:'partners.html',fields:['nick','name','title']}
+  };
 
   function isManagedKey(key){
     return typeof key==='string' &&
@@ -113,17 +130,69 @@
     return changed;
   }
 
-  async function writeRemote(key,value){
+  function entryIdentity(item,index){
+    if(item&&typeof item==='object'&&item.id!==undefined&&item.id!==null)return 'id:'+String(item.id);
+    try{return 'json:'+JSON.stringify(item)}catch{return 'index:'+index}
+  }
+
+  function notificationTitle(item,meta){
+    for(const field of meta.fields||[]){
+      const value=String(item?.[field]||'').trim();
+      if(value)return value.slice(0,180);
+    }
+    return 'Новая публикация';
+  }
+
+  async function invokeDiscord(payload){
+    if(!configured||!client)throw new Error('Supabase не настроен.');
+    const {data,error}=await client.functions.invoke('discord-publish',{body:payload});
+    if(error)throw error;
+    if(data&&data.ok===false)throw new Error(data.error||'Discord webhook вернул ошибку.');
+    return data||{ok:true};
+  }
+
+  async function maybeNotifyNewContent(key,previous,next){
+    const meta=contentNotifyMap[key];
+    if(!meta||currentProfile?.role!=='admin')return;
+    const settings=memory[discordSettingsKey]??parse(nativeGet.call(localStorage,discordSettingsKey),null);
+    if(!settings||settings.enabled!==true)return;
+    if(!Array.isArray(previous)||!Array.isArray(next))return;
+
+    const oldIds=new Set(previous.map(entryIdentity));
+    const added=next.filter((item,index)=>!oldIds.has(entryIdentity(item,index)));
+    if(!added.length)return;
+
+    for(const item of added.slice(-5)){
+      try{
+        await invokeDiscord({
+          title:notificationTitle(item,meta),
+          section:meta.section,
+          url:new URL(meta.page,location.href).href,
+          entryId:item?.id==null?'':String(item.id)
+        });
+        window.dispatchEvent(new CustomEvent('kf-discord-notified',{detail:{key,item}}));
+      }catch(e){
+        console.warn('Discord notification failed:',e);
+        window.dispatchEvent(new CustomEvent('kf-discord-notify-error',{detail:{key,error:e?.message||String(e)}}));
+      }
+    }
+  }
+
+  async function writeRemote(key,value,options={}){
     if(!configured||!client)throw new Error('Supabase не настроен.');
     const {data:{user},error:userError}=await client.auth.getUser();
     if(userError)throw userError;
     if(!user)throw new Error('Необходимо войти в аккаунт.');
 
+    const previous=Object.prototype.hasOwnProperty.call(options,'previous')
+      ? options.previous
+      : (Object.prototype.hasOwnProperty.call(memory,key)?memory[key]:parse(nativeGet.call(localStorage,key),undefined));
     const prepared=await prepareValue(value,true);
     const row={key,value_json:prepared,updated_at:new Date().toISOString(),updated_by:user.id};
     const {error}=await client.from('site_store').upsert(row,{onConflict:'key'});
     if(error)throw error;
     cacheSet(key,prepared);
+    await maybeNotifyNewContent(key,previous,prepared);
     return prepared;
   }
 
@@ -145,7 +214,7 @@
 
     queueMicrotask(async()=>{
       try{
-        await writeRemote(key,parsed);
+        await writeRemote(key,parsed,{previous});
         window.dispatchEvent(new CustomEvent('kf-supabase-synced',{detail:{key}}));
       }catch(e){
         if(previous===undefined)cacheRemove(key);else cacheSet(key,previous);
@@ -238,7 +307,8 @@
   }
 
   async function saveStore(key,value){
-    return await writeRemote(key,value);
+    const previous=Object.prototype.hasOwnProperty.call(memory,key)?memory[key]:parse(nativeGet.call(localStorage,key),undefined);
+    return await writeRemote(key,value,{previous});
   }
 
   async function getStore(key,fallback=null){
@@ -319,6 +389,40 @@
     return profile;
   }
 
+  async function updateMyBio(bio){
+    if(!configured||!client)throw new Error('Supabase не настроен.');
+    const {data:{user},error:userError}=await client.auth.getUser();
+    if(userError)throw userError;
+    if(!user)throw new Error('Необходимо войти в аккаунт.');
+
+    const value=String(bio||'').trim();
+    if(value.length>1000)throw new Error('Описание профиля — максимум 1000 символов.');
+    const {data,error}=await client.rpc('update_my_bio',{new_bio:value});
+    if(error)throw error;
+    const row=Array.isArray(data)?data[0]:data;
+    const profile=profileObject(row,user);
+    cacheProfile(profile);
+    return profile;
+  }
+
+  async function getDiscordNotifications(){
+    const value=await getStore(discordSettingsKey,{enabled:false});
+    return value&&typeof value==='object'?{enabled:value.enabled===true}:{enabled:false};
+  }
+
+  async function setDiscordNotifications(enabled){
+    return await saveStore(discordSettingsKey,{enabled:!!enabled});
+  }
+
+  async function testDiscordNotification(){
+    return await invokeDiscord({
+      title:'Тестовое уведомление',
+      section:'Руководство Легенды Кунг-Фу',
+      url:new URL('index.html',location.href).href,
+      test:true
+    });
+  }
+
   async function getPublicProfiles(ids=[]){
     if(!configured||!client)return [];
     let q=client.from('public_profiles').select('id,nickname,avatar_url');
@@ -335,7 +439,7 @@
 
   function subscribeRealtime(){
     if(!client||realtimeChannel)return;
-    realtimeChannel=client.channel('kungfu-site-store-0.0.48')
+    realtimeChannel=client.channel('kungfu-site-store-0.0.58')
       .on('postgres_changes',{event:'*',schema:'public',table:'site_store'},payload=>{
         const row=payload.new||payload.old;
         if(!row||!isManagedKey(row.key))return;
@@ -374,8 +478,8 @@
 
     // Legacy pages read the mirrored cache synchronously. Reload once after the
     // first successful bootstrap if the remote DB changed that cache.
-    if(changed&&!sessionStorage.getItem('kf047-boot-'+location.pathname)){
-      sessionStorage.setItem('kf047-boot-'+location.pathname,'1');
+    if(changed&&!sessionStorage.getItem('kf058-boot-'+location.pathname)){
+      sessionStorage.setItem('kf058-boot-'+location.pathname,'1');
       setTimeout(()=>location.reload(),40);
     }
     return {configured:true};
@@ -385,8 +489,8 @@
     configured,
     get client(){return client},
     ready,
-    register,login,adminLogin,logout,getCurrentProfile,updateMyAvatar,getPublicProfiles,
-    getStore,saveStore,
+    register,login,adminLogin,logout,getCurrentProfile,updateMyAvatar,updateMyBio,getPublicProfiles,
+    getStore,saveStore,getDiscordNotifications,setDiscordNotifications,testDiscordNotification,
     uploadImageDataUrl:uploadDataUrl,
     uploadImageDataUrlStrict:uploadDataUrl,
     prepareValue,

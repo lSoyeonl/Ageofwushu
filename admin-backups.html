@@ -12,7 +12,7 @@ a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;displa
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="supabase-sync.js?v=0.0.48"></script>
+<script src="supabase-sync.js?v=0.0.58"></script>
 <link rel="stylesheet" href="responsive-0.0.48.css?v=0.0.53">
 <link rel="stylesheet" href="decor-0.0.48.css?v=0.0.48">
 <link rel="stylesheet" href="music-player-0.0.57.css?v=0.0.57">
@@ -21,7 +21,7 @@ a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;displa
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav"><a href="index.html">Главная</a><a href="updates.html">Обновления</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="account.html">Аккаунт</a></nav></header>
 <main class="wrap" id="app">
 <section class="panel"><h1>Резервные копии</h1>
-<p class="muted">В версии 0.0.47 код сайта хранится в GitHub, а живые пользователи, контент, реакции и изображения — в Supabase.</p>
+<p class="muted">В версии <b id="siteVersion">0.0.58</b> код сайта хранится в GitHub, а живые пользователи, контент, реакции и изображения — в Supabase.</p>
 <div class="status" id="status">Проверка подключения...</div></section>
 
 <section class="grid">
@@ -48,6 +48,8 @@ a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;displa
 </article>
 </section>
 
+<section class="panel"><h2>Discord уведомления о новых публикациях</h2><p class="muted">Webhook хранится только в Supabase Edge Function. На сайте сохраняется лишь переключатель уведомлений.</p><label style="display:flex;align-items:center;gap:9px;margin-top:10px"><input id="discordEnabled" type="checkbox" style="width:18px;height:18px"> Отправлять новые публикации в Discord</label><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="discordSaveBtn" type="button">Сохранить</button><button class="btn secondary" id="discordTestBtn" type="button">Отправить тест</button></div><div class="status" id="discordStatus">Проверка настройки...</div></section>
+
 <section class="panel"><h2>Пользователи</h2><div class="table-wrap"><table><thead><tr><th>Никнейм</th><th>E-mail</th><th>Роль</th><th>Создан</th></tr></thead><tbody id="usersTable"></tbody></table></div></section>
 </main>
 <section class="panel hidden" id="denied" style="width:min(620px,calc(100% - 30px));margin:60px auto"><h1>Доступ закрыт</h1><p class="muted">Раздел доступен только администратору.</p><a class="btn" href="admin-login.html">Вход администратора</a></section>
@@ -64,6 +66,11 @@ const importBtn=document.getElementById('importBtn');
 const importStatus=document.getElementById('importStatus');
 const dbBackupsLink=document.getElementById('dbBackupsLink');
 const storageLink=document.getElementById('storageLink');
+const siteVersion=document.getElementById('siteVersion');
+const discordEnabled=document.getElementById('discordEnabled');
+const discordSaveBtn=document.getElementById('discordSaveBtn');
+const discordTestBtn=document.getElementById('discordTestBtn');
+const discordStatus=document.getElementById('discordStatus');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 let imported=null;
 function download(obj,name){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
@@ -75,6 +82,8 @@ async function init(){
   const me=await KFSupabase.getCurrentProfile().catch(()=>null);
   if(!me||me.role!=='admin'){app.classList.add('hidden');denied.classList.remove('hidden');return}
   statusBox.textContent='Supabase подключён. Администратор: '+me.email;
+  try{const v=await KFSupabase.getStore('kungfuSiteVersion','0.0.58');siteVersion.textContent=String(v||'0.0.58').replace(/^"|"$/g,'')}catch{}
+  try{const ds=await KFSupabase.getDiscordNotifications();discordEnabled.checked=!!ds.enabled;discordStatus.textContent=ds.enabled?'Автоматические Discord-уведомления включены.':'Автоматические Discord-уведомления выключены.'}catch(e){discordStatus.textContent=e.message||'Не удалось прочитать настройку Discord.'}
 
   const ref=String(window.KF_SUPABASE_CONFIG.url||'').match(/^https:\/\/([^.]+)\.supabase\.co/i)?.[1]||'';
   if(ref){
@@ -96,7 +105,7 @@ exportBtn.onclick=async()=>{
       KFSupabase.client.from('partner_reviews').select('id,partner_id,user_id,text,rating,created_at,updated_at').order('id')
     ]);
     if(storeRes.error)throw storeRes.error;if(profileRes.error)throw profileRes.error;if(reactionRes.error)throw reactionRes.error;if(partnerReviewRes.error)throw partnerReviewRes.error;
-    download({format:'kungfu-supabase-content-0.0.56',createdAt:new Date().toISOString(),site_store:storeRes.data||[],profiles:profileRes.data||[],content_reactions:reactionRes.data||[],partner_reviews:partnerReviewRes.data||[]},`kungfu_content_${stamp()}.json`);
+    download({format:'kungfu-supabase-content-0.0.58',createdAt:new Date().toISOString(),site_store:storeRes.data||[],profiles:profileRes.data||[],content_reactions:reactionRes.data||[],partner_reviews:partnerReviewRes.data||[]},`kungfu_content_${stamp()}.json`);
     exportStatus.textContent='JSON контента скачан.';
   }catch(e){exportStatus.textContent=e.message||String(e)}
 };
@@ -104,9 +113,12 @@ exportBtn.onclick=async()=>{
 importFile.onchange=async e=>{
   imported=null;importBtn.disabled=true;
   const f=e.target.files&&e.target.files[0];if(!f)return;
-  try{imported=JSON.parse(await f.text());if(!['kungfu-supabase-content-0.0.56','kungfu-supabase-content-0.0.55','kungfu-supabase-content-0.0.48','kungfu-supabase-content-0.0.47'].includes(imported.format))throw new Error('Неподдерживаемый формат.');importBtn.disabled=false;importStatus.textContent='Копия готова к восстановлению.'}
+  try{imported=JSON.parse(await f.text());if(!['kungfu-supabase-content-0.0.58','kungfu-supabase-content-0.0.56','kungfu-supabase-content-0.0.55','kungfu-supabase-content-0.0.48','kungfu-supabase-content-0.0.47'].includes(imported.format))throw new Error('Неподдерживаемый формат.');importBtn.disabled=false;importStatus.textContent='Копия готова к восстановлению.'}
   catch(e){importStatus.textContent=e.message||'Неверный JSON.'}
 };
+
+discordSaveBtn.onclick=async()=>{discordSaveBtn.disabled=true;discordStatus.textContent='Сохранение...';try{await KFSupabase.setDiscordNotifications(discordEnabled.checked);discordStatus.textContent=discordEnabled.checked?'Автоматические Discord-уведомления включены.':'Автоматические Discord-уведомления выключены.'}catch(e){discordStatus.textContent=e.message||'Не удалось сохранить настройку.'}finally{discordSaveBtn.disabled=false}};
+discordTestBtn.onclick=async()=>{discordTestBtn.disabled=true;discordStatus.textContent='Отправка теста...';try{await KFSupabase.testDiscordNotification();discordStatus.textContent='Тест отправлен в Discord.'}catch(e){discordStatus.textContent='Ошибка теста: '+(e.message||String(e))}finally{discordTestBtn.disabled=false}};
 
 importBtn.onclick=async()=>{
   if(!imported)return;
