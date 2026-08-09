@@ -31,6 +31,17 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 @media(max-width:620px){.compact-top{flex-direction:column}.compact-img{width:100%;height:220px}.grid2{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.draft-gallery{grid-template-columns:1fr}}
 
 .table-tools{display:flex;gap:7px;align-items:end;flex-wrap:wrap;margin-top:8px}.table-tools .field{width:110px}.beginner-card{padding:18px}.beginner-card h2{margin:0 0 8px}.beginner-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.beginner-gallery img{width:100%;height:180px;object-fit:cover;border-radius:10px}
+
+.beginner-collapsed-preview{position:relative;margin-top:12px;padding:13px 14px 44px;border:1px solid rgba(255,255,255,.06);border-radius:11px;background:rgba(255,255,255,.022);color:#d7e3e8;line-height:1.58;white-space:pre-wrap;overflow-wrap:anywhere}
+.beginner-collapsed-preview::after{content:"";position:absolute;left:0;right:0;bottom:0;height:62px;border-radius:0 0 11px 11px;background:linear-gradient(transparent,rgba(4,20,30,.98));pointer-events:none}
+.beginner-expand-row{display:flex;justify-content:center;margin:10px 0 2px}
+.beginner-expand-btn{min-height:39px;border:1px solid rgba(228,180,94,.28);border-radius:9px;padding:0 15px;background:#153247;color:#ffe2a0;font-weight:800;cursor:pointer}
+.beginner-expand-btn:hover{border-color:rgba(255,226,160,.62)}
+.beginner-save-status{margin-top:10px;min-height:18px;color:#bcd9e4;font-size:12px}
+.beginner-save-status.ok{color:#c9f4d7}.beginner-save-status.err{color:#ffd0d0}
+.beginner-cover-preview{display:flex;gap:12px;align-items:flex-start;margin-top:10px}.beginner-cover-preview img{width:120px;height:120px;object-fit:cover;border-radius:10px;border:1px solid rgba(228,180,94,.16);flex:0 0 120px}
+@media(max-width:620px){.beginner-cover-preview{display:block}.beginner-cover-preview img{width:100%;height:210px;margin-bottom:9px}}
+
 </style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
@@ -54,7 +65,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <div class="field"><label>Содержание</label><div class="rich-toolbar"><button type="button" onclick="fmt('bold')"><b>B</b></button><button type="button" onclick="fmt('strikeThrough')"><s>S</s></button><select onchange="if(this.value)setRichFontSize('rich',this.value);this.selectedIndex=0"><option value="">Шрифт 5–30 px</option><option value="5">5 px</option><option value="6">6 px</option><option value="7">7 px</option><option value="8">8 px</option><option value="9">9 px</option><option value="10">10 px</option><option value="11">11 px</option><option value="12">12 px</option><option value="13">13 px</option><option value="14">14 px</option><option value="15">15 px</option><option value="16">16 px</option><option value="17">17 px</option><option value="18">18 px</option><option value="19">19 px</option><option value="20">20 px</option><option value="21">21 px</option><option value="22">22 px</option><option value="23">23 px</option><option value="24">24 px</option><option value="25">25 px</option><option value="26">26 px</option><option value="27">27 px</option><option value="28">28 px</option><option value="29">29 px</option><option value="30">30 px</option></select><select class="rich-font-weight-select" onchange="if(this.value)setRichFontWeight('rich',this.value);this.selectedIndex=0"><option value="">Oswald</option><option value="300">Oswald тонкий</option><option value="400">Oswald обычный</option></select><label style="display:flex;align-items:center;gap:5px">Цвет <input type="color" onchange="fmt('foreColor',this.value)"></label><button type="button" onclick="fmt('justifyLeft')" title="По левому краю">⇤</button><button type="button" onclick="fmt('justifyCenter')" title="По центру">↔</button><button type="button" onclick="fmt('justifyRight')" title="По правому краю">⇥</button><button type="button" onclick="insertImageIntoRichEditor('rich')" title="Изображение можно вставить и внутрь ячейки таблицы">+ Изображение</button><button type="button" onclick="fmt('insertUnorderedList')">• Список</button></div><div class="rich-editor" id="rich" contenteditable="true"></div></div>
 <div class="table-tools"><div class="field"><label>Строк</label><input id="tableRows" type="number" min="1" max="20" value="3"></div><div class="field"><label>Колонок</label><input id="tableCols" type="number" min="1" max="10" value="3"></div><button class="btn secondary" type="button" id="insertTable">Добавить таблицу в содержание</button></div>
 <div class="filebox"><label>Изображения (можно несколько)</label><input id="imagesInput" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif"><div class="muted" style="font-size:11px;margin-top:5px">До 8 изображений. Изображения автоматически оптимизируются.</div><div class="draft-gallery" id="draftGallery"></div></div>
-<button class="btn secondary" type="button" id="previewBtn">Предпросмотр</button><button class="btn" id="saveBtn">Опубликовать</button><button class="btn secondary" type="button" id="cancelBtn" style="display:none">Отменить редактирование</button></div></section>
+<button class="btn secondary" type="button" id="previewBtn">Предпросмотр</button><button class="btn" id="saveBtn">Опубликовать</button><button class="btn secondary" type="button" id="cancelBtn" style="display:none">Отменить редактирование</button><div class="beginner-save-status" id="saveStatus"></div></div></section>
 <div class="two-col"><aside class="panel toc"><h3>Оглавление</h3><div class="toc-list" id="toc"></div></aside><section class="content-area" id="content"></section></div></main><div class="preview-modal" id="previewModal"><div class="preview-box"><div class="preview-head"><h2>Предварительный просмотр</h2><button class="btn danger" style="margin:0" type="button" onclick="closePreview()">Закрыть</button></div><div class="preview-content" id="previewContent"></div></div></div>
 <script>
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
@@ -84,19 +95,293 @@ async function filesToData(fileList,limit=8){
   return out;
 }
 
-const u=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null'),isAdmin=!!u&&(u.role||'user')==='admin';if(isAdmin){document.getElementById('editor').classList.add('show');document.getElementById('adminBadge').innerHTML='<span class="admin-badge">АДМИН</span>';document.getElementById('roleNote').textContent='Можно добавлять, редактировать и предварительно просматривать материалы.'}else document.getElementById('roleNote').textContent='Добавление и редактирование доступно только администратору.';
-let items=JSON.parse(localStorage.getItem('kungfuBeginnerGuides')||'[]'),selected=items.length?items[0].id:null,editingId=null,draftImages=[];let types=JSON.parse(localStorage.getItem('kungfuBeginnerTypes')||'null');if(!types||!types.length){types=['Общее'];localStorage.setItem('kungfuBeginnerTypes',JSON.stringify(types))}
-function save(){localStorage.setItem('kungfuBeginnerGuides',JSON.stringify(items))}function saveTypes(){localStorage.setItem('kungfuBeginnerTypes',JSON.stringify(types))}
-function renderTypes(){const sel=document.getElementById('type'),cur=sel.value;sel.innerHTML=types.map(x=>`<option>${esc(x)}</option>`).join('');if(types.includes(cur))sel.value=cur;document.getElementById('typeChips').innerHTML=isAdmin?types.map(x=>`<span class="chip">${esc(x)} <button type="button" onclick="removeType('${encodeURIComponent(x)}')">×</button></span>`).join(''):''}
-document.getElementById('addType').onclick=()=>{if(!isAdmin)return;const i=document.getElementById('newType'),v=i.value.trim();if(!v)return;if(types.some(x=>x.toLowerCase()===v.toLowerCase())){alert('Такой тип уже есть');return}types.push(v);saveTypes();i.value='';renderTypes();document.getElementById('type').value=v};window.removeType=enc=>{if(!isAdmin)return;const v=decodeURIComponent(enc);if(items.some(x=>(x.type||'Общее')===v)){alert('Тип используется материалами');return}types=types.filter(x=>x!==v);if(!types.length)types=['Общее'];saveTypes();renderTypes()};
-function renderDraftGallery(){document.getElementById('draftGallery').innerHTML=draftImages.map((src,i)=>`<div class="draft-img"><img src="${src}" loading="lazy" decoding="async"><button type="button" onclick="removeDraftImage(${i})">×</button></div>`).join('')};window.removeDraftImage=i=>{draftImages.splice(i,1);renderDraftGallery()};document.getElementById('imagesInput').onchange=async()=>{try{const remaining=Math.max(0,8-draftImages.length);const arr=await filesToData([...document.getElementById('imagesInput').files].slice(0,remaining),remaining);draftImages.push(...arr);renderDraftGallery();document.getElementById('imagesInput').value=''}catch(e){alert(e.message)}};
-document.getElementById('insertTable').onclick=()=>{const r=Math.max(1,Math.min(20,Number(document.getElementById('tableRows').value)||1)),c=Math.max(1,Math.min(10,Number(document.getElementById('tableCols').value)||1));let html='<table><thead><tr>'+Array.from({length:c},(_,i)=>`<th contenteditable="true">Заголовок ${i+1}</th>`).join('')+'</tr></thead><tbody>'+Array.from({length:r},()=>'<tr>'+Array.from({length:c},()=>'<td contenteditable="true">Текст</td>').join('')+'</tr>').join('')+'</tbody></table><p><br></p>';document.getElementById('rich').focus();document.execCommand('insertHTML',false,html)};
-function imagesFor(x){const a=Array.isArray(x.images)?x.images.slice():[];if(!a.length&&x.image)a.push(x.image);return a}
-function render(){document.getElementById('toc').innerHTML=items.length?types.map(type=>{const a=items.filter(x=>(x.type||'Общее')===type);if(!a.length)return '';return `<div class="toc-group">${esc(type)}</div>`+a.map(x=>`<a class="toc-item ${x.id===selected?'active':''}" onclick="sel(${x.id})"><b>${esc(x.title)}</b></a>`).join('')}).join(''):'<div class="muted">Пока пусто</div>';const x=items.find(a=>a.id===selected)||items[0];if(x)selected=x.id;document.getElementById('content').innerHTML=x?`<article class="panel beginner-card"><span class="tag">${esc(x.type||'Общее')}</span><h2>${esc(x.title)}</h2>${imagesFor(x).length?`<div class="beginner-gallery">${imagesFor(x).map(src=>`<img src="${src}" loading="lazy" decoding="async">`).join('')}</div>`:''}<div class="rich-output">${cleanRich(x.content||'')}</div>${x.extraLink&&safeUrl(x.extraLink)?`<a class="safe-link" href="${safeUrl(x.extraLink)}" target="_blank" rel="noopener">Дополнительная ссылка</a>`:''}<div class="entry-actions ${isAdmin?'show':''}"><button class="btn secondary" onclick="editItem(${x.id})">Редактировать</button><button class="btn danger" onclick="delItem(${x.id})">Удалить</button></div></article>`:'<div class="panel empty">Материалы пока не добавлены.</div>'}
-window.sel=id=>{selected=id;render()};function reset(){editingId=null;document.getElementById('editorTitle').textContent='Добавить материал';document.getElementById('editNote').classList.remove('show');document.getElementById('saveBtn').textContent='Опубликовать';document.getElementById('cancelBtn').style.display='none';document.getElementById('title').value='';document.getElementById('extraLink').value='';document.getElementById('rich').innerHTML='';draftImages=[];renderDraftGallery()}
-window.editItem=id=>{if(!isAdmin)return;const x=items.find(a=>a.id===id);if(!x)return;editingId=id;selected=id;document.getElementById('type').value=x.type||types[0];document.getElementById('title').value=x.title||'';document.getElementById('extraLink').value=x.extraLink||'';document.getElementById('rich').innerHTML=x.content||'';draftImages=imagesFor(x);renderDraftGallery();document.getElementById('editorTitle').textContent='Редактировать материал';document.getElementById('editNote').classList.add('show');document.getElementById('saveBtn').textContent='Сохранить изменения';document.getElementById('cancelBtn').style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'})};document.getElementById('cancelBtn').onclick=reset;
-document.getElementById('previewBtn').onclick=()=>{const title=document.getElementById('title').value.trim()||'Без заголовка',content=cleanRich(document.getElementById('rich').innerHTML),link=document.getElementById('extraLink').value.trim();openPreview(`<article class="panel beginner-card"><span class="tag">${esc(document.getElementById('type').value)}</span><h2>${esc(title)}</h2>${draftImages.length?`<div class="beginner-gallery">${draftImages.map(src=>`<img src="${src}" loading="lazy" decoding="async">`).join('')}</div>`:''}<div class="rich-output">${content}</div>${link&&safeUrl(link)?`<a class="safe-link" href="${safeUrl(link)}" target="_blank">Дополнительная ссылка</a>`:''}</article>`)};
-document.getElementById('saveBtn').onclick=()=>{if(!isAdmin)return;const title=document.getElementById('title').value.trim(),content=cleanRich(document.getElementById('rich').innerHTML);if(!title||!document.getElementById('rich').innerText.trim()){alert('Заполните заголовок и содержание');return}const item={id:editingId||Date.now(),type:document.getElementById('type').value,title,content,extraLink:document.getElementById('extraLink').value.trim(),images:draftImages.slice(),image:draftImages[0]||''};if(editingId){const i=items.findIndex(x=>x.id===editingId);items[i]={...items[i],...item}}else items.push(item);selected=item.id;save();reset();render()};window.delItem=id=>{if(!isAdmin||!confirm('Удалить материал?'))return;items=items.filter(x=>x.id!==id);selected=items.length?items[0].id:null;save();render()};renderTypes();renderDraftGallery();render();
+const GUIDE_KEY='kungfuBeginnerGuides',TYPE_KEY='kungfuBeginnerTypes';
+let currentUser=null,isAdmin=false,items=[],types=['Общее'],selected=null,editingId=null,draftImages=[];
+const expandedIds=new Set();
+
+function setSaveStatus(text='',kind=''){
+  const el=document.getElementById('saveStatus');
+  if(!el)return;
+  el.textContent=text;
+  el.className='beginner-save-status'+(kind?' '+kind:'');
+}
+function richText(html){
+  const box=document.createElement('div');
+  box.innerHTML=cleanRich(html||'');
+  return (box.innerText||box.textContent||'').replace(/\n{3,}/g,'\n\n').trim();
+}
+function isLongGuide(x){
+  const text=richText(x?.content||'');
+  const html=String(x?.content||'');
+  return text.length>900 || html.length>4500 || /<(table|img)\b/i.test(html) || imagesFor(x).length>1;
+}
+function shortPreview(x){
+  const text=richText(x?.content||'');
+  const limit=850;
+  return text.length>limit?text.slice(0,limit).trimEnd()+'…':text;
+}
+async function saveGuides(nextItems){
+  if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+  await KFSupabase.ready;
+  const saved=await KFSupabase.saveStore(GUIDE_KEY,nextItems);
+  items=Array.isArray(saved)?saved:nextItems;
+  return items;
+}
+async function saveTypesRemote(){
+  if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+  await KFSupabase.ready;
+  const saved=await KFSupabase.saveStore(TYPE_KEY,types);
+  types=Array.isArray(saved)&&saved.length?saved:['Общее'];
+  return types;
+}
+function renderTypes(){
+  const sel=document.getElementById('type'),cur=sel.value;
+  sel.innerHTML=types.map(x=>`<option>${esc(x)}</option>`).join('');
+  if(types.includes(cur))sel.value=cur;
+  document.getElementById('typeChips').innerHTML=isAdmin?types.map(x=>`<span class="chip">${esc(x)} <button type="button" onclick="removeType('${encodeURIComponent(x)}')">×</button></span>`).join(''):'';
+}
+document.getElementById('addType').onclick=async()=>{
+  if(!isAdmin)return;
+  const i=document.getElementById('newType'),v=i.value.trim();
+  if(!v)return;
+  if(types.some(x=>x.toLowerCase()===v.toLowerCase())){alert('Такой тип уже есть');return}
+  const before=types.slice();
+  types.push(v);
+  try{
+    await saveTypesRemote();
+    i.value='';
+    renderTypes();
+    document.getElementById('type').value=v;
+  }catch(e){
+    types=before;
+    renderTypes();
+    alert(e.message||'Не удалось сохранить тип.');
+  }
+};
+window.removeType=async enc=>{
+  if(!isAdmin)return;
+  const v=decodeURIComponent(enc);
+  if(items.some(x=>(x.type||'Общее')===v)){alert('Тип используется материалами');return}
+  const before=types.slice();
+  types=types.filter(x=>x!==v);
+  if(!types.length)types=['Общее'];
+  try{await saveTypesRemote();renderTypes()}
+  catch(e){types=before;renderTypes();alert(e.message||'Не удалось удалить тип.')}
+};
+
+function renderDraftGallery(){
+  document.getElementById('draftGallery').innerHTML=draftImages.map((src,i)=>`<div class="draft-img"><img src="${src}" loading="lazy" decoding="async"><button type="button" onclick="removeDraftImage(${i})">×</button></div>`).join('')
+}
+window.removeDraftImage=i=>{draftImages.splice(i,1);renderDraftGallery()};
+document.getElementById('imagesInput').onchange=async()=>{
+  try{
+    const remaining=Math.max(0,8-draftImages.length);
+    const arr=await filesToData([...document.getElementById('imagesInput').files].slice(0,remaining),remaining);
+    draftImages.push(...arr);renderDraftGallery();document.getElementById('imagesInput').value=''
+  }catch(e){alert(e.message)}
+};
+
+document.getElementById('insertTable').onclick=()=>{
+  const r=Math.max(1,Math.min(20,Number(document.getElementById('tableRows').value)||1)),
+        c=Math.max(1,Math.min(10,Number(document.getElementById('tableCols').value)||1));
+  let html='<table><thead><tr>'+Array.from({length:c},(_,i)=>`<th contenteditable="true">Заголовок ${i+1}</th>`).join('')+'</tr></thead><tbody>'+Array.from({length:r},()=>'<tr>'+Array.from({length:c},()=>'<td contenteditable="true">Текст</td>').join('')+'</tr>').join('')+'</tbody></table><p><br></p>';
+  document.getElementById('rich').focus();
+  document.execCommand('insertHTML',false,html)
+};
+function imagesFor(x){
+  const a=Array.isArray(x?.images)?x.images.slice():[];
+  if(!a.length&&x?.image)a.push(x.image);
+  return a
+}
+
+function fullGuideHtml(x){
+  const imgs=imagesFor(x);
+  return `${imgs.length?`<div class="beginner-gallery">${imgs.map(src=>`<img src="${src}" loading="lazy" decoding="async">`).join('')}</div>`:''}
+    <div class="rich-output">${cleanRich(x.content||'')}</div>
+    ${x.extraLink&&safeUrl(x.extraLink)?`<a class="safe-link" href="${safeUrl(x.extraLink)}" target="_blank" rel="noopener">Дополнительная ссылка</a>`:''}`;
+}
+function collapsedGuideHtml(x){
+  const imgs=imagesFor(x);
+  return `${imgs[0]?`<div class="beginner-cover-preview"><img src="${imgs[0]}" loading="lazy" decoding="async"><div class="beginner-collapsed-preview">${esc(shortPreview(x))}</div></div>`:`<div class="beginner-collapsed-preview">${esc(shortPreview(x))}</div>`}`;
+}
+function render(){
+  document.getElementById('toc').innerHTML=items.length?types.map(type=>{
+    const a=items.filter(x=>(x.type||'Общее')===type);
+    if(!a.length)return '';
+    return `<div class="toc-group">${esc(type)}</div>`+a.map(x=>`<a class="toc-item ${String(x.id)===String(selected)?'active':''}" onclick="sel('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title)}</b></a>`).join('')
+  }).join(''):'<div class="muted">Пока пусто</div>';
+
+  const x=items.find(a=>String(a.id)===String(selected))||items[0];
+  if(x)selected=x.id;
+  if(!x){
+    document.getElementById('content').innerHTML='<div class="panel empty">Материалы пока не добавлены.</div>';
+    return;
+  }
+
+  const long=isLongGuide(x);
+  const expanded=expandedIds.has(String(x.id));
+  const body=long&&!expanded?collapsedGuideHtml(x):fullGuideHtml(x);
+  const toggle=long?`<div class="beginner-expand-row"><button class="beginner-expand-btn" type="button" onclick="toggleGuide('${encodeURIComponent(String(x.id))}')">${expanded?'Свернуть запись':'Развернуть запись полностью'}</button></div>`:'';
+
+  document.getElementById('content').innerHTML=`<article class="panel beginner-card">
+    <span class="tag">${esc(x.type||'Общее')}</span>
+    <h2>${esc(x.title)}</h2>
+    ${body}
+    ${toggle}
+    <div class="entry-actions ${isAdmin?'show':''}">
+      <button class="btn secondary" onclick="editItem('${encodeURIComponent(String(x.id))}')">Редактировать</button>
+      <button class="btn danger" onclick="delItem('${encodeURIComponent(String(x.id))}')">Удалить</button>
+    </div>
+  </article>`;
+}
+window.sel=enc=>{selected=decodeURIComponent(enc);render()};
+window.toggleGuide=enc=>{
+  const id=decodeURIComponent(enc);
+  if(expandedIds.has(String(id)))expandedIds.delete(String(id));else expandedIds.add(String(id));
+  render();
+};
+
+function reset(){
+  editingId=null;
+  document.getElementById('editorTitle').textContent='Добавить материал';
+  document.getElementById('editNote').classList.remove('show');
+  document.getElementById('saveBtn').textContent='Опубликовать';
+  document.getElementById('cancelBtn').style.display='none';
+  document.getElementById('title').value='';
+  document.getElementById('extraLink').value='';
+  document.getElementById('rich').innerHTML='';
+  draftImages=[];
+  renderDraftGallery()
+}
+window.editItem=enc=>{
+  if(!isAdmin)return;
+  const id=decodeURIComponent(enc);
+  const x=items.find(a=>String(a.id)===String(id));
+  if(!x)return;
+  editingId=x.id;selected=x.id;
+  document.getElementById('type').value=x.type||types[0];
+  document.getElementById('title').value=x.title||'';
+  document.getElementById('extraLink').value=x.extraLink||'';
+  document.getElementById('rich').innerHTML=x.content||'';
+  draftImages=imagesFor(x);
+  renderDraftGallery();
+  document.getElementById('editorTitle').textContent='Редактировать материал';
+  document.getElementById('editNote').classList.add('show');
+  document.getElementById('saveBtn').textContent='Сохранить изменения';
+  document.getElementById('cancelBtn').style.display='inline-flex';
+  setSaveStatus('');
+  window.scrollTo({top:0,behavior:'smooth'})
+};
+document.getElementById('cancelBtn').onclick=()=>{reset();setSaveStatus('')};
+
+document.getElementById('previewBtn').onclick=()=>{
+  const title=document.getElementById('title').value.trim()||'Без заголовка',
+        content=cleanRich(document.getElementById('rich').innerHTML),
+        link=document.getElementById('extraLink').value.trim();
+  openPreview(`<article class="panel beginner-card"><span class="tag">${esc(document.getElementById('type').value)}</span><h2>${esc(title)}</h2>${draftImages.length?`<div class="beginner-gallery">${draftImages.map(src=>`<img src="${src}" loading="lazy" decoding="async">`).join('')}</div>`:''}<div class="rich-output">${content}</div>${link&&safeUrl(link)?`<a class="safe-link" href="${safeUrl(link)}" target="_blank">Дополнительная ссылка</a>`:''}</article>`)
+};
+
+document.getElementById('saveBtn').onclick=async()=>{
+  if(!isAdmin)return;
+  const title=document.getElementById('title').value.trim(),
+        content=cleanRich(document.getElementById('rich').innerHTML);
+  if(!title||!document.getElementById('rich').innerText.trim()){
+    alert('Заполните заголовок и содержание');return
+  }
+
+  const item={
+    id:editingId||Date.now(),
+    type:document.getElementById('type').value,
+    title,
+    content,
+    extraLink:document.getElementById('extraLink').value.trim(),
+    images:draftImages.slice(),
+    image:draftImages[0]||''
+  };
+
+  const before=items.slice();
+  const next=items.slice();
+  if(editingId){
+    const i=next.findIndex(x=>String(x.id)===String(editingId));
+    if(i<0){alert('Материал для редактирования не найден.');return}
+    next[i]={...next[i],...item};
+  }else next.push(item);
+
+  const btn=document.getElementById('saveBtn'),oldText=btn.textContent;
+  btn.disabled=true;
+  btn.textContent='Сохранение...';
+  setSaveStatus('Сохраняю материал в Supabase. Для длинной записи и изображений это может занять несколько секунд.');
+
+  try{
+    await saveGuides(next);
+    selected=item.id;
+    expandedIds.delete(String(item.id));
+    reset();
+    render();
+    setSaveStatus('Материал сохранён и опубликован.','ok');
+  }catch(e){
+    items=before;
+    render();
+    setSaveStatus(e.message||'Не удалось сохранить материал в Supabase.','err');
+  }finally{
+    btn.disabled=false;
+    if(btn.textContent==='Сохранение...')btn.textContent=oldText;
+  }
+};
+
+window.delItem=async enc=>{
+  if(!isAdmin||!confirm('Удалить материал?'))return;
+  const id=decodeURIComponent(enc);
+  const before=items.slice();
+  const next=items.filter(x=>String(x.id)!==String(id));
+  setSaveStatus('Удаление...');
+  try{
+    await saveGuides(next);
+    expandedIds.delete(String(id));
+    selected=items.length?items[0].id:null;
+    render();
+    setSaveStatus('Материал удалён.','ok');
+  }catch(e){
+    items=before;
+    render();
+    setSaveStatus(e.message||'Не удалось удалить материал.','err');
+  }
+};
+
+async function init(){
+  try{
+    if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+    await KFSupabase.ready;
+    currentUser=await KFSupabase.getCurrentProfile().catch(()=>null);
+    isAdmin=!!currentUser&&(currentUser.role||'user')==='admin';
+
+    if(isAdmin){
+      document.getElementById('editor').classList.add('show');
+      document.getElementById('adminBadge').innerHTML='<span class="admin-badge">АДМИН</span>';
+      document.getElementById('roleNote').textContent='Можно добавлять, редактировать и предварительно просматривать материалы.'
+    }else{
+      document.getElementById('roleNote').textContent='Добавление и редактирование доступно только администратору.'
+    }
+
+    const [remoteItems,remoteTypes]=await Promise.all([
+      KFSupabase.getStore(GUIDE_KEY,[]),
+      KFSupabase.getStore(TYPE_KEY,['Общее'])
+    ]);
+    items=Array.isArray(remoteItems)?remoteItems:[];
+    types=Array.isArray(remoteTypes)&&remoteTypes.length?remoteTypes:['Общее'];
+    selected=items.length?items[0].id:null;
+
+    renderTypes();
+    renderDraftGallery();
+    render();
+  }catch(e){
+    document.getElementById('roleNote').style.color='#ffd0d0';
+    document.getElementById('roleNote').textContent=e.message||'Не удалось загрузить справочник из Supabase.';
+    items=[];types=['Общее'];
+    renderTypes();renderDraftGallery();render();
+  }
+}
+init();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script src="rich-table-tools-0.0.62.js?v=0.0.62"></script>
 <script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
