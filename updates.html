@@ -51,6 +51,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="supabase-sync.js?v=0.0.66"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="reactions-0.0.48.js?v=0.0.66"></script>
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
@@ -142,6 +143,17 @@ function readShared(key,fallback){
   return fallback;
 }
 let kinds=readShared('kungfuUpdateTypes',['Ивенты','Обновление Патча','Прочие Добавления']),items=readShared('kungfuUpdates',[]),selected=items.length?items[items.length-1].id:null,activeKind='Все',image='',editingId=null,draftLinks=[];
+window.KFManualDraftExtras={
+  capture:()=>({editingId:editingId??null,image:image||'',rewards:Array.isArray(draftRewards)?draftRewards.slice():[],links:Array.isArray(draftLinks)?draftLinks.map(x=>({...x})):[]}),
+  restore:(x)=>{
+    x=x||{};editingId=x.editingId??null;
+    if(editingId){editorTitle.textContent='Редактировать обновление';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex'}else{editorTitle.textContent='Добавить обновление';editNote.classList.remove('show');saveBtn.textContent='Опубликовать';cancelBtn.style.display='none'}
+    if(Array.isArray(x.rewards)){draftRewards=x.rewards.slice();if(!draftRewards.length)draftRewards=[''];renderRewardsBuilder();toggleRewardField()}
+    if(Array.isArray(x.links)){draftLinks=x.links.map(v=>({...v}));if(!draftLinks.length)draftLinks=[{url:'',note:''}];renderLinkBuilder()}
+    image=x.image||'';const prev=document.getElementById('updateImagePreview');
+    if(prev){if(image){prev.src=image;prev.classList.add('show')}else{prev.removeAttribute('src');prev.classList.remove('show')}}
+  }
+};
 async function save(){
   if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
   items=await KFSupabase.saveStore('kungfuUpdates',items);
@@ -337,6 +349,7 @@ window.addEventListener('kf-public-data-change',()=>render());window.addEventLis
 draftRewards=[''];renderRewardsBuilder();draftLinks=[{url:'',note:''}];renderLinkBuilder();renderKinds();render();hydrateUpdates();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script src="rich-table-tools-0.0.62.js?v=0.0.62"></script>
-<script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
+<script src="draft-recovery-0.0.69.js?v=0.0.69"></script>
+<script src="word-editor-0.0.69.js?v=0.0.69"></script>
 <script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body></html>

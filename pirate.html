@@ -52,6 +52,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="supabase-sync.js?v=0.0.66"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="reactions-0.0.48.js?v=0.0.66"></script>
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
@@ -125,6 +126,10 @@ function readPublishedPosts(){
   return [];
 }
 let posts=readPublishedPosts(),draftImages=[],editingId=null;
+window.KFManualDraftExtras={
+  capture:()=>({editingId:editingId??null,draftImages:Array.isArray(draftImages)?draftImages.slice():[]}),
+  restore:(x)=>{editingId=x?.editingId??null;draftImages=Array.isArray(x?.draftImages)?x.draftImages.slice():[];renderDraft();if(editingId){editorTitle.textContent='Редактировать материал';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex'}else{editorTitle.textContent='Добавить материал';editNote.classList.remove('show');saveBtn.textContent='Опубликовать';cancelBtn.style.display='none'}}
+};
 async function save(){
   if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
   posts=await KFSupabase.saveStore('kungfuPirateContent',posts);
@@ -198,6 +203,7 @@ window.addEventListener('kf-public-data-change',e=>{if(e.detail&&e.detail.key===
 renderDraft();render();hydratePublishedPosts();
 </script><script src="image-tools-0.0.48.js?v=0.0.48"></script>
 <script src="rich-table-tools-0.0.62.js?v=0.0.62"></script>
-<script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
+<script src="draft-recovery-0.0.69.js?v=0.0.69"></script>
+<script src="word-editor-0.0.69.js?v=0.0.69"></script>
 <script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body></html>

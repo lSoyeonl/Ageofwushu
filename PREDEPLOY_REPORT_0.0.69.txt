@@ -1,0 +1,22 @@
+PREDEPLOY REPORT 0.0.69
+
+Изменённые страницы:
+- updates.html
+- pirate.html
+- taiwan.html
+- beginners.html
+- bots.html
+- admin-backups.html (номер сборки)
+
+Новые файлы:
+- word-editor-0.0.69.js
+- word-editor-0.0.69.css
+- draft-recovery-0.0.69.js
+
+Проверки:
+- синтаксис новых JS-файлов: OK (node --check);
+- синтаксис inline JS изменённых HTML: OK;
+- на всех 5 страницах с rich-toolbar подключены word-editor JS/CSS;
+- в трёх требуемых разделах подключён draft-recovery 0.0.69;
+- схема Supabase не изменена;
+- supabase-config.js в CLEAN-архив не добавлялся.
