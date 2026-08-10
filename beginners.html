@@ -42,6 +42,12 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 .beginner-cover-preview{display:flex;gap:12px;align-items:flex-start;margin-top:10px}.beginner-cover-preview img{width:120px;height:120px;object-fit:cover;border-radius:10px;border:1px solid rgba(228,180,94,.16);flex:0 0 120px}
 @media(max-width:620px){.beginner-cover-preview{display:block}.beginner-cover-preview img{width:100%;height:210px;margin-bottom:9px}}
 
+
+.article-intro{margin:12px 0;padding:13px 15px;border-left:3px solid #e4b45e;border-radius:9px;background:rgba(228,180,94,.065);color:#e4edf1;font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.article-intro b{color:#ffe2a0}
+.beginner-collapsed-preview.article-intro{margin-top:0;padding-bottom:13px}
+.beginner-collapsed-preview.article-intro::after{display:none}
+
 </style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
@@ -60,6 +66,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 </nav></header>
 <main class="wrap"><section class="panel page-head"><h1>Справочник Новичкам <span id="adminBadge"></span></h1><p class="muted">Текст, таблицы, дополнительная ссылка и несколько изображений в одном материале.</p><div class="role-note" id="roleNote"></div>
 <div class="editor" id="editor"><h2 id="editorTitle" style="margin-top:0">Добавить материал</h2><div class="edit-note" id="editNote">Режим редактирования опубликованного материала.</div><div class="grid2"><div class="field"><label>Тип</label><select id="type"></select></div><div class="field"><label>Заголовок</label><input id="title"></div></div>
+<div class="field"><label>Вступление</label><textarea id="intro" maxlength="1200" placeholder="Кратко опишите, о чём эта статья и что пользователь узнает после прочтения."></textarea><div class="muted" style="font-size:11px;margin-top:5px">Для длинной статьи это вступление показывается рядом с первой картинкой в свернутом виде. До 1200 символов.</div></div>
 <div class="type-manager"><div class="field"><label>Добавить новый тип</label><input id="newType" maxlength="80"></div><button class="btn secondary" id="addType" type="button">Добавить тип</button></div><div class="chips" id="typeChips"></div>
 <div class="field"><label>Дополнительная ссылка</label><input id="extraLink" placeholder="https://..."></div>
 <div class="field"><label>Содержание</label><div class="rich-toolbar"><button type="button" onclick="fmt('bold')"><b>B</b></button><button type="button" onclick="fmt('strikeThrough')"><s>S</s></button><select onchange="if(this.value)setRichFontSize('rich',this.value);this.selectedIndex=0"><option value="">Шрифт 5–30 px</option><option value="5">5 px</option><option value="6">6 px</option><option value="7">7 px</option><option value="8">8 px</option><option value="9">9 px</option><option value="10">10 px</option><option value="11">11 px</option><option value="12">12 px</option><option value="13">13 px</option><option value="14">14 px</option><option value="15">15 px</option><option value="16">16 px</option><option value="17">17 px</option><option value="18">18 px</option><option value="19">19 px</option><option value="20">20 px</option><option value="21">21 px</option><option value="22">22 px</option><option value="23">23 px</option><option value="24">24 px</option><option value="25">25 px</option><option value="26">26 px</option><option value="27">27 px</option><option value="28">28 px</option><option value="29">29 px</option><option value="30">30 px</option></select><select class="rich-font-weight-select" onchange="if(this.value)setRichFontWeight('rich',this.value);this.selectedIndex=0"><option value="">Oswald</option><option value="300">Oswald тонкий</option><option value="400">Oswald обычный</option></select><label style="display:flex;align-items:center;gap:5px">Цвет <input type="color" onchange="fmt('foreColor',this.value)"></label><button type="button" onclick="fmt('justifyLeft')" title="По левому краю">⇤</button><button type="button" onclick="fmt('justifyCenter')" title="По центру">↔</button><button type="button" onclick="fmt('justifyRight')" title="По правому краю">⇥</button><button type="button" onclick="insertImageIntoRichEditor('rich')" title="Изображение можно вставить и внутрь ячейки таблицы">+ Изображение</button><button type="button" onclick="fmt('insertUnorderedList')">• Список</button></div><div class="rich-editor" id="rich" contenteditable="true"></div></div>
@@ -116,9 +123,9 @@ function isLongGuide(x){
   return text.length>900 || html.length>4500 || /<(table|img)\b/i.test(html) || imagesFor(x).length>1;
 }
 function shortPreview(x){
-  const text=richText(x?.content||'');
-  const limit=850;
-  return text.length>limit?text.slice(0,limit).trimEnd()+'…':text;
+  const intro=String(x?.intro||'').trim();
+  if(intro)return intro;
+  return 'Вступление пока не добавлено. Разверните запись полностью, чтобы прочитать материал с исходным оформлением.';
 }
 async function saveGuides(nextItems){
   if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
@@ -196,13 +203,16 @@ function imagesFor(x){
 
 function fullGuideHtml(x){
   const imgs=imagesFor(x);
+  const intro=String(x?.intro||'').trim();
   return `${imgs.length?`<div class="beginner-gallery">${imgs.map(src=>`<img src="${src}" loading="lazy" decoding="async">`).join('')}</div>`:''}
+    ${intro?`<div class="article-intro"><b>Вступление.</b> ${esc(intro)}</div>`:''}
     <div class="rich-output">${cleanRich(x.content||'')}</div>
     ${x.extraLink&&safeUrl(x.extraLink)?`<a class="safe-link" href="${safeUrl(x.extraLink)}" target="_blank" rel="noopener">Дополнительная ссылка</a>`:''}`;
 }
 function collapsedGuideHtml(x){
   const imgs=imagesFor(x);
-  return `${imgs[0]?`<div class="beginner-cover-preview"><img src="${imgs[0]}" loading="lazy" decoding="async"><div class="beginner-collapsed-preview">${esc(shortPreview(x))}</div></div>`:`<div class="beginner-collapsed-preview">${esc(shortPreview(x))}</div>`}`;
+  const summary=shortPreview(x);
+  return `${imgs[0]?`<div class="beginner-cover-preview"><img src="${imgs[0]}" loading="lazy" decoding="async"><div class="beginner-collapsed-preview article-intro"><b>Вступление.</b> ${esc(summary)}</div></div>`:`<div class="beginner-collapsed-preview article-intro"><b>Вступление.</b> ${esc(summary)}</div>`}`;
 }
 function render(){
   document.getElementById('toc').innerHTML=items.length?types.map(type=>{
@@ -248,6 +258,7 @@ function reset(){
   document.getElementById('saveBtn').textContent='Опубликовать';
   document.getElementById('cancelBtn').style.display='none';
   document.getElementById('title').value='';
+  document.getElementById('intro').value='';
   document.getElementById('extraLink').value='';
   document.getElementById('rich').innerHTML='';
   draftImages=[];
@@ -261,6 +272,7 @@ window.editItem=enc=>{
   editingId=x.id;selected=x.id;
   document.getElementById('type').value=x.type||types[0];
   document.getElementById('title').value=x.title||'';
+  document.getElementById('intro').value=x.intro||'';
   document.getElementById('extraLink').value=x.extraLink||'';
   document.getElementById('rich').innerHTML=x.content||'';
   draftImages=imagesFor(x);
@@ -276,23 +288,30 @@ document.getElementById('cancelBtn').onclick=()=>{reset();setSaveStatus('')};
 
 document.getElementById('previewBtn').onclick=()=>{
   const title=document.getElementById('title').value.trim()||'Без заголовка',
+        intro=document.getElementById('intro').value.trim(),
         content=cleanRich(document.getElementById('rich').innerHTML),
         link=document.getElementById('extraLink').value.trim();
-  openPreview(`<article class="panel beginner-card"><span class="tag">${esc(document.getElementById('type').value)}</span><h2>${esc(title)}</h2>${draftImages.length?`<div class="beginner-gallery">${draftImages.map(src=>`<img src="${src}" loading="lazy" decoding="async">`).join('')}</div>`:''}<div class="rich-output">${content}</div>${link&&safeUrl(link)?`<a class="safe-link" href="${safeUrl(link)}" target="_blank">Дополнительная ссылка</a>`:''}</article>`)
+  openPreview(`<article class="panel beginner-card"><span class="tag">${esc(document.getElementById('type').value)}</span><h2>${esc(title)}</h2>${draftImages.length?`<div class="beginner-gallery">${draftImages.map(src=>`<img src="${src}" loading="lazy" decoding="async">`).join('')}</div>`:''}${intro?`<div class="article-intro"><b>Вступление.</b> ${esc(intro)}</div>`:''}<div class="rich-output">${content}</div>${link&&safeUrl(link)?`<a class="safe-link" href="${safeUrl(link)}" target="_blank">Дополнительная ссылка</a>`:''}</article>`)
 };
 
 document.getElementById('saveBtn').onclick=async()=>{
   if(!isAdmin)return;
   const title=document.getElementById('title').value.trim(),
+        intro=document.getElementById('intro').value.trim(),
         content=cleanRich(document.getElementById('rich').innerHTML);
   if(!title||!document.getElementById('rich').innerText.trim()){
     alert('Заполните заголовок и содержание');return
+  }
+  const draftForLength={content,images:draftImages};
+  if(isLongGuide(draftForLength)&&!intro){
+    alert('Для длинного материала заполните поле «Вступление» — оно будет аккуратно показано в свернутой карточке.');return
   }
 
   const item={
     id:editingId||Date.now(),
     type:document.getElementById('type').value,
     title,
+    intro,
     content,
     extraLink:document.getElementById('extraLink').value.trim(),
     images:draftImages.slice(),

@@ -39,6 +39,13 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 @media(max-width:850px){.layout{grid-template-columns:1fr}.toc{position:relative;top:auto}}
 @media(max-width:820px){.update-body-grid{grid-template-columns:1fr}.published-update-image{max-width:100%;max-height:420px}.update-cover-col{display:flex;justify-content:flex-start}}
 .content-admin-badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,#f2cf7c,#b88131);color:#251706;font-size:10px;font-weight:800;line-height:1;vertical-align:middle;margin-left:7px;white-space:nowrap}
+
+.article-intro{margin:10px 0 13px;padding:13px 15px;border-left:3px solid #e4b45e;border-radius:9px;background:rgba(228,180,94,.065);color:#e5eef2;font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.article-intro b{color:#ffe2a0}
+.article-expand-row{display:flex;justify-content:center;margin:11px 0 3px}
+.article-expand-btn{min-height:39px;border:1px solid rgba(228,180,94,.3);border-radius:9px;padding:0 15px;background:#153247;color:#ffe2a0;font-weight:800;cursor:pointer}
+.article-expand-btn:hover{border-color:rgba(255,226,160,.65)}
+
 </style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
@@ -59,6 +66,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 </nav></header>
 <main class="wrap"><section class="panel page-head"><h1>Обновления</h1><div class="role-note" id="roleNote"></div><div class="editor" id="editor"><h2 id="editorTitle">Добавить обновление</h2><div class="edit-note" id="editNote">Редактирование опубликованного обновления.</div>
 <div class="grid2"><div class="field"><label>Заголовок</label><input id="title"></div><div class="field"><label>Сервер</label><select id="server"><option>Пиратка</option><option>Тайвань</option></select></div></div>
+<div class="field"><label>Вступление</label><textarea id="intro" maxlength="1200" placeholder="Краткое обобщение новости: что произошло и что важно знать читателю."></textarea><div class="muted" style="font-size:11px;margin-top:5px">Для длинного обновления вступление показывается рядом с первой картинкой до разворачивания полной записи.</div></div>
 <div class="grid2"><div class="field"><label>Тип контента</label><select id="kind"></select></div><div class="field date-mode-field"><label>Дата / Период</label><select id="dateMode"><option value="date">Дата</option><option value="period">Выбрать Период</option></select></div></div>
 <div class="type-manager"><div class="field"><label>Добавить тип контента</label><input id="newKind" placeholder="Например: Ивенты"></div><button class="btn secondary" id="addKind" type="button">Добавить тип</button></div><div class="chips" id="kindChips"></div>
 <div class="grid2"><div class="field"><label>Дата начала</label><input id="dateStart" type="date"></div><div class="field" id="dateEndWrap" style="display:none"><label>Дата окончания</label><input id="dateEnd" type="date"></div></div>
@@ -210,8 +218,33 @@ dateMode.onchange=()=>dateEndWrap.style.display=dateMode.value==='period'?'block
 const today=new Date().toISOString().slice(0,10);dateStart.value=today;dateEnd.value=today;function toggleRewardField(){rewardWrap.style.display=promoCodes.value.trim()?'block':'none';if(promoCodes.value.trim()&&!draftRewards.length){draftRewards=[''];renderRewardsBuilder()}}promoCodes.addEventListener('input',toggleRewardField);toggleRewardField();
 img.onchange=async()=>{const f=img.files[0];if(!f)return;try{image=await imageToData(f,1800);updateImagePreview.src=image;updateImagePreview.classList.add('show')}catch(e){alert(e.message||'Не удалось обработать изображение');img.value=''}};
 function fd(v){if(!v)return '';const [y,m,d]=v.split('-');return `${d}.${m}.${y}`}
+const expandedUpdateIds=new Set();
+function updatePlainText(html){
+  const box=document.createElement('div');
+  box.innerHTML=cleanRich(html||'');
+  return (box.innerText||box.textContent||'').replace(/\n{3,}/g,'\n\n').trim();
+}
+function updateSummary(x){
+  const intro=String(x?.intro||'').trim();
+  if(intro)return intro;
+  return 'Вступление пока не добавлено. Разверните запись полностью, чтобы прочитать материал с исходным оформлением.';
+}
+function isLongUpdate(x){
+  const text=updatePlainText(x?.content||x?.text||'');
+  const html=String(x?.content||x?.text||'');
+  return text.length>900||html.length>4500||/<(table|img)\b/i.test(html);
+}
+window.toggleUpdateArticle=id=>{
+  const key=String(id);
+  if(expandedUpdateIds.has(key))expandedUpdateIds.delete(key);else expandedUpdateIds.add(key);
+  render();
+};
 function card(x,preview=false){
   const hasImage=!!x.image;
+  const long=!preview&&isLongUpdate(x);
+  const expanded=preview||!long||expandedUpdateIds.has(String(x.id));
+  const intro=String(x.intro||'').trim();
+  const summary=updateSummary(x);
   return `<article class="panel update-card ${x.pinned?'pinned-update':''}">
     ${x.pinned?'<span class="tag pin-tag">📌 Закреплено</span> ':''}<span class="tag">${esc(x.server||x.category||'Пиратка')}</span> <span class="tag">${esc(x.kind||'Прочие Добавления')}</span>
     <h2>${esc(x.title||'Без заголовка')}${!preview?'<span class="content-admin-badge">Админ</span>':''}</h2>
@@ -219,24 +252,29 @@ function card(x,preview=false){
     <div class="update-body-grid ${hasImage?'has-image':'no-image'}">
       ${hasImage?`<div class="update-cover-col"><img class="published-update-image" src="${x.image}" loading="eager" alt="${esc(x.title||'Обновление')}" onerror="this.style.display='none';console.warn('Не удалось загрузить изображение обновления',this.src)"></div>`:''}
       <div class="update-copy-col">
-        <div class="rich-output">${cleanRich(x.content||x.text||'')}</div>
-        ${x.promoCodes?`<div class="promo"><b>Промокоды</b><br>${esc(x.promoCodes)}</div>${rewardsHtml(x)}`:''}
-        ${linksHtml(x.links)}
+        ${expanded
+          ?`${intro?`<div class="article-intro"><b>Вступление.</b> ${esc(intro)}</div>`:''}
+             <div class="rich-output">${cleanRich(x.content||x.text||'')}</div>
+             ${x.promoCodes?`<div class="promo"><b>Промокоды</b><br>${esc(x.promoCodes)}</div>${rewardsHtml(x)}`:''}
+             ${linksHtml(x.links)}`
+          :`<div class="article-intro"><b>Вступление.</b> ${esc(summary)}</div>`}
       </div>
     </div>
+    ${long?`<div class="article-expand-row"><button class="article-expand-btn" type="button" onclick="toggleUpdateArticle('${x.id}')">${expanded?'Свернуть запись':'Развернуть запись полностью'}</button></div>`:''}
     ${!preview?`<div id="kf-update-reactions-${x.id}"></div>`:''}
     ${isAdmin&&!preview?`<div class="entry-actions"><button class="btn secondary" onclick="togglePin(${x.id})">${x.pinned?'Открепить':'Закрепить'}</button><button class="btn secondary" onclick="editUpdate(${x.id})">Редактировать</button><button class="btn danger" onclick="delUpdate(${x.id})">Удалить</button></div>`:''}
   </article>`;
 }
 function render(){const sf=serverFilter.value,list=items.filter(x=>(sf==='Все серверы'||(x.server||x.category||'Пиратка')===sf)&&(activeKind==='Все'||(x.kind||'Прочие Добавления')===activeKind)).slice().sort((a,b)=>(Number(!!b.pinned)-Number(!!a.pinned))||((b.id||0)-(a.id||0)));tocList.innerHTML=list.map(x=>`<button class="filter-btn" onclick="selectUpdate(${x.id})">${x.pinned?'📌 ':''}${esc(x.title)}<small style="display:block;color:#9db0b8">${esc(x.periodLabel||x.date||'')}</small></button>`).join('')||'<div class="muted">Пусто</div>';const x=items.find(a=>a.id===selected&&list.includes(a))||list[0];if(x)selected=x.id;content.innerHTML=x?card(x):'<div class="panel empty">Обновлений пока нет.</div>';renderKinds();if(x)setTimeout(()=>{if(window.KFReactions)KFReactions.mountSmiles('kf-update-reactions-'+x.id,'kungfuUpdates',x.id)},0)}
 window.selectUpdate=id=>{selected=id;render()};window.togglePin=async id=>{if(!isAdmin)return;const x=items.find(a=>a.id===id);if(!x)return;const before=!!x.pinned;x.pinned=!x.pinned;selected=id;try{await save();render()}catch(e){x.pinned=before;alert(e.message||'Не удалось изменить закрепление')}};
-function reset(){editingId=null;title.value='';server.value='Пиратка';kind.value=kinds[0]||'';dateMode.value='date';dateEndWrap.style.display='none';dateStart.value=today;dateEnd.value=today;promoCodes.value='';draftRewards=[''];renderRewardsBuilder();rewardWrap.style.display='none';draftLinks=[{url:'',note:''}];renderLinkBuilder();pinned.checked=false;rich.innerHTML='';img.value='';image='';updateImagePreview.src='';updateImagePreview.classList.remove('show');editorTitle.textContent='Добавить обновление';editNote.classList.remove('show');saveBtn.textContent='Опубликовать';cancelBtn.style.display='none'}
-window.editUpdate=id=>{if(!isAdmin)return;const x=items.find(a=>a.id===id);if(!x)return;editingId=id;title.value=x.title||'';server.value=x.server||x.category||'Пиратка';kind.value=x.kind||kinds[0]||'';dateMode.value=x.dateMode||'date';dateStart.value=x.dateStart||today;dateEnd.value=x.dateEnd||x.dateStart||today;dateEndWrap.style.display=dateMode.value==='period'?'block':'none';promoCodes.value=x.promoCodes||'';draftRewards=normalizeRewards(x);if(!draftRewards.length)draftRewards=[''];renderRewardsBuilder();toggleRewardField();draftLinks=normalizeLinks(x.links);if(!draftLinks.length)draftLinks=[{url:'',note:''}];renderLinkBuilder();pinned.checked=!!x.pinned;rich.innerHTML=x.content||x.text||'';image=x.image||'';if(image){updateImagePreview.src=image;updateImagePreview.classList.add('show')}else{updateImagePreview.classList.remove('show')}editorTitle.textContent='Редактировать обновление';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'})}
+function reset(){editingId=null;title.value='';intro.value='';server.value='Пиратка';kind.value=kinds[0]||'';dateMode.value='date';dateEndWrap.style.display='none';dateStart.value=today;dateEnd.value=today;promoCodes.value='';draftRewards=[''];renderRewardsBuilder();rewardWrap.style.display='none';draftLinks=[{url:'',note:''}];renderLinkBuilder();pinned.checked=false;rich.innerHTML='';img.value='';image='';updateImagePreview.src='';updateImagePreview.classList.remove('show');editorTitle.textContent='Добавить обновление';editNote.classList.remove('show');saveBtn.textContent='Опубликовать';cancelBtn.style.display='none'}
+window.editUpdate=id=>{if(!isAdmin)return;const x=items.find(a=>a.id===id);if(!x)return;editingId=id;title.value=x.title||'';intro.value=x.intro||'';server.value=x.server||x.category||'Пиратка';kind.value=x.kind||kinds[0]||'';dateMode.value=x.dateMode||'date';dateStart.value=x.dateStart||today;dateEnd.value=x.dateEnd||x.dateStart||today;dateEndWrap.style.display=dateMode.value==='period'?'block':'none';promoCodes.value=x.promoCodes||'';draftRewards=normalizeRewards(x);if(!draftRewards.length)draftRewards=[''];renderRewardsBuilder();toggleRewardField();draftLinks=normalizeLinks(x.links);if(!draftLinks.length)draftLinks=[{url:'',note:''}];renderLinkBuilder();pinned.checked=!!x.pinned;rich.innerHTML=x.content||x.text||'';image=x.image||'';if(image){updateImagePreview.src=image;updateImagePreview.classList.add('show')}else{updateImagePreview.classList.remove('show')}editorTitle.textContent='Редактировать обновление';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'})}
 cancelBtn.onclick=reset;
-previewBtn.onclick=()=>{const label=dateMode.value==='period'?`${fd(dateStart.value)} — ${fd(dateEnd.value)}`:fd(dateStart.value);openPreview(card({id:'preview',title:title.value.trim()||'Без заголовка',server:server.value,kind:kind.value,periodLabel:label,promoCodes:promoCodes.value.trim(),rewards:normalizeRewards(draftRewards),links:normalizeLinks(draftLinks),pinned:pinned.checked,content:cleanRich(rich.innerHTML),image},true))};
+previewBtn.onclick=()=>{const label=dateMode.value==='period'?`${fd(dateStart.value)} — ${fd(dateEnd.value)}`:fd(dateStart.value);openPreview(card({id:'preview',title:title.value.trim()||'Без заголовка',intro:intro.value.trim(),server:server.value,kind:kind.value,periodLabel:label,promoCodes:promoCodes.value.trim(),rewards:normalizeRewards(draftRewards),links:normalizeLinks(draftLinks),pinned:pinned.checked,content:cleanRich(rich.innerHTML),image},true))};
 saveBtn.onclick=async()=>{if(!isAdmin)return;const btn=saveBtn,oldText=btn.textContent;btn.disabled=true;btn.textContent='Публикация...';try{
-  const titleValue=title.value.trim(),contentHtml=cleanRich(rich.innerHTML);
+  const titleValue=title.value.trim(),introValue=intro.value.trim(),contentHtml=cleanRich(rich.innerHTML);
   if(!titleValue||!rich.innerText.trim())throw new Error('Заполните заголовок и содержание');
+  if(isLongUpdate({content:contentHtml})&&!introValue)throw new Error('Для длинного обновления заполните поле «Вступление» — оно будет показано до разворачивания полной записи.');
   if(!dateStart.value)throw new Error('Выберите дату');
 
   const label=dateMode.value==='period'?`${fd(dateStart.value)} — ${fd(dateEnd.value)}`:fd(dateStart.value);
@@ -254,6 +292,7 @@ saveBtn.onclick=async()=>{if(!isAdmin)return;const btn=saveBtn,oldText=btn.textC
   const item={
     id:editingId||Date.now(),
     title:titleValue,
+    intro:introValue,
     server:server.value,
     kind:kind.value,
     dateMode:dateMode.value,
