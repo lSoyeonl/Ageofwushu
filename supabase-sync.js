@@ -1,6 +1,6 @@
 (function(){
-  if(window.__KF_SUPABASE_V0072__)return;
-  window.__KF_SUPABASE_V0072__=true;
+  if(window.__KF_SUPABASE_V0073__)return;
+  window.__KF_SUPABASE_V0073__=true;
 
   const cfg=window.KF_SUPABASE_CONFIG||{};
   const storageCfg=window.KF_STORAGE_CONFIG||{};
@@ -691,7 +691,7 @@
     getStore,saveStore,getDiscordNotifications,setDiscordNotifications,testDiscordNotification,getDiscordSections,
     uploadImageDataUrl:uploadDataUrl,
     uploadImageDataUrlStrict:uploadDataUrl,
-    uploadAvatarDataUrlStrict:(dataUrl)=>uploadDataUrl(dataUrl,{purpose:'avatar'}),
+    uploadAvatarDataUrlStrict:(dataUrl)=>uploadDataUrl(dataUrl,{purpose:'community'}),
     getStorageInfo:()=>({provider:storageProvider(),yandexConfigured:!!String(storageCfg.yandexPresignEndpoint||'').trim(),fallbackToSupabase:storageCfg.fallbackToSupabase!==false}),
     prepareValue,
     async refreshStore(){await ready;return await bootstrapStore()}
