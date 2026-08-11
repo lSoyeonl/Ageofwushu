@@ -410,12 +410,24 @@
     if(!signRes.ok)throw new Error(signed?.error||`Yandex Cloud Function: ошибка ${signRes.status}.`);
     if(!signed?.uploadUrl||!signed?.url)throw new Error('Yandex Cloud Function не вернула ссылку для загрузки.');
 
-    const putRes=await fetch(signed.uploadUrl,{
-      method:'PUT',
-      headers:{'Content-Type':contentType},
-      body:blob
-    });
-    if(!putRes.ok)throw new Error(`Yandex Object Storage: ошибка загрузки ${putRes.status}.`);
+    let uploadRes;
+    if(signed?.fields&&typeof signed.fields==='object'){
+      const form=new FormData();
+      for(const [k,v] of Object.entries(signed.fields))form.append(k,String(v));
+      form.append('file',blob);
+      uploadRes=await fetch(signed.uploadUrl,{method:'POST',body:form});
+    }else{
+      uploadRes=await fetch(signed.uploadUrl,{
+        method:'PUT',
+        headers:{'Content-Type':contentType},
+        body:blob
+      });
+    }
+    if(!uploadRes.ok){
+      let detail='';
+      try{detail=(await uploadRes.text()).slice(0,240).replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()}catch{}
+      throw new Error(`Yandex Object Storage: ошибка загрузки ${uploadRes.status}${detail?` — ${detail}`:''}.`);
+    }
     return String(signed.url);
   }
 
