@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Баффы — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<style>
+:root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.93)),url("background.webp") center/cover fixed no-repeat}
+a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
+.top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.93);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}
+.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.nav a{font-size:14px;font-weight:750}.nav a:hover{color:var(--gold2)}
+.wrap{width:min(1380px,calc(100% - 30px));margin:34px auto 70px}
+.panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(5,27,40,.94),rgba(3,18,28,.97));box-shadow:0 16px 44px rgba(0,0,0,.28)}
+.page-head{padding:22px 24px}.page-head h1{font-size:42px;margin:0;color:var(--gold2)}.muted{color:var(--muted);line-height:1.55}
+.role-note,.save-status{margin-top:10px;padding:9px 11px;border:1px solid rgba(126,204,234,.16);border-radius:9px;color:#bcd9e4;background:rgba(126,204,234,.05);font-size:13px}.save-status:empty{display:none}
+.editor{display:none;margin-top:14px;padding:16px;border:1px solid rgba(255,226,160,.2);border-radius:13px;background:rgba(3,21,32,.62)}.editor.show{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-top:10px}label{display:block;margin-bottom:5px;color:#dce7eb;font-weight:700;font-size:14px}
+input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.28);border-radius:9px;background:#071824;color:#fff;outline:0;padding:10px 11px}
+textarea{min-height:100px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-shadow:0 0 0 3px rgba(228,180,94,.06)}
+.btn{min-height:40px;margin-top:10px;border:0;border-radius:9px;padding:0 14px;background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:700;cursor:pointer}
+.btn.secondary{background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)}.btn.danger{background:#50252a;color:#ffd7d7;border:1px solid rgba(255,140,140,.2)}
+.two-col{margin-top:16px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:16px;align-items:start}
+.toc{position:sticky;top:94px;padding:14px;max-height:calc(100vh - 115px);overflow:auto}
+.toc h3{margin:0 0 10px;color:var(--gold2)}.toc-group{width:100%;margin:10px 0 5px;padding:9px 10px;border:1px solid rgba(228,180,94,.14);border-radius:9px;background:rgba(228,180,94,.055);color:#ffe2a0;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left}
+.toc-item{display:block;padding:8px 9px;border:1px solid rgba(255,255,255,.06);border-radius:8px;background:rgba(255,255,255,.025);cursor:pointer;margin-top:5px;font-size:12px}.toc-item.active{border-color:rgba(255,226,160,.45);background:rgba(228,180,94,.08);color:#ffe2a0}
+.content-area{display:grid;gap:18px;min-width:0}.buff-type-section{scroll-margin-top:105px}.buff-type-title{margin:0 0 10px;padding:0 2px 7px;border-bottom:1px solid rgba(228,180,94,.2);font-size:22px;color:#ffe2a0}
+.buff-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+.buff-card{padding:12px;min-width:0;display:flex;flex-direction:column}.buff-card.active{border-color:rgba(255,226,160,.62);box-shadow:0 0 0 1px rgba(255,226,160,.08),0 14px 36px rgba(0,0,0,.28)}
+.buff-card h2{margin:0;font-size:19px;line-height:1.15;overflow-wrap:anywhere;color:#ffe2a0}.buff-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.type-tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap;border:1px solid rgba(126,204,234,.18);background:rgba(126,204,234,.07);color:#bcecff}
+.type-tag.debuff{border-color:rgba(255,130,145,.24);background:rgba(120,35,48,.20);color:#ffd4da}
+.other-names{margin-top:8px;padding:7px 8px;border-radius:8px;background:rgba(255,255,255,.026);font-size:12px;color:#c5d7df;overflow-wrap:anywhere}
+.other-names b{color:#f1d79c}.buff-desc{margin-top:8px;color:#d7e3e8;font-size:13px;line-height:1.48;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.entry-actions{display:flex;gap:6px;margin-top:auto;padding-top:9px;flex-wrap:wrap}.entry-actions .btn{min-height:34px;margin-top:0;font-size:11px;flex:1}
+.empty{padding:26px;text-align:center;color:#9db0b8;border:1px dashed rgba(255,226,160,.18);border-radius:12px}
+.preview-modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);padding:22px;align-items:center;justify-content:center}.preview-modal.open{display:flex}.preview-box{width:min(480px,96vw);max-height:88vh;overflow:auto;padding:22px;border:1px solid rgba(228,180,94,.42);border-radius:18px;background:linear-gradient(180deg,#0a2636,#061721);box-shadow:0 25px 80px rgba(0,0,0,.55)}
+.preview-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}
+
+.buff-card-media{display:grid;grid-template-columns:78px minmax(0,1fr);gap:10px;align-items:start}
+.buff-card-image{width:78px;height:78px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,226,160,.18);background:#061822}.buff-card-image-placeholder{width:78px;height:78px;display:grid;place-items:center;text-align:center;padding:5px;border-radius:10px;border:1px dashed rgba(255,226,160,.16);background:#061822;color:#8297a0;font-size:9px}
+.buff-image-preview{display:none;width:150px;height:150px;object-fit:cover;margin-top:8px;border-radius:11px;border:1px solid rgba(228,180,94,.22);background:#071824}
+.buff-image-preview.show{display:block}
+.required-mark{color:#ffb6b6;font-weight:800}
+
+@media(max-width:1220px){.buff-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:980px){.two-col{grid-template-columns:1fr}.toc{position:relative;top:auto;max-height:none}.buff-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}}
+@media(max-width:650px){.grid2{grid-template-columns:1fr}.buff-grid{grid-template-columns:1fr}.page-head h1{font-size:34px}}
+</style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="storage-config.js?v=0.0.70"></script>
+<script src="supabase-sync.js?v=0.0.70"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><img src="logo.png" alt="Логотип"><span>Руководство Легенд Кунг-Фу</span></a>
+  <nav class="nav">
+    <a href="index.html">Главная</a>
+    <a href="taiwan.html">О Тайвани</a>
+    <a href="pirate.html">О Пиратке</a>
+    <a href="updates.html">Обновления</a>
+    <a href="accounts-sale.html">Продажа Аккаунтов</a>
+    <a href="forum.html">Форум</a>
+    <a href="partners.html">Партнеры</a>
+    <a href="register.html">Регистрация</a>
+    <a href="login.html">Вход</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="panel page-head">
+    <h1>Баффы</h1>
+    <p class="muted">Справочник положительных и отрицательных эффектов. На широком экране отображается до четырёх записей в строке.</p>
+    <div class="role-note" id="roleNote">Загрузка...</div>
+
+    <div class="editor" id="editor">
+      <h2 id="editorTitle">Добавить запись</h2>
+      <div class="grid2">
+        <div class="field">
+          <label for="name">Название</label>
+          <input id="name" maxlength="150" placeholder="Название эффекта">
+        </div>
+        <div class="field">
+          <label for="type">Тип</label>
+          <select id="type">
+            <option value="Бафф">Бафф</option>
+            <option value="Дебафф">Дебафф</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="otherNames">Другие Названия</label>
+        <input id="otherNames" maxlength="300" placeholder="Через запятую или в свободной форме">
+      </div>
+      <div class="field">
+        <label for="description">Описание Баффа</label>
+        <textarea id="description" maxlength="4000" placeholder="Что делает эффект, как работает, важные особенности"></textarea>
+      </div>
+      <div class="field">
+        <label for="buffImageFile">Изображение <span class="required-mark">*</span></label>
+        <input id="buffImageFile" type="file" accept="image/*">
+        <div class="muted" style="font-size:11px;margin-top:5px">Обязательное изображение. Оно будет показано в компактной карточке.</div>
+        <img id="buffImagePreview" class="buff-image-preview" alt="Предпросмотр изображения">
+      </div>
+      <button class="btn secondary" type="button" id="previewBtn">Предпросмотр</button>
+      <button class="btn" type="button" id="saveBtn">Опубликовать</button>
+      <button class="btn secondary" type="button" id="cancelBtn" style="display:none">Отменить</button>
+      <div class="save-status" id="saveStatus"></div>
+    </div>
+  </section>
+
+  <div class="two-col">
+    <aside class="panel toc">
+      <h3>Оглавление</h3>
+      <input id="search" type="search" placeholder="Поиск по названию">
+      <div id="tocList"></div>
+    </aside>
+    <section class="content-area" id="content"></section>
+  </div>
+</main>
+
+<div class="preview-modal" id="previewModal">
+  <div class="preview-box">
+    <div class="preview-head">
+      <h2 style="margin:0">Предпросмотр</h2>
+      <button class="btn danger" type="button" id="closePreview" style="margin:0">Закрыть</button>
+    </div>
+    <div id="previewContent"></div>
+  </div>
+</div>
+
+<script src="image-tools-0.0.48.js?v=0.0.70"></script>
+<script>
+const KEY='kungfuBuffs';
+const TYPES=['Бафф','Дебафф'];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+let currentUser=null,isAdmin=false,entries=[],selectedId=null,editingId=null,image='';
+
+function clone(v){return JSON.parse(JSON.stringify(v))}
+function typeClass(type){return type==='Дебафф'?'debuff':''}
+
+async function loadEntries(){
+  if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+  await KFSupabase.ready;
+  const value=await KFSupabase.getStore(KEY,[]);
+  return Array.isArray(value)?value:[];
+}
+async function saveEntries(){
+  entries=await KFSupabase.saveStore(KEY,entries);
+  return entries;
+}
+
+function card(item,preview=false){
+  return `<article id="buff-card-${item.id}" class="panel buff-card ${String(item.id)===String(selectedId)&&!preview?'active':''}">
+    <div class="buff-card-media">
+      ${item.image?`<img class="buff-card-image" src="${esc(item.image)}" alt="${esc(item.name||'Бафф')}" loading="lazy">`:'<div class="buff-card-image-placeholder">Добавьте изображение</div>'}
+      <div>
+        <div class="buff-top">
+          <h2>${esc(item.name||'Без названия')}</h2>
+          <span class="type-tag ${typeClass(item.type)}">${esc(item.type||'Бафф')}</span>
+        </div>
+        ${item.otherNames?`<div class="other-names"><b>Другие:</b> ${esc(item.otherNames)}</div>`:''}
+      </div>
+    </div>
+    <div class="buff-desc">${esc(item.description||'Описание не добавлено.').replace(/\n/g,'<br>')}</div>
+    ${isAdmin&&!preview?`<div class="entry-actions">
+      <button class="btn secondary" type="button" onclick="editEntry('${encodeURIComponent(String(item.id))}')">Редактировать</button>
+      <button class="btn danger" type="button" onclick="deleteEntry('${encodeURIComponent(String(item.id))}')">Удалить</button>
+    </div>`:''}
+  </article>`;
+}
+
+function filtered(){
+  const q=$('search').value.trim().toLowerCase();
+  return entries.filter(x=>
+    String(x.name||'').toLowerCase().includes(q) ||
+    String(x.otherNames||'').toLowerCase().includes(q) ||
+    String(x.description||'').toLowerCase().includes(q) ||
+    String(x.type||'').toLowerCase().includes(q)
+  );
+}
+
+function render(){
+  const list=filtered();
+  $('tocList').innerHTML=TYPES.map(type=>{
+    const rows=list.filter(x=>(x.type||'Бафф')===type);
+    if(!rows.length)return '';
+    return `<button class="toc-group" type="button" onclick="jumpType('${encodeURIComponent(type)}')"><b>${esc(type)}</b><span>${rows.length}</span></button>`+
+      rows.map(x=>`<a class="toc-item ${String(x.id)===String(selectedId)?'active':''}" onclick="selectEntry('${encodeURIComponent(String(x.id))}')">${esc(x.name||'Без названия')}</a>`).join('');
+  }).join('')||'<div class="muted">Ничего не найдено.</div>';
+
+  $('content').innerHTML=TYPES.map(type=>{
+    const rows=list.filter(x=>(x.type||'Бафф')===type);
+    if(!rows.length)return '';
+    return `<section class="buff-type-section" id="buff-type-${encodeURIComponent(type)}">
+      <h2 class="buff-type-title">${esc(type)} <span class="muted">(${rows.length})</span></h2>
+      <div class="buff-grid">${rows.map(x=>card(x)).join('')}</div>
+    </section>`;
+  }).join('')||'<div class="panel empty">Баффы и дебаффы пока не добавлены.</div>';
+}
+
+window.selectEntry=enc=>{
+  const id=decodeURIComponent(enc);
+  selectedId=id;
+  render();
+  document.getElementById(`buff-card-${id}`)?.scrollIntoView({behavior:'smooth',block:'center'});
+};
+window.jumpType=enc=>{
+  document.getElementById(`buff-type-${enc}`)?.scrollIntoView({behavior:'smooth',block:'start'});
+};
+
+$('search').addEventListener('input',render);
+
+function resetForm(){
+  editingId=null;
+  $('name').value='';
+  $('otherNames').value='';
+  $('description').value='';
+  $('type').value='Бафф';
+  image='';
+  $('buffImageFile').value='';
+  $('buffImagePreview').removeAttribute('src');
+  $('buffImagePreview').classList.remove('show');
+  $('editorTitle').textContent='Добавить запись';
+  $('saveBtn').textContent='Опубликовать';
+  $('cancelBtn').style.display='none';
+  $('saveStatus').textContent='';
+}
+
+window.editEntry=enc=>{
+  if(!isAdmin)return;
+  const id=decodeURIComponent(enc);
+  const item=entries.find(x=>String(x.id)===String(id));
+  if(!item)return;
+  editingId=item.id;
+  selectedId=item.id;
+  $('name').value=item.name||'';
+  $('otherNames').value=item.otherNames||'';
+  $('description').value=item.description||'';
+  $('type').value=item.type||'Бафф';
+  image=item.image||'';
+  if(image){
+    $('buffImagePreview').src=image;
+    $('buffImagePreview').classList.add('show');
+  }else{
+    $('buffImagePreview').removeAttribute('src');
+    $('buffImagePreview').classList.remove('show');
+  }
+  $('buffImageFile').value='';
+  $('editorTitle').textContent='Редактировать запись';
+  $('saveBtn').textContent='Сохранить изменения';
+  $('cancelBtn').style.display='inline-flex';
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+$('cancelBtn').onclick=resetForm;
+
+
+$('buffImageFile').onchange=async()=>{
+  const file=$('buffImageFile').files&&$('buffImageFile').files[0];
+  if(!file)return;
+  try{
+    image=await imageToData(file,1600);
+    $('buffImagePreview').src=image;
+    $('buffImagePreview').classList.add('show');
+  }catch(e){
+    image='';
+    $('buffImageFile').value='';
+    $('buffImagePreview').removeAttribute('src');
+    $('buffImagePreview').classList.remove('show');
+    alert(e.message||'Не удалось обработать изображение.');
+  }
+};
+
+$('previewBtn').onclick=()=>{
+  const item={
+    id:'preview',
+    name:$('name').value.trim()||'Название',
+    otherNames:$('otherNames').value.trim(),
+    description:$('description').value.trim()||'Описание Баффа',
+    type:$('type').value,
+    image:image||''
+  };
+  $('previewContent').innerHTML=card(item,true);
+  $('previewModal').classList.add('open');
+};
+$('closePreview').onclick=()=>$('previewModal').classList.remove('open');
+$('previewModal').onclick=e=>{if(e.target===$('previewModal'))$('previewModal').classList.remove('open')};
+
+$('saveBtn').onclick=async()=>{
+  if(!isAdmin)return;
+  const name=$('name').value.trim();
+  const description=$('description').value.trim();
+  if(!name){alert('Укажите название.');return}
+  if(!description){alert('Добавьте описание эффекта.');return}
+  const existing=editingId?entries.find(x=>String(x.id)===String(editingId)):null;
+  const finalImage=image||existing?.image||'';
+  if(!finalImage){alert('Добавьте обязательное изображение Баффа / Дебаффа.');return}
+
+  const before=clone(entries);
+  const item={
+    id:editingId||Date.now(),
+    name,
+    otherNames:$('otherNames').value.trim(),
+    description,
+    type:$('type').value,
+    image:finalImage,
+    createdAt:existing?.createdAt||new Date().toISOString(),
+    updatedAt:new Date().toISOString(),
+    authorRole:'admin'
+  };
+
+  const btn=$('saveBtn'),old=btn.textContent;
+  btn.disabled=true;btn.textContent=editingId?'Сохранение...':'Публикация...';
+  try{
+    if(editingId){
+      const i=entries.findIndex(x=>String(x.id)===String(editingId));
+      if(i<0)throw new Error('Запись не найдена.');
+      entries[i]={...entries[i],...item};
+    }else entries.push(item);
+    selectedId=item.id;
+    await saveEntries();
+    resetForm();
+    render();
+    $('saveStatus').style.color='#c8f4d8';
+    $('saveStatus').textContent=existing?'Изменения сохранены.':'Запись опубликована.';
+  }catch(e){
+    entries=before;
+    render();
+    $('saveStatus').style.color='#ffd0d0';
+    $('saveStatus').textContent=e.message||'Не удалось сохранить запись.';
+  }finally{
+    btn.disabled=false;
+    if(btn.textContent==='Публикация...'||btn.textContent==='Сохранение...')btn.textContent=old;
+  }
+};
+
+window.deleteEntry=async enc=>{
+  if(!isAdmin||!confirm('Удалить запись?'))return;
+  const id=decodeURIComponent(enc);
+  const before=clone(entries);
+  entries=entries.filter(x=>String(x.id)!==String(id));
+  if(String(editingId)===String(id))resetForm();
+  selectedId=entries[0]?.id||null;
+  try{
+    await saveEntries();
+    render();
+  }catch(e){
+    entries=before;
+    render();
+    alert(e.message||'Не удалось удалить запись.');
+  }
+};
+
+async function init(){
+  try{
+    if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+    await KFSupabase.ready;
+    currentUser=await KFSupabase.getCurrentProfile().catch(()=>null);
+    isAdmin=!!currentUser&&currentUser.role==='admin';
+    if(isAdmin){
+      $('editor').classList.add('show');
+      $('roleNote').textContent='Администратор может добавлять, редактировать и удалять баффы и дебаффы.';
+    }else{
+      $('editor').classList.remove('show');
+      $('roleNote').textContent='Справочник доступен всем. Добавление и редактирование — только администратору.';
+    }
+    entries=await loadEntries();
+    selectedId=entries[0]?.id||null;
+    render();
+  }catch(e){
+    $('roleNote').style.color='#ffd0d0';
+    $('roleNote').textContent=e.message||'Не удалось загрузить раздел.';
+    render();
+  }
+}
+init();
+</script>
+<script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
+</body>
+</html>

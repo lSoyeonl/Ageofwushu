@@ -1,0 +1,80 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Вход — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<style>
+:root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.38)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.74),rgba(3,14,22,.92)),url("background.webp") center/cover fixed no-repeat}
+a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.93);border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px;margin-right:auto;color:var(--gold2);font-size:20px;font-weight:700}.brand img{width:54px;height:54px;object-fit:contain}.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.nav a{font-weight:700}.nav a:hover{color:var(--gold2)}
+.wrap{width:min(520px,calc(100% - 30px));margin:70px auto}.panel{padding:28px;border:1px solid var(--line);border-radius:20px;background:rgba(4,23,35,.93);box-shadow:0 20px 60px rgba(0,0,0,.35)}h1{margin-top:0;color:var(--gold2);font-size:42px}.field{margin-top:13px}label{display:block;margin-bottom:6px}input{width:100%;padding:12px;border:1px solid rgba(228,180,94,.32);border-radius:10px;background:#071824;color:#fff;font:inherit}.btn{width:100%;min-height:45px;margin-top:16px;border:0;border-radius:10px;background:linear-gradient(#f3d28f,#cb9643);font-weight:900;cursor:pointer}.msg{margin-top:12px;color:#ffd0d0}.muted{color:#b9ccd4}
+@media(max-width:900px){.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}}
+</style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="storage-config.js?v=0.0.70"></script>
+<script src="supabase-sync.js?v=0.0.70"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+</head><body>
+<header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
+  <a href="index.html">Главная</a>
+  <a href="taiwan.html">О Тайвани</a>
+  <a href="pirate.html">О Пиратке</a>
+  <a href="updates.html">Обновления</a>
+  <a href="accounts-sale.html">Продажа Аккаунтов</a>
+  <a href="forum.html">Форум</a>
+      <a href="partners.html">Партнеры</a>
+  <a href="register.html">Регистрация</a>
+  <a href="login.html">Вход</a>
+</nav></header>
+<main class="wrap"><section class="panel"><h1>Вход</h1><p class="muted"><b>При подключённой синхронизации один аккаунт работает на телефоне и компьютере.</b><br>Войдите под зарегистрированным аккаунтом.</p>
+<form id="loginForm">
+<div class="field"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email" required></div>
+<div class="field"><label for="password">Пароль</label><input id="password" type="password" autocomplete="current-password" required></div>
+<button class="btn" id="login" type="submit">Войти</button>
+</form>
+<div class="msg" id="msg"></div>
+<p><a href="register.html" style="color:#ffe2a0">Нет аккаунта? Зарегистрироваться →</a></p>
+<p style="margin-top:14px"><a href="admin-login.html" style="color:#ffe2a0;font-weight:800">Вход администратора →</a></p>
+<div id="storageDiag" style="margin-top:12px;color:#8fa7b2;font-size:11px"></div></section></main>
+
+<script>
+const form=document.getElementById('loginForm');
+const msg=document.getElementById('msg');
+const diag=document.getElementById('storageDiag');
+
+(async()=>{
+  await KFSupabase.ready;
+  if(diag){
+    if(KFSupabase.configured){
+      diag.style.color='#a9dfbc';
+      diag.textContent='Единый аккаунт подключён: вход синхронизируется между устройствами.';
+    }else{
+      diag.style.color='#e5c98e';
+      diag.textContent='Supabase не подключён. Вход станет доступен после настройки проекта.';
+    }
+  }
+})();
+
+form.addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  msg.textContent='';
+  msg.style.color='#c8f4d8';
+  msg.textContent='Вход...';
+
+  try{
+    if(KFSupabase.configured){
+      await KFSupabase.login(document.getElementById('email').value,document.getElementById('password').value);
+    }else{
+      throw new Error('Supabase не настроен.');
+    }
+    msg.textContent='Вход выполнен.';
+    setTimeout(()=>location.href='account.html',300);
+  }catch(err){
+    msg.style.color='#ffd0d0';
+    msg.textContent=err.message||'Не удалось войти.';
+  }
+});
+</script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
+</body></html>

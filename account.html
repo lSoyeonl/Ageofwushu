@@ -1,0 +1,183 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Аккаунт — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<style>
+:root{--gold:#e4b45e;--gold2:#ffe2a0;--bg:#071622;--panel:rgba(3,20,31,.90);--line:rgba(228,180,94,.35)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:#061522;color:white}
+body{min-height:100vh;background:linear-gradient(rgba(3,14,22,.70),rgba(3,14,22,.86)),url("background.webp") center/cover fixed no-repeat}
+a{text-decoration:none;color:inherit}button,input,textarea{font:inherit}
+.account-top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
+.account-brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700;min-width:0}.account-brand img{width:52px;height:52px;object-fit:contain;flex:0 0 52px}.account-brand span{white-space:nowrap}
+.account-nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.account-nav a{font-size:14px;font-weight:700;color:#fff}.account-nav a:hover{color:var(--gold2)}
+main{width:min(1000px,calc(100% - 36px));margin:46px auto 70px;padding:36px;border:1px solid var(--line);border-radius:22px;background:rgba(3,19,30,.84);backdrop-filter:blur(10px);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+h1{margin:0;color:var(--gold2);font:500 clamp(36px,5vw,64px) Georgia,serif}p{color:#d5e1e7;line-height:1.7;font-size:17px}
+.back{display:inline-flex;margin-top:20px;padding:12px 18px;border-radius:11px;background:linear-gradient(#f1cf89,#cb9644);color:#251707;font-weight:900}
+.profile-card{margin-top:28px;padding:24px;border:1px solid rgba(228,180,94,.28);border-radius:18px;background:rgba(4,24,36,.58)}
+.profile-layout{display:grid;grid-template-columns:160px minmax(0,1fr);gap:26px;align-items:start}.avatar-column{text-align:center}.avatar-input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.avatar-picker{position:relative;width:138px;height:138px;margin:0 auto;display:block;border-radius:50%;cursor:pointer;border:2px solid rgba(255,226,160,.45);background:linear-gradient(145deg,rgba(20,54,72,.94),rgba(5,24,36,.96));box-shadow:0 12px 34px rgba(0,0,0,.32),inset 0 0 0 5px rgba(255,255,255,.025);overflow:hidden}
+.avatar-picker:hover{border-color:#ffe2a0;transform:translateY(-1px)}.avatar-picker img{width:100%;height:100%;object-fit:cover;display:block}.avatar-fallback{width:100%;height:100%;display:grid;place-items:center;font-size:44px;font-weight:600;color:#ffe2a0}.avatar-plus{position:absolute;right:7px;bottom:7px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(#f3d28f,#cb9643);color:#251707;border:3px solid #09202d;font:700 25px/1 Arial,sans-serif;box-shadow:0 5px 14px rgba(0,0,0,.35)}
+.avatar-hint{margin-top:10px;color:#aabfc8;font-size:12px;line-height:1.45}.profile-name{margin:0;color:#ffe2a0;font-size:30px}.profile-bio{color:#c6d5dc;line-height:1.65;margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}.profile-meta{display:grid;gap:5px;color:#91a8b2;font-size:13px;margin-top:8px}.profile-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.profile-btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 14px;border-radius:9px;border:1px solid rgba(228,180,94,.28);background:#153247;color:#ffe2a0;font-weight:600;cursor:pointer}.profile-btn.danger{background:#46252a;color:#ffd2d2;border-color:rgba(255,145,145,.22)}
+.avatar-status,.bio-status{min-height:20px;margin-top:8px;font-size:12px;color:#bcd0d8}.bio-editor{display:none;margin-top:12px;padding:12px;border:1px solid rgba(228,180,94,.18);border-radius:11px;background:rgba(5,23,34,.55)}.bio-editor.show{display:block}.bio-editor textarea{width:100%;min-height:120px;resize:vertical;border:1px solid rgba(228,180,94,.3);border-radius:9px;background:#071824;color:#fff;padding:10px;outline:none}.bio-editor-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+.avatar-choice{margin-top:18px;padding:13px 14px;border:1px solid rgba(228,180,94,.16);border-radius:12px;background:rgba(3,20,31,.38);min-width:0}
+.avatar-choice-title{color:#ffe2a0;font-weight:700;font-size:13px;margin-bottom:9px;text-align:left}
+.avatar-presets{display:flex;flex-wrap:nowrap;gap:8px;align-items:center;justify-content:flex-start;overflow-x:auto;overflow-y:hidden;padding:2px 2px 8px;scrollbar-width:thin;scrollbar-color:rgba(228,180,94,.45) rgba(255,255,255,.035)}
+.avatar-presets::-webkit-scrollbar{height:7px}.avatar-presets::-webkit-scrollbar-track{background:rgba(255,255,255,.035);border-radius:999px}.avatar-presets::-webkit-scrollbar-thumb{background:rgba(228,180,94,.45);border-radius:999px}
+.avatar-preset{width:58px;height:58px;flex:0 0 58px;padding:0;border-radius:10px;border:1px solid rgba(228,180,94,.18);background:#071824;overflow:hidden;cursor:pointer}
+.avatar-preset:hover,.avatar-preset.active{border-color:#ffe2a0;box-shadow:0 0 0 2px rgba(228,180,94,.13)}
+.avatar-sprite-icon{display:block;width:100%;height:100%;background-image:url("avatar-sprite-hd.webp");background-repeat:no-repeat;background-size:2200% 100%;background-color:#071824}
+.avatar-upload-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}.avatar-upload-row .profile-btn{margin:0}
+@media(max-width:620px){.avatar-preset{width:54px;height:54px;flex-basis:54px}}
+
+@media(max-width:760px){
+  .account-top{position:relative;top:auto;min-height:auto;padding:12px 14px;flex-wrap:wrap;gap:10px}.account-brand{width:100%;margin:0;font-size:clamp(16px,4.6vw,20px)}.account-brand img{width:48px;height:48px;flex-basis:48px}.account-brand span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.account-nav{width:100%;flex-wrap:nowrap;overflow-x:auto;gap:8px;padding:2px 0 5px;scrollbar-width:thin}.account-nav a{flex:0 0 auto;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.035);font-size:13px}main{width:min(100% - 22px,1000px);margin:22px auto 64px;padding:22px 16px}.profile-layout{grid-template-columns:1fr}.avatar-column,.profile-info{text-align:center}.profile-actions,.bio-editor-actions{justify-content:center}.profile-meta{justify-items:center}h1{font-size:42px}}
+</style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="storage-config.js?v=0.0.70"></script>
+<script src="supabase-sync.js?v=0.0.70"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+</head><body>
+<header class="account-top"><a class="account-brand" href="index.html"><img src="logo.png" alt="Логотип"><span>Руководство Легенд Кунг-Фу</span></a><nav class="account-nav">
+<a href="index.html">Главная</a><a href="taiwan.html">О Тайвани</a><a href="pirate.html">О Пиратке</a><a href="updates.html">Обновления</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a>
+</nav></header>
+<main><h1>Аккаунт</h1><p>Профиль пользователя. Аватар и ник отображаются рядом с сообщениями на форуме.</p><div id="profileBox" class="profile-card"></div><a class="back" href="index.html">← На главную</a></main>
+<script src="image-tools-0.0.48.js?v=0.0.70"></script>
+<script>
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+function avatarUrl(v){try{const u=new URL(String(v||''),location.href);return u.protocol==='https:'?u.href:''}catch{return ''}}
+function initials(name){const parts=String(name||'Игрок').trim().split(/\s+/).filter(Boolean);return (parts.slice(0,2).map(x=>x[0]).join('')||'И').toUpperCase()}
+function registrationDate(v){if(!v)return '—';try{return new Date(v).toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'})}catch{return '—'}}
+const PRESET_COUNT=22;
+const PRESET_SPRITE='avatar-sprite-hd.webp';
+const PRESET_CELL=360;
+const PRESET_UPLOAD_SIZE=512;
+
+function presetIndexFromUrl(value){
+  const raw=String(value||'');
+  const m=raw.match(/(?:^|\/)(?:avatars\/)?avatar-(\d{2})\.(?:png|webp)(?:[?#].*)?$/i);
+  if(!m)return -1;
+  const n=Number(m[1]);
+  return n>=1&&n<=PRESET_COUNT?n-1:-1;
+}
+
+function loadAvatarImage(src,crossOrigin=false){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    if(crossOrigin)img.crossOrigin='anonymous';
+    img.decoding='async';
+    img.onload=()=>resolve(img);
+    img.onerror=()=>reject(new Error('Не удалось прочитать аватар.'));
+    img.src=src;
+  });
+}
+async function loadPresetSprite(){
+  if(window.__KF_AVATAR_HD_SPRITE__)return window.__KF_AVATAR_HD_SPRITE__;
+  const img=await loadAvatarImage(new URL(PRESET_SPRITE,location.href).href);
+  window.__KF_AVATAR_HD_SPRITE__=img;
+  return img;
+}
+async function presetDataUrl(index){
+  const img=await loadPresetSprite();
+  const canvas=document.createElement('canvas');
+  canvas.width=PRESET_UPLOAD_SIZE;canvas.height=PRESET_UPLOAD_SIZE;
+  const ctx=canvas.getContext('2d',{alpha:false});
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  ctx.drawImage(img,index*PRESET_CELL,0,PRESET_CELL,PRESET_CELL,0,0,PRESET_UPLOAD_SIZE,PRESET_UPLOAD_SIZE);
+  return canvas.toDataURL('image/webp',0.96);
+}
+async function savePresetAvatar(index){
+  const dataUrl=await presetDataUrl(index);
+  const url=await KFSupabase.uploadAvatarDataUrlStrict(dataUrl);
+  return await KFSupabase.updateMyAvatar(url);
+}
+async function migrateLegacyPresetAvatar(currentProfile){
+  const index=presetIndexFromUrl(currentProfile?.avatarUrl);
+  if(index<0)return currentProfile;
+  try{return await savePresetAvatar(index)}
+  catch(e){console.warn('Не удалось автоматически перенести старую готовую иконку:',e);return currentProfile}
+}
+function imageSignature(img,size=16,sx=0,sy=0,sw=null,sh=null){
+  const c=document.createElement('canvas');c.width=size;c.height=size;
+  const ctx=c.getContext('2d',{alpha:false});
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  if(sw&&sh)ctx.drawImage(img,sx,sy,sw,sh,0,0,size,size);
+  else ctx.drawImage(img,0,0,size,size);
+  return ctx.getImageData(0,0,size,size).data;
+}
+function signatureDistance(a,b){
+  let sum=0,count=0;
+  for(let i=0;i<Math.min(a.length,b.length);i+=4){
+    sum+=Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2]);count+=3;
+  }
+  return count?sum/count:999;
+}
+async function maybeUpgradeLowResPreset(currentProfile){
+  const src=avatarUrl(currentProfile?.avatarUrl);
+  if(!src)return currentProfile;
+  try{
+    const current=await loadAvatarImage(src,true);
+    if(Math.max(current.naturalWidth||0,current.naturalHeight||0)>160)return currentProfile;
+    const sig=imageSignature(current);
+    const sprite=await loadPresetSprite();
+    let best=-1,bestScore=999;
+    for(let i=0;i<PRESET_COUNT;i++){
+      const score=signatureDistance(sig,imageSignature(sprite,16,i*PRESET_CELL,0,PRESET_CELL,PRESET_CELL));
+      if(score<bestScore){bestScore=score;best=i}
+    }
+    // Старые готовые иконки были 90x90. Строгий порог не трогает пользовательские картинки.
+    if(best>=0&&bestScore<12)return await savePresetAvatar(best);
+  }catch(e){console.warn('Автообновление качества аватара пропущено:',e?.message||e)}
+  return currentProfile;
+}
+function presetButton(index){
+  const pos=PRESET_COUNT<=1?0:(index/(PRESET_COUNT-1))*100;
+  return `<button class="avatar-preset" type="button" data-avatar-index="${index}" title="Иконка ${index+1}" aria-label="Выбрать иконку ${index+1}">
+    <span class="avatar-sprite-icon" style="background-position:${pos}% 0"></span>
+  </button>`;
+}
+
+(async()=>{
+  await KFSupabase.ready;const box=document.getElementById('profileBox');let profile=null;
+  try{if(KFSupabase.configured)profile=await KFSupabase.getCurrentProfile()}catch(e){box.innerHTML='<p style="color:#ffd0d0">Не удалось загрузить профиль: '+esc(e.message||'ошибка')+'</p>';return}
+  if(!profile){box.innerHTML='<p style="color:#c6d5dc">Вы пока не вошли в аккаунт.</p><p><a href="login.html" style="color:#ffe2a0">Войти →</a></p><p><a href="register.html" style="color:#ffe2a0">Создать аккаунт →</a></p>';return}
+  profile=await migrateLegacyPresetAvatar(profile);
+  profile=await maybeUpgradeLowResPreset(profile);
+
+  function renderProfile(){
+    const src=avatarUrl(profile.avatarUrl);
+    box.innerHTML=`<div class="profile-layout"><div class="avatar-column"><input class="avatar-input" id="avatarFile" type="file" accept="image/*"><div class="avatar-picker" title="Текущий аватар">${src?`<img src="${esc(src)}" alt="Аватар ${esc(profile.nickname)}" loading="lazy" decoding="async">`:`<span class="avatar-fallback">${esc(initials(profile.nickname))}</span>`}<span class="avatar-plus">+</span></div><div class="avatar-hint">Выберите готовую HD-иконку ниже или загрузите своё изображение.<br>Загрузка автоматически подготавливается в квадрате 512×512 и отображается рядом с ником на форуме.</div><div class="avatar-upload-row"><label class="profile-btn" for="avatarFile">Загрузить своё изображение</label></div><div class="avatar-status" id="avatarStatus"></div></div><div class="profile-info"><h2 class="profile-name">${esc(profile.nickname||'Игрок')}</h2><div class="profile-bio">${esc(profile.bio||'Описание профиля пока не заполнено.')}</div><div class="profile-meta"><div>E-mail: ${esc(profile.email||'')}</div><div><b>Дата регистрации:</b> ${esc(registrationDate(profile.createdAt))}</div></div><div class="profile-actions"><button class="profile-btn" id="editBioBtn" type="button">Редактировать описание</button><a class="profile-btn" href="forum.html">Перейти на форум →</a>${src?'<button class="profile-btn danger" id="removeAvatar" type="button">Удалить аватар</button>':''}<button class="profile-btn" id="logoutBtn" type="button">Выйти из аккаунта</button>${profile.role==='admin'?'<a class="profile-btn" href="admin-backups.html">Резервные копии →</a>':''}</div><div class="bio-editor" id="bioEditor"><textarea id="bioInput" maxlength="1000" placeholder="Расскажите немного о себе...">${esc(profile.bio||'')}</textarea><div class="bio-editor-actions"><button class="profile-btn" id="saveBioBtn" type="button">Сохранить описание</button><button class="profile-btn" id="cancelBioBtn" type="button">Отмена</button></div><div class="bio-status" id="bioStatus"></div></div></div></div><div class="avatar-choice"><div class="avatar-choice-title">Выберите готовую иконку</div><div class="avatar-presets">${Array.from({length:PRESET_COUNT},(_,i)=>presetButton(i)).join('')}</div></div>`;
+
+    const input=document.getElementById('avatarFile'),status=document.getElementById('avatarStatus');
+    input.onchange=async()=>{const file=input.files&&input.files[0];if(!file)return;status.style.color='#cbe4ed';status.textContent='Подготовка изображения...';input.disabled=true;try{const dataUrl=await KFImageTools.processAvatar(file,512);status.textContent='Загрузка изображения...';const url=await KFSupabase.uploadAvatarDataUrlStrict(dataUrl);profile=await KFSupabase.updateMyAvatar(url);renderProfile();const s=document.getElementById('avatarStatus');if(s){s.style.color='#c8f4d8';s.textContent='Аватар сохранён.'}}catch(e){status.style.color='#ffd0d0';status.textContent=e.message||'Не удалось сохранить аватар.';input.disabled=false;input.value=''}};
+    document.querySelectorAll('.avatar-preset').forEach(btn=>btn.onclick=async()=>{
+      const index=Number(btn.dataset.avatarIndex);
+      if(!Number.isInteger(index)||index<0||index>=PRESET_COUNT)return;
+      status.style.color='#cbe4ed';status.textContent='Сохранение готовой иконки...';
+      document.querySelectorAll('.avatar-preset').forEach(x=>x.disabled=true);
+      try{
+        profile=await savePresetAvatar(index);
+        renderProfile();
+        const s=document.getElementById('avatarStatus');
+        if(s){s.style.color='#c8f4d8';s.textContent='Готовая иконка выбрана.'}
+      }catch(e){
+        status.style.color='#ffd0d0';status.textContent=e.message||'Не удалось выбрать иконку.';
+        document.querySelectorAll('.avatar-preset').forEach(x=>x.disabled=false);
+      }
+    });
+    const remove=document.getElementById('removeAvatar');if(remove)remove.onclick=async()=>{if(!confirm('Удалить аватар из профиля?'))return;const s=document.getElementById('avatarStatus');s.textContent='Удаление...';try{profile=await KFSupabase.updateMyAvatar('');renderProfile()}catch(e){s.style.color='#ffd0d0';s.textContent=e.message||'Не удалось удалить аватар.'}};
+    const bioEditor=document.getElementById('bioEditor'),bioInput=document.getElementById('bioInput');document.getElementById('editBioBtn').onclick=()=>{bioEditor.classList.add('show');bioInput.focus()};document.getElementById('cancelBioBtn').onclick=()=>{bioInput.value=profile.bio||'';bioEditor.classList.remove('show')};document.getElementById('saveBioBtn').onclick=async()=>{const btn=document.getElementById('saveBioBtn'),bioStatus=document.getElementById('bioStatus');btn.disabled=true;bioStatus.style.color='#cbe4ed';bioStatus.textContent='Сохранение...';try{profile=await KFSupabase.updateMyBio(bioInput.value);renderProfile();const s=document.getElementById('bioStatus');if(s){s.style.color='#c8f4d8';s.textContent='Описание сохранено.'}}catch(e){bioStatus.style.color='#ffd0d0';bioStatus.textContent=e.message||'Не удалось сохранить описание.';btn.disabled=false}};
+    document.getElementById('logoutBtn').onclick=async()=>{await KFSupabase.logout();location.href='index.html'};
+  }
+  try{
+    renderProfile();
+  }catch(e){
+    console.error('Ошибка страницы аккаунта:',e);
+    box.innerHTML='<p style="color:#ffd0d0">Не удалось отобразить профиль: '+esc(e?.message||String(e))+'</p><p style="color:#c6d5dc">Обновите страницу. Если ошибка повторится — сообщите администратору.</p>';
+  }
+})();
+</script><script src="site-effects-0.0.66.js?v=0.0.66"></script>
+</body></html>

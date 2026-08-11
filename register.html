@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Регистрация — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+
+<style>
+
+:root{
+  --gold:#e4b45e;
+  --gold2:#ffe2a0;
+  --bg:#071622;
+  --panel:rgba(3,20,31,.92);
+  --line:rgba(228,180,94,.38);
+  --muted:#c7d7de;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:#fff;
+  font-family:"Oswald","Arial Narrow",Arial,sans-serif;
+  background:
+    linear-gradient(rgba(3,14,22,.74),rgba(3,14,22,.91)),
+    url("background.webp") center/cover fixed no-repeat;
+}
+a{text-decoration:none;color:inherit}
+button,input,textarea,select{font:inherit}
+.top{
+  min-height:76px;padding:0 4vw;
+  display:flex;align-items:center;gap:24px;
+  background:rgba(3,16,26,.92);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:20;
+}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto;color:var(--gold2);font:700 20px "Oswald","Arial Narrow",Arial,sans-serif}
+.brand img{width:54px;height:54px;object-fit:contain}
+.nav{display:flex;gap:18px;align-items:center}
+.nav a{font-weight:700;color:#eef4f6}
+.nav a:hover,.nav a.active{color:var(--gold2)}
+.wrap{width:min(1100px,calc(100% - 36px));margin:48px auto 70px}
+.panel{
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg,rgba(5,27,40,.92),rgba(3,18,28,.95));
+  box-shadow:0 24px 70px rgba(0,0,0,.38);
+  backdrop-filter:blur(10px);
+}
+h1,h2,h3{font-family:"Oswald","Arial Narrow",Arial,sans-serif;color:var(--gold2)}
+.btn{
+  border:0;border-radius:11px;cursor:pointer;
+  min-height:46px;padding:0 18px;
+  font-weight:900;color:#251707;
+  background:linear-gradient(#f3d28f,#cb9643);
+}
+.btn.secondary{
+  color:#f6e7c2;background:#102b3b;border:1px solid var(--line);
+}
+.input{
+  width:100%;min-height:48px;
+  border:1px solid rgba(228,180,94,.34);
+  border-radius:10px;
+  outline:0;padding:0 13px;
+  color:#fff;background:rgba(2,14,23,.88);
+}
+textarea.input{min-height:130px;padding:13px;resize:vertical}
+.input:focus{border-color:rgba(255,226,160,.85);box-shadow:0 0 0 3px rgba(228,180,94,.07)}
+.muted{color:var(--muted)}
+.notice{
+  padding:12px 14px;border-radius:11px;margin-top:12px;
+  background:rgba(114,204,236,.08);
+  border:1px solid rgba(114,204,236,.18);
+  color:#cfeaf3;font-size:13px;line-height:1.5;
+}
+@media(max-width:850px){
+  .top{align-items:flex-start;padding-top:12px;padding-bottom:12px}
+  .brand span{display:none}
+  .nav{flex-wrap:wrap;gap:10px}
+  .nav a{font-size:14px}
+}
+
+.register-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:24px}
+.form-panel{padding:30px}
+.side-panel{padding:30px;display:flex;flex-direction:column;justify-content:center}
+.form-panel h1{font-size:46px;margin:0 0 8px}
+.form-row{display:grid;grid-template-columns:1fr;gap:14px}
+.field{margin-top:15px}
+.field label{display:block;margin-bottom:7px;color:#dce7eb;font-size:14px;font-weight:700}
+.actions{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+.avatar{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--gold2);font-size:30px;background:rgba(6,31,44,.72);margin-bottom:14px}
+.perks{display:grid;gap:10px;margin-top:16px}
+.perk{padding:12px 14px;border:1px solid rgba(255,226,160,.16);border-radius:12px;background:rgba(4,24,36,.58)}
+.success{display:none;margin-top:14px;padding:13px;border-radius:11px;background:rgba(83,181,126,.12);border:1px solid rgba(83,181,126,.28);color:#c8f4d8}
+@media(max-width:820px){.register-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
+
+.actions .btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  line-height:1.15;
+}
+
+</style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="storage-config.js?v=0.0.70"></script>
+<script src="supabase-sync.js?v=0.0.70"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><img src="logo.png" alt="Логотип"><span>Руководство Легенд Кунг-Фу</span></a>
+  <nav class="nav">
+  <a href="index.html">Главная</a>
+  <a href="taiwan.html">О Тайвани</a>
+  <a href="pirate.html">О Пиратке</a>
+  <a href="updates.html">Обновления</a>
+  <a href="accounts-sale.html">Продажа Аккаунтов</a>
+  <a href="forum.html">Форум</a>
+      <a href="partners.html">Партнеры</a>
+  <a href="register.html">Регистрация</a>
+  <a href="login.html">Вход</a>
+</nav>
+</header>
+
+<main class="wrap">
+  <div class="register-grid">
+    <section class="panel form-panel">
+      <h1>Регистрация</h1>
+      <p class="muted"><b>При подключённой синхронизации один аккаунт работает на телефоне и компьютере.</b><br>Создайте профиль игрока для участия в форуме. Обычные аккаунты не могут редактировать материалы сайта.</p>
+
+      <form id="registerForm">
+        <div class="form-row">
+          <div class="field">
+            <label for="nickname">Никнейм</label>
+            <input class="input" id="nickname" maxlength="24" required placeholder="Ваш никнейм">
+          </div>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input class="input" id="email" type="email" required placeholder="name@example.com">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="password">Пароль</label>
+            <input class="input" id="password" type="password" minlength="6" required placeholder="Минимум 6 символов">
+          </div>
+          <div class="field">
+            <label for="password2">Повторите пароль</label>
+            <input class="input" id="password2" type="password" minlength="6" required placeholder="Повторите пароль">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="bio">О себе <span class="muted">(необязательно)</span></label>
+          <textarea class="input" id="bio" maxlength="300" placeholder="Например: школа, стиль игры, интересы..."></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Создать аккаунт</button>
+          <a class="btn secondary" href="forum.html">Перейти на форум</a>
+        </div>
+        <div class="success" id="success"></div>
+      </form>
+      <div id="storageDiag" style="margin-top:12px;color:#8fa7b2;font-size:11px"></div>
+    </section>
+
+    
+  </div>
+</main>
+
+
+<script>
+const form=document.getElementById('registerForm');
+const success=document.getElementById('success');
+const diag=document.getElementById('storageDiag');
+
+function showMsg(text,ok){
+  success.style.display='block';
+  success.style.background=ok?'rgba(83,181,126,.12)':'rgba(210,84,84,.12)';
+  success.style.borderColor=ok?'rgba(83,181,126,.28)':'rgba(210,84,84,.28)';
+  success.style.color=ok?'#c8f4d8':'#ffd1d1';
+  success.innerHTML=text;
+}
+
+(async()=>{
+  await KFSupabase.ready;
+  if(diag){
+    if(KFSupabase.configured){
+      diag.style.color='#a9dfbc';
+      diag.textContent='Единый аккаунт подключён: вход будет работать на телефоне и компьютере.';
+    }else{
+      diag.style.color='#e5c98e';
+      diag.textContent='Supabase не подключён. Регистрация недоступна до настройки проекта.';
+    }
+  }
+})();
+
+form.addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const nickname=document.getElementById('nickname').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value;
+  const password2=document.getElementById('password2').value;
+  const bio=document.getElementById('bio').value.trim();
+
+  if(password!==password2){showMsg('Пароли не совпадают.',false);return}
+  if(password.length<6){showMsg('Пароль должен содержать минимум 6 символов.',false);return}
+
+  showMsg('Создание аккаунта...',true);
+  try{
+    if(KFSupabase.configured){
+      const result=await KFSupabase.register({nickname,email,password,bio});
+      form.reset();
+      if(result.needsConfirmation){
+        showMsg('Аккаунт создан. <b>Подтвердите e-mail из письма</b>, после чего войдите на сайт.',true);
+      }else{
+        showMsg('Аккаунт создан. Выполняется вход...',true);
+        setTimeout(()=>location.href='account.html',500);
+      }
+    }else{
+      throw new Error('Supabase не настроен. Администратор должен подключить проект в supabase-config.js.');
+    }
+  }catch(err){showMsg(err.message||'Не удалось создать аккаунт.',false)}
+});
+</script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
+</body>
+</html>

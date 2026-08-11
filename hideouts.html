@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Тайники: боссы и обход — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<style>
+:root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824;--danger:#55262b}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.74),rgba(3,14,22,.95)),url("background.webp") center/cover fixed no-repeat}
+a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}
+.top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}
+.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.nav a{font-size:14px;font-weight:700}.nav a:hover{color:var(--gold2)}
+.wrap{width:min(1320px,calc(100% - 30px));margin:34px auto 70px}.panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(5,27,40,.94),rgba(3,18,28,.97));box-shadow:0 16px 44px rgba(0,0,0,.28)}
+.page-head{padding:22px 24px}.page-head h1{font-size:42px;margin:0;color:var(--gold2)}.muted{color:var(--muted);line-height:1.55}
+.role-note,.save-status{margin-top:10px;padding:9px 11px;border:1px solid rgba(126,204,234,.16);border-radius:9px;color:#bcd9e4;background:rgba(126,204,234,.05);font-size:12px}.save-status:empty{display:none}
+.admin-badge{display:inline-flex;padding:3px 7px;border-radius:999px;background:linear-gradient(#efc66d,#b98131);color:#241506;font-size:9px;font-weight:700;margin-left:6px;vertical-align:middle}
+.editor{display:none;margin-top:14px;padding:18px}.editor.show{display:block}.editor h2,.editor h3{color:var(--gold2)}.editor h2{margin:0 0 8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.field{margin-top:11px}label{display:block;margin-bottom:5px;color:#dce7eb;font-weight:700;font-size:13px}
+input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.28);border-radius:9px;background:#071824;color:#fff;outline:0;padding:10px 11px}textarea{min-height:92px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-shadow:0 0 0 3px rgba(228,180,94,.06)}
+.btn{min-height:40px;margin-top:10px;border:0;border-radius:9px;padding:0 14px;background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:600;cursor:pointer}.btn.secondary{background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)}.btn.danger{background:var(--danger);color:#ffd7d7;border:1px solid rgba(255,140,140,.2)}.btn.small{min-height:34px;padding:0 11px;font-size:12px}
+.rank-manager{margin-top:12px;padding:12px;border:1px dashed rgba(228,180,94,.22);border-radius:11px;background:rgba(3,20,31,.45)}.rank-add{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.chip{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border-radius:999px;background:rgba(228,180,94,.08);border:1px solid rgba(228,180,94,.18);font-size:12px}.chip button{border:0;background:#51252a;color:#fff;border-radius:50%;width:20px;height:20px;cursor:pointer}
+.image-field{margin-top:11px;padding:12px;border:1px dashed rgba(228,180,94,.25);border-radius:12px;background:rgba(3,20,31,.46)}.square-preview{display:none;width:190px;max-width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;border:1px solid rgba(255,226,160,.2);background:#071824;margin-top:9px}.square-preview.show{display:block}.image-note{color:#91a8b2;font-size:11px;margin-top:6px}
+.boss-editor-list{display:grid;gap:14px;margin-top:12px}.boss-editor{padding:15px;border:1px solid rgba(228,180,94,.2);border-radius:14px;background:rgba(3,20,31,.5)}.boss-editor-head,.skill-editor-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.boss-editor-head h3{margin:0;font-size:20px}.boss-editor-grid{display:grid;grid-template-columns:210px 1fr;gap:14px;margin-top:10px}.boss-photo-edit{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;border:1px solid rgba(255,226,160,.18);background:#071824;display:block}.boss-photo-placeholder{width:100%;aspect-ratio:1/1;border-radius:12px;border:1px dashed rgba(255,226,160,.18);display:grid;place-items:center;color:#8197a2;background:#071824}.skills-editor{display:grid;gap:10px;margin-top:12px}.skill-editor{padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:11px;background:rgba(255,255,255,.025)}.skill-editor-head b{color:#ffe2a0}.skill-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}.skill-cols .wide{grid-column:1/-1}
+.two-col{margin-top:16px;display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}.toc{position:sticky;top:94px;padding:14px;max-height:calc(100vh - 115px);overflow:auto}.toc h3{margin:0 0 10px;color:#ffe2a0;font-size:19px}.toc-list{display:grid;gap:7px}.toc-group{margin:12px 0 5px;color:#ffe2a0;font-size:13px;font-weight:700;border-bottom:1px solid rgba(228,180,94,.14);padding-bottom:5px}.toc-item{display:block;padding:10px;border:1px solid rgba(255,255,255,.06);border-radius:9px;background:rgba(255,255,255,.025);cursor:pointer}.toc-item:hover,.toc-item.active{border-color:rgba(228,180,94,.34);background:rgba(228,180,94,.08);color:#ffe2a0}.toc-item small{display:block;color:#91a7b1;margin-top:3px;font-size:10px}.content-area{display:grid;gap:12px}
+.hideout-card{padding:19px}.hideout-top{display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:start}.hideout-image{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;background:#071824;border:1px solid rgba(255,226,160,.17)}.hideout-image.placeholder{display:grid;place-items:center;color:#8197a2}.hideout-card h2{margin:0 0 7px;color:#ffe2a0;font-size:30px}.meta{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}.tag{display:inline-flex;padding:4px 8px;border-radius:999px;background:rgba(228,180,94,.1);border:1px solid rgba(228,180,94,.2);color:#ffe2a0;font-size:12px}.extra-link{display:inline-flex;margin-top:10px;color:#9edcf2;text-decoration:underline}.admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.bosses-view{display:grid;gap:14px;margin-top:18px}.boss-view{padding:15px;border:1px solid rgba(228,180,94,.17);border-radius:14px;background:rgba(255,255,255,.025)}.boss-view-top{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:start}.boss-view h3{margin:0;color:#ffe2a0;font-size:23px}.boss-image{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;border:1px solid rgba(255,226,160,.16);background:#071824}.boss-image.placeholder{display:grid;place-items:center;color:#8197a2}.skills-view{display:grid;gap:9px;margin-top:12px}.skill-view{display:grid;grid-template-columns:minmax(150px,.65fr) 1fr 1fr;border:1px solid rgba(255,255,255,.08);border-radius:10px;overflow:hidden}.skill-cell{padding:11px;border-right:1px solid rgba(255,255,255,.07);line-height:1.5}.skill-cell:last-child{border-right:0}.skill-cell b{display:block;color:#ffe2a0;margin-bottom:5px}.skill-label{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#8ea5b0;margin-bottom:5px}.reactions-wrap{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}.no-comments{margin-top:8px;color:#8ea5b0;font-size:11px}.empty{padding:24px;color:#a9bcc5}.modal{display:none;position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.72);padding:20px;align-items:center;justify-content:center}.modal.open{display:flex}.modal-card{width:min(1000px,96vw);max-height:88vh;overflow:auto;padding:18px}
+@media(max-width:900px){.nav{display:none}.two-col{grid-template-columns:1fr}.toc{position:relative;top:auto;max-height:none}.hideout-top{grid-template-columns:160px 1fr}.boss-editor-grid,.boss-view-top{grid-template-columns:150px 1fr}.skill-view{grid-template-columns:1fr}.skill-cell{border-right:0;border-bottom:1px solid rgba(255,255,255,.07)}.skill-cell:last-child{border-bottom:0}}
+@media(max-width:620px){.wrap{width:min(100% - 18px,1320px);margin-top:18px}.page-head h1{font-size:31px}.grid2,.grid3,.boss-editor-grid,.hideout-top,.boss-view-top,.skill-cols{grid-template-columns:1fr}.hideout-image,.boss-image,.boss-photo-edit,.boss-photo-placeholder{width:min(100%,300px)}.skill-cols .wide{grid-column:auto}.rank-add{grid-template-columns:1fr}.top{padding:8px 12px}.brand span{font-size:14px}.brand img{width:44px;height:44px}.hideout-card{padding:14px}}
+</style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="storage-config.js?v=0.0.70"></script>
+<script src="supabase-sync.js?v=0.0.70"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><img src="logo.png" alt="Логотип"><span>Руководство Легенд Кунг-Фу</span></a>
+  <nav class="nav"><a href="index.html">Главная</a><a href="taiwan.html">О Тайвани</a><a href="pirate.html">О Пиратке</a><a href="updates.html">Обновления</a><a href="accounts-sale.html">Продажа Аккаунтов</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="account.html">Аккаунт</a></nav>
+</header>
+<main class="wrap">
+  <section class="panel page-head">
+    <h1>Тайники: боссы и обход <span id="adminBadge"></span></h1>
+    <p class="muted">Тайники, боссы, их приемы и способы безопасного обхода навыков. Зарегистрированные пользователи могут ставить реакции. Комментарии в этом разделе отключены.</p>
+    <div class="role-note" id="roleNote">Загрузка...</div>
+  </section>
+
+  <section class="panel editor" id="editor">
+    <h2 id="editorTitle">Добавить тайник</h2>
+    <div class="grid2">
+      <div class="field"><label for="hideoutName">Название Тайника</label><input id="hideoutName" maxlength="160" placeholder="Название тайника"></div>
+      <div class="field"><label for="otherNames">Другие названия</label><input id="otherNames" maxlength="300" placeholder="Другие названия через запятую"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="rankSelect">Тайник открывается с ранга</label><select id="rankSelect"></select></div>
+      <div class="field"><label for="additionalLink">Дополнительная ссылка</label><input id="additionalLink" type="url" placeholder="https://... видео или прохождение"></div>
+    </div>
+    <div class="rank-manager">
+      <b style="color:#ffe2a0">Ранги для выбора</b>
+      <div class="rank-add"><div class="field"><label for="newRank">Добавить ранг</label><input id="newRank" placeholder="Название ранга"></div><button class="btn secondary" type="button" id="addRank">Добавить ранг</button></div>
+      <div class="chips" id="rankChips"></div>
+    </div>
+    <div class="image-field">
+      <label for="hideoutImageInput">Изображение Тайника</label>
+      <input id="hideoutImageInput" type="file" accept="image/*">
+      <img id="hideoutImagePreview" class="square-preview" alt="Предпросмотр тайника">
+      <div class="image-note">На странице изображение отображается строго квадратным. Исходник не растягивается — используется аккуратное кадрирование через object-fit.</div>
+    </div>
+
+    <div style="margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <h2 style="margin:0">Боссы</h2>
+      <button class="btn secondary" type="button" id="addBoss">+ Добавить босса</button>
+    </div>
+    <div class="boss-editor-list" id="bossEditorList"></div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+      <button class="btn" type="button" id="publishBtn">Опубликовать</button>
+      <button class="btn secondary" type="button" id="previewBtn">Предпросмотр</button>
+      <button class="btn secondary" type="button" id="cancelBtn" style="display:none">Отменить редактирование</button>
+    </div>
+    <div class="save-status" id="saveStatus"></div>
+  </section>
+
+  <section class="two-col">
+    <aside class="panel toc">
+      <h3>Тайники</h3>
+      <input id="search" type="search" placeholder="Поиск тайника...">
+      <div class="toc-list" id="tocList"></div>
+    </aside>
+    <section class="content-area" id="content"></section>
+  </section>
+</main>
+
+<div class="modal" id="previewModal"><div class="panel modal-card"><div style="display:flex;justify-content:flex-end"><button class="btn secondary" type="button" id="closePreview">Закрыть</button></div><div id="previewContent"></div></div></div>
+
+<script src="image-tools-0.0.48.js?v=0.0.70"></script>
+<script src="reactions-0.0.48.js?v=0.0.66"></script>
+<script>
+const KEY='kungfuHideouts';
+const RANK_KEY='kungfuHideoutRanks';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const clone=x=>JSON.parse(JSON.stringify(x));
+function safeUrl(v){try{const u=new URL(String(v||''));return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}}
+function nl(v){return esc(v||'').replace(/\n/g,'<br>')}
+function newSkill(){return{id:uid(),name:'',description:'',avoidance:''}}
+function newBoss(){return{id:uid(),name:'',image:'',skills:[newSkill()]}}
+
+let currentUser=null,isAdmin=false,entries=[],ranks=['Не указан'],selectedId=null,editingId=null,hideoutImage='',bosses=[];
+const $=id=>document.getElementById(id);
+
+async function loadStore(key,fallback){
+  if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+  await KFSupabase.ready;
+  const v=await KFSupabase.getStore(key,null);
+  return v===null||v===undefined?fallback:v;
+}
+async function saveEntries(){entries=await KFSupabase.saveStore(KEY,entries);return entries}
+async function saveRanks(){ranks=await KFSupabase.saveStore(RANK_KEY,ranks);return ranks}
+
+function renderRanks(){
+  const cur=$('rankSelect').value;
+  $('rankSelect').innerHTML=ranks.map(r=>`<option value="${esc(r)}">${esc(r)}</option>`).join('');
+  if(ranks.includes(cur))$('rankSelect').value=cur;
+  $('rankChips').innerHTML=isAdmin?ranks.map((r,i)=>`<span class="chip">${esc(r)}${i===0?'':` <button type="button" onclick="removeRank('${encodeURIComponent(r)}')">×</button>`}</span>`).join(''):'';
+}
+$('addRank').onclick=async()=>{
+  if(!isAdmin)return;
+  const input=$('newRank'),v=input.value.trim();if(!v)return;
+  if(ranks.some(x=>x.toLowerCase()===v.toLowerCase())){alert('Такой ранг уже существует.');return}
+  const before=ranks.slice();ranks.push(v);
+  try{await saveRanks();input.value='';renderRanks();$('rankSelect').value=v}catch(e){ranks=before;alert(e.message||'Не удалось сохранить ранг.')}
+};
+window.removeRank=async enc=>{
+  if(!isAdmin)return;const v=decodeURIComponent(enc);
+  if(v===ranks[0])return;
+  if(entries.some(x=>x.rank===v)){alert('Этот ранг используется в опубликованном тайнике. Сначала измените запись.');return}
+  const before=ranks.slice();ranks=ranks.filter(x=>x!==v);
+  try{await saveRanks();renderRanks()}catch(e){ranks=before;alert(e.message||'Не удалось удалить ранг.')}
+};
+
+function renderHideoutPreview(){
+  if(hideoutImage){$('hideoutImagePreview').src=hideoutImage;$('hideoutImagePreview').classList.add('show')}
+  else{$('hideoutImagePreview').removeAttribute('src');$('hideoutImagePreview').classList.remove('show')}
+}
+$('hideoutImageInput').onchange=async()=>{
+  const f=$('hideoutImageInput').files&&$('hideoutImageInput').files[0];if(!f)return;
+  try{hideoutImage=await imageToData(f,1800);renderHideoutPreview()}catch(e){alert(e.message||'Не удалось обработать изображение.');$('hideoutImageInput').value=''}
+};
+
+function renderBossEditors(){
+  const host=$('bossEditorList');
+  host.innerHTML=bosses.length?bosses.map((b,bi)=>`<article class="boss-editor" data-boss="${b.id}">
+    <div class="boss-editor-head"><h3>Босс ${bi+1}</h3><button class="btn danger small" type="button" onclick="removeBoss('${b.id}')">Удалить босса</button></div>
+    <div class="boss-editor-grid">
+      <div>
+        ${b.image?`<img class="boss-photo-edit" src="${b.image}" alt="Предпросмотр босса">`:'<div class="boss-photo-placeholder">Квадратное изображение босса</div>'}
+        <div class="field"><label>Изображение Босса</label><input class="boss-image-input" data-boss-image="${b.id}" type="file" accept="image/*"></div>
+      </div>
+      <div>
+        <div class="field"><label>Имя Босса</label><input data-boss-name="${b.id}" value="${esc(b.name)}" placeholder="Имя босса"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:13px"><b style="color:#ffe2a0">Навыки Босса</b><button class="btn secondary small" type="button" onclick="addSkill('${b.id}')">+ Добавить навык</button></div>
+        <div class="skills-editor">${(b.skills||[]).map((s,si)=>`<div class="skill-editor">
+          <div class="skill-editor-head"><b>Навык ${si+1}</b><button class="btn danger small" type="button" onclick="removeSkill('${b.id}','${s.id}')">Удалить</button></div>
+          <div class="skill-cols">
+            <div class="field wide"><label>Навык Босса — название</label><input data-skill-field="name" data-boss-id="${b.id}" data-skill-id="${s.id}" value="${esc(s.name)}" placeholder="Название приема"></div>
+            <div class="field"><label>Описание навыка</label><textarea data-skill-field="description" data-boss-id="${b.id}" data-skill-id="${s.id}" placeholder="Что делает прием">${esc(s.description)}</textarea></div>
+            <div class="field"><label>Обход Навыка</label><textarea data-skill-field="avoidance" data-boss-id="${b.id}" data-skill-id="${s.id}" placeholder="Как увернуться или обойти прием">${esc(s.avoidance)}</textarea></div>
+          </div>
+        </div>`).join('')}</div>
+      </div>
+    </div>
+  </article>`).join(''):'<div class="muted">Боссы пока не добавлены. Нажмите «Добавить босса».</div>';
+
+  host.querySelectorAll('[data-boss-name]').forEach(input=>input.oninput=()=>{const b=bosses.find(x=>x.id===input.dataset.bossName);if(b)b.name=input.value});
+  host.querySelectorAll('[data-skill-field]').forEach(el=>el.oninput=()=>{const b=bosses.find(x=>x.id===el.dataset.bossId);const s=b?.skills?.find(x=>x.id===el.dataset.skillId);if(s)s[el.dataset.skillField]=el.value});
+  host.querySelectorAll('[data-boss-image]').forEach(input=>input.onchange=async()=>{const f=input.files&&input.files[0];if(!f)return;const b=bosses.find(x=>x.id===input.dataset.bossImage);if(!b)return;try{b.image=await imageToData(f,1600);renderBossEditors()}catch(e){alert(e.message||'Не удалось обработать изображение босса.')}});
+}
+$('addBoss').onclick=()=>{bosses.push(newBoss());renderBossEditors()};
+window.removeBoss=id=>{if(!confirm('Удалить этого босса из формы?'))return;bosses=bosses.filter(x=>x.id!==id);renderBossEditors()};
+window.addSkill=bossId=>{const b=bosses.find(x=>x.id===bossId);if(!b)return;b.skills=b.skills||[];b.skills.push(newSkill());renderBossEditors()};
+window.removeSkill=(bossId,skillId)=>{const b=bosses.find(x=>x.id===bossId);if(!b)return;b.skills=(b.skills||[]).filter(x=>x.id!==skillId);renderBossEditors()};
+
+function bossView(b){
+  const skills=(b.skills||[]).filter(s=>s.name||s.description||s.avoidance);
+  return `<article class="boss-view"><div class="boss-view-top">
+    ${b.image?`<img class="boss-image" src="${b.image}" alt="${esc(b.name||'Босс')}" loading="lazy" decoding="async">`:'<div class="boss-image placeholder">Нет изображения</div>'}
+    <div><h3>${esc(b.name||'Босс без имени')}</h3>
+      <div class="skills-view">${skills.length?skills.map(s=>`<div class="skill-view">
+        <div class="skill-cell"><div class="skill-label">Навык Босса</div><b>${esc(s.name||'Без названия')}</b></div>
+        <div class="skill-cell"><div class="skill-label">Описание</div>${nl(s.description)||'<span class="muted">Не указано</span>'}</div>
+        <div class="skill-cell"><div class="skill-label">Обход Навыка</div>${nl(s.avoidance)||'<span class="muted">Не указано</span>'}</div>
+      </div>`).join(''):'<div class="muted">Навыки босса пока не описаны.</div>'}</div>
+    </div></div></article>`;
+}
+function itemHtml(item,preview=false){
+  const link=safeUrl(item.additionalLink);
+  return `<article class="panel hideout-card">
+    <div class="hideout-top">
+      ${item.image?`<img class="hideout-image" src="${item.image}" alt="${esc(item.name||'Тайник')}" loading="lazy" decoding="async">`:'<div class="hideout-image placeholder">Нет изображения</div>'}
+      <div><h2>${esc(item.name||'Тайник без названия')}</h2>
+        <div class="meta"><span class="tag">Открывается с ранга: ${esc(item.rank||ranks[0]||'Не указан')}</span></div>
+        ${item.otherNames?`<div class="muted"><b>Другие названия:</b> ${esc(item.otherNames)}</div>`:''}
+        ${link?`<a class="extra-link" href="${esc(link)}" target="_blank" rel="noopener noreferrer">Дополнительная ссылка →</a>`:''}
+        ${isAdmin&&!preview?`<div class="admin-actions"><button class="btn secondary" type="button" onclick="editEntry('${item.id}')">Редактировать</button><button class="btn danger" type="button" onclick="deleteEntry('${item.id}')">Удалить</button></div>`:''}
+      </div>
+    </div>
+    <div class="bosses-view">${(item.bosses||[]).length?(item.bosses||[]).map(bossView).join(''):'<div class="muted">Для этого тайника боссы пока не добавлены.</div>'}</div>
+    ${preview?'':`<div class="reactions-wrap"><div id="hideout-reaction-${item.id}"></div><div class="no-comments">Комментарии в разделе «Тайники» отключены.</div></div>`}
+  </article>`;
+}
+
+function render(){
+  const q=$('search').value.trim().toLowerCase();
+  const list=entries.filter(x=>[x.name,x.otherNames,x.rank,...(x.bosses||[]).map(b=>b.name)].some(v=>String(v||'').toLowerCase().includes(q)));
+  $('tocList').innerHTML=list.length?ranks.map(rank=>{const rows=list.filter(x=>(x.rank||ranks[0])===rank);if(!rows.length)return '';return `<div class="toc-group">${esc(rank)}</div>`+rows.map(x=>`<a class="toc-item ${String(x.id)===String(selectedId)?'active':''}" onclick="selectEntry('${x.id}')"><b>${esc(x.name||'Без названия')}</b><small>${(x.bosses||[]).length} босс(ов)</small></a>`).join('')}).join(''):'<div class="muted">Ничего не найдено.</div>';
+  let item=entries.find(x=>String(x.id)===String(selectedId));if(!item)item=list[0]||null;if(item)selectedId=item.id;
+  $('content').innerHTML=item?itemHtml(item):'<div class="panel empty">Тайники пока не добавлены.</div>';
+  if(item&&window.KFReactions)KFReactions.mountSmiles(`hideout-reaction-${item.id}`,KEY,item.id);
+}
+window.selectEntry=id=>{selectedId=id;render()};
+$('search').oninput=render;
+
+function collectDraft(){
+  return {
+    id:editingId||uid(),
+    name:$('hideoutName').value.trim(),
+    otherNames:$('otherNames').value.trim(),
+    rank:$('rankSelect').value||ranks[0],
+    additionalLink:$('additionalLink').value.trim(),
+    image:hideoutImage,
+    bosses:clone(bosses)
+  };
+}
+function resetForm(){
+  editingId=null;hideoutImage='';bosses=[];$('hideoutName').value='';$('otherNames').value='';$('additionalLink').value='';$('hideoutImageInput').value='';$('editorTitle').textContent='Добавить тайник';$('publishBtn').textContent='Опубликовать';$('cancelBtn').style.display='none';$('saveStatus').textContent='';renderRanks();$('rankSelect').value=ranks[0]||'';renderHideoutPreview();renderBossEditors();
+}
+window.editEntry=id=>{
+  if(!isAdmin)return;const item=entries.find(x=>String(x.id)===String(id));if(!item)return;
+  editingId=item.id;$('editorTitle').textContent='Редактировать тайник';$('publishBtn').textContent='Сохранить изменения';$('cancelBtn').style.display='inline-flex';$('hideoutName').value=item.name||'';$('otherNames').value=item.otherNames||'';$('additionalLink').value=item.additionalLink||'';hideoutImage=item.image||'';bosses=clone(item.bosses||[]);renderRanks();$('rankSelect').value=item.rank||ranks[0];renderHideoutPreview();renderBossEditors();window.scrollTo({top:$('editor').offsetTop-85,behavior:'smooth'});
+};
+$('cancelBtn').onclick=resetForm;
+window.deleteEntry=async id=>{
+  if(!isAdmin||!confirm('Удалить тайник?'))return;const before=clone(entries);entries=entries.filter(x=>String(x.id)!==String(id));selectedId=entries[0]?.id||null;
+  try{await saveEntries();render()}catch(e){entries=before;alert(e.message||'Не удалось удалить тайник.')}
+};
+$('previewBtn').onclick=()=>{const draft=collectDraft();draft.name=draft.name||'Тайник без названия';$('previewContent').innerHTML=itemHtml(draft,true);$('previewModal').classList.add('open')};
+$('closePreview').onclick=()=>{$('previewModal').classList.remove('open')};$('previewModal').onclick=e=>{if(e.target===$('previewModal'))$('previewModal').classList.remove('open')};
+$('publishBtn').onclick=async()=>{
+  if(!isAdmin)return;const draft=collectDraft();if(!draft.name){alert('Укажите название тайника.');return}
+  if(draft.additionalLink&&!safeUrl(draft.additionalLink)){alert('Дополнительная ссылка должна начинаться с http:// или https://');return}
+  const before=clone(entries),btn=$('publishBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Публикация...';$('saveStatus').style.color='#c8f4d8';$('saveStatus').textContent='Сохранение тайника и изображений в Supabase...';
+  try{
+    const existing=editingId?entries.find(x=>String(x.id)===String(editingId)):null;
+    const item={...draft,createdAt:existing?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
+    if(editingId){const i=entries.findIndex(x=>String(x.id)===String(editingId));entries[i]={...entries[i],...item}}else entries.push(item);
+    selectedId=item.id;await saveEntries();resetForm();render();$('saveStatus').style.color='#c8f4d8';$('saveStatus').textContent=existing?'Изменения сохранены.':'Тайник опубликован.';
+  }catch(e){entries=before;$('saveStatus').style.color='#ffd0d0';$('saveStatus').textContent=e.message||'Не удалось опубликовать тайник.';render()}
+  finally{btn.disabled=false;if(btn.textContent==='Публикация...')btn.textContent=old}
+};
+
+async function init(){
+  try{
+    await KFSupabase.ready;
+    currentUser=await KFSupabase.getCurrentProfile().catch(()=>null);
+    isAdmin=!!currentUser&&currentUser.role==='admin';
+    if(isAdmin){$('editor').classList.add('show');$('adminBadge').innerHTML='<span class="admin-badge">АДМИН</span>';$('roleNote').textContent='Можно добавлять и редактировать тайники, ранги, боссов и навыки.'}
+    else $('roleNote').textContent=currentUser?'Просмотр доступен. Можно ставить реакции. Добавление контента — только администратору.':'Просмотр доступен всем. Для реакций войдите или зарегистрируйтесь.';
+    const [loadedEntries,loadedRanks]=await Promise.all([loadStore(KEY,[]),loadStore(RANK_KEY,['Не указан'])]);
+    entries=Array.isArray(loadedEntries)?loadedEntries:[];ranks=Array.isArray(loadedRanks)&&loadedRanks.length?loadedRanks:['Не указан'];selectedId=entries[0]?.id||null;renderRanks();resetForm();render();
+  }catch(e){$('roleNote').style.color='#ffd0d0';$('roleNote').textContent='Не удалось подключиться к Supabase: '+(e.message||e);renderRanks();renderBossEditors();render()}
+}
+init();
+</script>
+<script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
+</body>
+</html>

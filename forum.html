@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Форум — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+
+<style>
+:root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.38);--muted:#c7d7de}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.92)),url("background.webp") center/cover fixed no-repeat}
+a{text-decoration:none;color:inherit}button,input,textarea,select{font:inherit}.top{min-height:76px;padding:0 4vw;display:flex;align-items:center;gap:22px;background:rgba(3,16,26,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto;color:var(--gold2);font-size:20px;font-weight:700}.brand img{width:54px;height:54px;object-fit:contain}.nav{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.nav a{font-weight:700}
+.wrap{width:min(1180px,calc(100% - 36px));margin:50px auto 80px}.panel{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,rgba(5,27,40,.92),rgba(3,18,28,.95));box-shadow:0 20px 60px rgba(0,0,0,.35)}
+h1,h2,h3{color:var(--gold2)}h1{font-size:48px;margin:0}.muted{color:var(--muted)}
+.btn{min-height:44px;margin-top:12px;border:0;border-radius:10px;padding:0 16px;background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:900;cursor:pointer}.btn.secondary{background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.28)}.btn.danger{background:#51252a;color:#ffd7d7}
+input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.32);border-radius:10px;background:#071824;color:#fff;outline:0;padding:12px}textarea{min-height:110px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.forum-head{padding:26px 28px;display:flex;justify-content:space-between;gap:20px;align-items:center}.layout{display:grid;grid-template-columns:270px 1fr;gap:20px;margin-top:20px}
+.sidebar{padding:18px}.category{display:block;padding:11px 12px;border-radius:10px;margin-top:6px}.category:hover,.category.active{background:rgba(228,180,94,.10);color:#ffe2a0}.content{display:grid;gap:14px}.composer{padding:20px}.topic{padding:20px}
+.topic-img,.reply-img{display:block;width:auto;max-width:min(100%,720px);height:auto;max-height:560px;object-fit:contain;border-radius:12px;margin-top:12px;border:1px solid rgba(255,226,160,.18);background:rgba(255,255,255,.018);image-rendering:auto}
+.reply-box{display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}.reply-box.open{display:block}.reply{padding:12px;border-left:2px solid rgba(228,180,94,.42);background:rgba(255,255,255,.025);border-radius:0 9px 9px 0;margin-top:8px}
+.forum-author{display:flex;align-items:center;gap:10px;margin-top:8px}.forum-author.compact{gap:9px;margin-top:0;margin-bottom:6px}
+.forum-avatar{width:38px;height:38px;flex:0 0 38px;border-radius:50%;overflow:hidden;display:grid;place-items:center;border:1px solid rgba(255,226,160,.34);background:linear-gradient(145deg,#17384a,#071824);color:#ffe2a0;font-weight:600;font-size:14px}
+.forum-author.compact .forum-avatar{width:32px;height:32px;flex-basis:32px;font-size:12px}
+.forum-avatar img{width:100%;height:100%;display:block;object-fit:cover}
+.forum-author-name{display:flex;align-items:center;gap:4px;color:#f4e3bd;font-weight:600;line-height:1.2}
+.reply-as{display:flex;align-items:center;gap:8px;margin-bottom:9px;color:#bcd0d8;font-size:12px}
+.reply-as .forum-avatar{width:30px;height:30px;flex-basis:30px;font-size:11px}
+
+.user-badge{padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(5,31,44,.7);color:#ffe2a0;font-size:13px}.forum-type-manager{display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}.forum-type-manager.show{display:block}
+.filebox{margin-top:10px;padding:10px;border:1px dashed rgba(228,180,94,.25);border-radius:10px;background:rgba(3,20,31,.46)}.preview{display:none;margin-top:10px}.preview.show{display:block}.preview img{display:block;width:auto;max-width:min(100%,560px);height:auto;max-height:420px;object-fit:contain;border-radius:12px;background:rgba(255,255,255,.018);image-rendering:auto}
+.tag{display:inline-flex;padding:4px 9px;border-radius:999px;background:rgba(228,180,94,.12);border:1px solid rgba(228,180,94,.22);color:#ffe2a0;font-size:11px;font-weight:800}.admin-badge{display:inline-flex;margin-left:6px;padding:3px 7px;border-radius:999px;background:linear-gradient(#efc66d,#b98131);color:#251707;font-size:9px;font-weight:900}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:rgba(228,180,94,.08);border:1px solid rgba(228,180,94,.18);font-size:11px}.chip button{border:0;border-radius:50%;background:#51252a;color:#fff;cursor:pointer}
+.topic-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.date-line{font-size:11px;color:#91a8b2;margin-top:5px}
+.aow-smile-trigger{margin-top:8px}.aow-inline-smile{height:42px;max-width:70px;object-fit:contain;vertical-align:middle;margin:2px 3px}
+.smile-modal{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.70);padding:22px;align-items:center;justify-content:center}.smile-modal.open{display:flex}.smile-box{width:min(760px,96vw);max-height:80vh;overflow:auto;padding:18px;border:1px solid rgba(228,180,94,.4);border-radius:16px;background:#071824}.smile-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.smile-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:7px}.smile-pick{height:58px;border:1px solid rgba(228,180,94,.18);border-radius:8px;background:#102b3b;cursor:pointer;padding:4px}.smile-pick img{width:100%;height:100%;object-fit:contain}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{display:none}.forum-head{flex-direction:column;align-items:flex-start}.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.smile-grid{grid-template-columns:repeat(6,1fr)}}@media(max-width:560px){.grid2{grid-template-columns:1fr}.smile-grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="storage-config.js?v=0.0.70"></script>
+<script src="supabase-sync.js?v=0.0.70"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="image-tools-0.0.48.js?v=0.0.70"></script>
+</head>
+<body>
+<header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
+  <a href="index.html">Главная</a>
+  <a href="taiwan.html">О Тайвани</a>
+  <a href="pirate.html">О Пиратке</a>
+  <a href="updates.html">Обновления</a>
+  <a href="accounts-sale.html">Продажа Аккаунтов</a>
+  <a href="forum.html">Форум</a>
+      <a href="partners.html">Партнеры</a>
+  <a href="register.html">Регистрация</a>
+  <a href="login.html">Вход</a>
+</nav></header>
+<main class="wrap">
+<section class="panel forum-head"><div><h1>Форум</h1><div class="muted">Обсуждения игроков</div></div><div class="user-badge" id="userBadge">Гость</div></section>
+<div class="layout">
+  <aside class="panel sidebar">
+    <h3>Типы обсуждений</h3><div id="cats"></div>
+    <div class="forum-type-manager" id="typeManager"><input id="newCat" placeholder="Новый тип обсуждений"><button class="btn secondary" id="addCat">Добавить тип</button><div class="chips" id="catChips"></div></div>
+  </aside>
+  <section class="content">
+    <div class="panel composer">
+      <h2 style="margin-top:0">Создать обсуждение</h2>
+      <div class="grid2"><input id="topicTitle" placeholder="Название темы"><select id="topicCategory"></select></div>
+      <textarea id="topicText" placeholder="Текст обсуждения"></textarea>
+      <button class="btn secondary aow-smile-trigger" type="button" onclick="openSmilePicker('topicText')">Смайлы Age of Wushu</button>
+      <div class="filebox"><label>Картинка к обсуждению</label><input id="topicImage" type="file" accept="image/*"><div class="muted" style="font-size:11px;margin-top:6px">Изображение показывается в исходных пропорциях и никогда не растягивается выше своего естественного разрешения.</div><div class="preview" id="topicPreview"><img id="topicPreviewImg" loading="lazy" decoding="async"></div></div>
+      <button class="btn" id="createTopic">Опубликовать</button><div id="forumStatus" class="muted" style="margin-top:8px;min-height:20px"></div>
+    </div>
+    <div id="topics"></div>
+  </section>
+</div>
+</main>
+
+<div class="smile-modal" id="smileModal">
+  <div class="smile-box">
+    <div class="smile-head"><h2 style="margin:0">Смайлы Age of Wushu</h2><button class="btn danger" style="margin:0" onclick="closeSmilePicker()">Закрыть</button></div>
+    <div class="smile-grid" id="smileGrid"></div>
+  </div>
+</div>
+<script>
+const smiles=[{"file": "smiles/smile_001.gif", "title": "Ааааааа!"}, {"file": "smiles/smile_002.gif", "title": "Ай!"}, {"file": "smiles/smile_003.gif", "title": "Аплодисменты"}, {"file": "smiles/smile_004.gif", "title": "Беее"}, {"file": "smiles/smile_005.gif", "title": "Безразличный  [1]"}, {"file": "smiles/smile_006.gif", "title": "Безразличный  [2]"}, {"file": "smiles/smile_007.gif", "title": "В разочаровании [1]"}, {"file": "smiles/smile_008.gif", "title": "В разочаровании [2]"}, {"file": "smiles/smile_009.gif", "title": "В разочаровании [3]"}, {"file": "smiles/smile_010.gif", "title": "Всем пива!"}, {"file": "smiles/smile_011.gif", "title": "Говорить"}, {"file": "smiles/smile_012.gif", "title": "Головой об стену"}, {"file": "smiles/smile_013.gif", "title": "Головокружение"}, {"file": "smiles/smile_014.gif", "title": "Гордый"}, {"file": "smiles/smile_015.gif", "title": "Да, верно"}, {"file": "smiles/smile_016.gif", "title": "Давай драться"}, {"file": "smiles/smile_017.gif", "title": "Дарю цветок"}, {"file": "smiles/smile_018.gif", "title": "Жую..."}, {"file": "smiles/smile_019.gif", "title": "Заигрывать"}, {"file": "smiles/smile_020.gif", "title": "Зевок"}, {"file": "smiles/smile_021.gif", "title": "Злость [1]"}, {"file": "smiles/smile_022.gif", "title": "Злость [2]"}, {"file": "smiles/smile_023.gif", "title": "Злость [3]"}, {"file": "smiles/smile_024.gif", "title": "Иду курить"}, {"file": "smiles/smile_025.gif", "title": "Кинуло в пот..."}, {"file": "smiles/smile_026.gif", "title": "Кокейство"}, {"file": "smiles/smile_027.gif", "title": "Крутость  [1]"}, {"file": "smiles/smile_028.gif", "title": "Крутость  [2]"}, {"file": "smiles/smile_029.gif", "title": "Круть!"}, {"file": "smiles/smile_030.gif", "title": "Кушаю"}, {"file": "smiles/smile_031.gif", "title": "Махать веером"}, {"file": "smiles/smile_032.gif", "title": "Милость [1]"}, {"file": "smiles/smile_033.gif", "title": "Милость [2]"}, {"file": "smiles/smile_034.gif", "title": "Милость [3]"}, {"file": "smiles/smile_035.gif", "title": "Молчание [2]"}, {"file": "smiles/smile_036.gif", "title": "Молчание"}, {"file": "smiles/smile_037.gif", "title": "Неожиданность"}, {"file": "smiles/smile_038.gif", "title": "Нет!"}, {"file": "smiles/smile_039.gif", "title": "Обида [1]"}, {"file": "smiles/smile_040.gif", "title": "Обида [2]"}, {"file": "smiles/smile_041.gif", "title": "Обида [3]"}, {"file": "smiles/smile_042.gif", "title": "Обида [4]"}, {"file": "smiles/smile_043.gif", "title": "Обида [5]"}, {"file": "smiles/smile_044.gif", "title": "Объятия"}, {"file": "smiles/smile_045.gif", "title": "Ом-ном-ном, вкусно..."}, {"file": "smiles/smile_046.gif", "title": "Плохо мне...  [1]"}, {"file": "smiles/smile_047.gif", "title": "Подлость"}, {"file": "smiles/smile_048.gif", "title": "Подозрительность"}, {"file": "smiles/smile_049.gif", "title": "Подумаем..."}, {"file": "smiles/smile_050.gif", "title": "Пожалуй откажусь..."}, {"file": "smiles/smile_051.gif", "title": "Похвалить"}, {"file": "smiles/smile_052.gif", "title": "Похотливость [2]"}, {"file": "smiles/smile_053.gif", "title": "Пошёл ты!"}, {"file": "smiles/smile_054.gif", "title": "Проездом"}, {"file": "smiles/smile_055.gif", "title": "Пронесло..."}, {"file": "smiles/smile_056.gif", "title": "Прятаться"}, {"file": "smiles/smile_057.gif", "title": "Слушаю музыку"}, {"file": "smiles/smile_058.gif", "title": "Слёзы [1]"}, {"file": "smiles/smile_059.gif", "title": "Слёзы [2]"}, {"file": "smiles/smile_060.gif", "title": "Слёзы [3]"}, {"file": "smiles/smile_061.gif", "title": "Смерть"}, {"file": "smiles/smile_062.gif", "title": "Смех [1]"}, {"file": "smiles/smile_063.gif", "title": "Смех [2]"}, {"file": "smiles/smile_064.gif", "title": "Смущённость"}, {"file": "smiles/smile_065.gif", "title": "Сон [1]"}, {"file": "smiles/smile_066.gif", "title": "Спать хочу..."}, {"file": "smiles/smile_067.gif", "title": "Страх"}, {"file": "smiles/smile_068.gif", "title": "Танцы"}, {"file": "smiles/smile_069.gif", "title": "Убью!"}, {"file": "smiles/smile_070.gif", "title": "Удивление [1]"}, {"file": "smiles/smile_071.gif", "title": "Удивление [2]"}, {"file": "smiles/smile_072.gif", "title": "Удивление [3]"}, {"file": "smiles/smile_073.gif", "title": "Удивление [4]"}, {"file": "smiles/smile_074.gif", "title": "Удивление"}, {"file": "smiles/smile_075.gif", "title": "Улыбка"}, {"file": "smiles/smile_076.gif", "title": "Ураааа!"}, {"file": "smiles/smile_077.gif", "title": "Ути-пути"}, {"file": "smiles/smile_078.gif", "title": "Фух..."}, {"file": "smiles/smile_079.gif", "title": "Холодно..."}, {"file": "smiles/smile_080.gif", "title": "Хочуу"}, {"file": "smiles/smile_081.gif", "title": "Царапать"}, {"file": "smiles/smile_082.gif", "title": "Чайку не желаете"}, {"file": "smiles/smile_083.gif", "title": "Что ты имеешь ввиду"}, {"file": "smiles/smile_084.gif", "title": "Чтооо!"}, {"file": "smiles/smile_085.gif", "title": "Я отомщу!"}, {"file": "smiles/smile_086.gif", "title": "Я слушаю... Ага"}, {"file": "smiles/smile_087.gif", "title": "Я уже звоню..."}, {"file": "smiles/smile_088.gif", "title": "Да что же не так..."}];
+let smileTargetId=null;
+let currentUser=null,isAdmin=false;
+let publicProfiles=new Map();
+let cats=['Общее','Новичкам','Навыки','Школы и секты','Меридианы','Нейгуны'];
+let active='Все темы',topicImageData='',topics=[];
+const userBadge=document.getElementById('userBadge');
+const typeManager=document.getElementById('typeManager');
+const smileModal=document.getElementById('smileModal');
+const smileGrid=document.getElementById('smileGrid');
+const catChips=document.getElementById('catChips');
+const topicCategory=document.getElementById('topicCategory');
+const addCat=document.getElementById('addCat');
+const newCat=document.getElementById('newCat');
+const topicImage=document.getElementById('topicImage');
+const topicPreview=document.getElementById('topicPreview');
+const topicPreviewImg=document.getElementById('topicPreviewImg');
+const createTopic=document.getElementById('createTopic');
+const topicTitle=document.getElementById('topicTitle');
+const topicText=document.getElementById('topicText');
+const forumStatus=document.getElementById('forumStatus');
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+function safeAvatar(v){
+  try{
+    const u=new URL(String(v||''),location.href);
+    return u.protocol==='https:'?u.href:'';
+  }catch{return ''}
+}
+function initials(name){
+  const a=String(name||'Игрок').trim().split(/\s+/).filter(Boolean);
+  return (a.slice(0,2).map(x=>x[0]).join('')||'И').toUpperCase();
+}
+function authorInfo(ownerId,fallbackName,role,fallbackAvatar=''){
+  const id=String(ownerId||'');
+  const publicProfile=publicProfiles.get(id);
+  const own=currentUser&&String(currentUser.id||'')===id?currentUser:null;
+  const name=publicProfile?.nickname||own?.nickname||fallbackName||'Игрок';
+  const avatar=publicProfile?.avatarUrl||own?.avatarUrl||fallbackAvatar||'';
+  return {name,avatar,role:role||own?.role||'user'};
+}
+function authorHtml(ownerId,fallbackName,role,compact=false,fallbackAvatar=''){
+  const a=authorInfo(ownerId,fallbackName,role,fallbackAvatar);
+  const src=safeAvatar(a.avatar);
+  return `<div class="forum-author ${compact?'compact':''}">
+    <span class="forum-avatar">${src?`<img src="${esc(src)}" alt="Аватар ${esc(a.name)}" loading="lazy" decoding="async">`:`${esc(initials(a.name))}`}</span>
+    <div class="forum-author-name">${esc(a.name)}${a.role==='admin'?' <span class="admin-badge">Админ</span>':''}</div>
+  </div>`;
+}
+function isUuid(v){return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(v||''))}
+async function hydratePublicProfiles(){
+  if(!window.KFSupabase?.configured)return;
+  const ids=[];
+  for(const topic of window.__forumTopics||[]){
+    if(isUuid(topic.ownerId))ids.push(String(topic.ownerId));
+    for(const reply of topic.replies||[])if(isUuid(reply.ownerId))ids.push(String(reply.ownerId));
+  }
+  if(currentUser&&isUuid(currentUser.id))ids.push(String(currentUser.id));
+  try{
+    const rows=await KFSupabase.getPublicProfiles([...new Set(ids)]);
+    publicProfiles=new Map(rows.map(x=>[String(x.id),x]));
+  }catch(e){
+    console.warn('Public profiles:',e);
+    publicProfiles=new Map();
+  }
+}
+function renderMessage(text){
+  let safe=esc(text).replace(/\n/g,'<br>');
+  return safe.replace(/\[\[aow:(\d+)\]\]/g,(m,n)=>{
+    const x=smiles[Number(n)];
+    return x?`<img class="aow-inline-smile" src="${x.file}" title="${esc(x.title)}" alt="${esc(x.title)}" loading="lazy" decoding="async">`:m;
+  });
+}
+function insertAtCursor(id,text){
+  const ta=document.getElementById(id);if(!ta)return;
+  const start=ta.selectionStart??ta.value.length,end=ta.selectionEnd??ta.value.length;
+  ta.value=ta.value.slice(0,start)+text+ta.value.slice(end);
+  ta.focus();ta.selectionStart=ta.selectionEnd=start+text.length;
+}
+window.openSmilePicker=id=>{smileTargetId=id;smileModal.classList.add('open')};
+window.closeSmilePicker=()=>{smileModal.classList.remove('open');smileTargetId=null};
+smileGrid.innerHTML=smiles.map((s,i)=>`<button class="smile-pick" title="${esc(s.title)}" onclick="pickSmile(${i})"><img src="${s.file}" alt="${esc(s.title)}" loading="lazy" decoding="async"></button>`).join('');
+window.pickSmile=i=>{if(smileTargetId)insertAtCursor(smileTargetId,`[[aow:${i}]]`);closeSmilePicker()};
+
+async function readShared(key,fallback){
+  if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
+  await KFSupabase.ready;
+  const x=await KFSupabase.getStore(key,null);
+  return x===null||x===undefined?fallback:x;
+}
+async function writeShared(key,value){
+  if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');return await KFSupabase.saveStore(key,value);
+}
+async function saveTopics(){topics=await writeShared('kungfuForumTopics',topics);return topics}
+async function saveCats(){cats=await writeShared('kungfuForumCategories',cats);return cats}
+
+function renderCats(){
+  catsHost=document.getElementById('cats');
+  catsHost.innerHTML='<a class="category '+(active==='Все темы'?'active':'')+'" href="#" data-cat="Все темы">Все темы</a>'+cats.map(c=>`<a class="category ${active===c?'active':''}" href="#" data-cat="${esc(c)}">${esc(c)}</a>`).join('');
+  catsHost.querySelectorAll('.category').forEach(a=>a.onclick=e=>{e.preventDefault();active=a.dataset.cat;renderCats();render()});
+  catChips.innerHTML=isAdmin?cats.map(c=>`<span class="chip">${esc(c)} <button onclick="removeCat('${encodeURIComponent(c)}')">×</button></span>`).join(''):'';
+  topicCategory.innerHTML=cats.map(c=>`<option>${esc(c)}</option>`).join('');
+}
+addCat.addEventListener('click',async()=>{
+  if(!isAdmin)return;
+  const v=newCat.value.trim();if(!v)return;
+  if(cats.some(c=>c.toLowerCase()===v.toLowerCase())){alert('Такой тип уже есть');return}
+  const before=cats.slice();cats.push(v);
+  try{await saveCats();newCat.value='';renderCats()}
+  catch(e){cats=before;alert(e.message||'Не удалось сохранить тип обсуждения.')}
+});
+window.removeCat=async enc=>{
+  if(!isAdmin)return;
+  const c=decodeURIComponent(enc);
+  if(topics.some(t=>t.category===c)){alert('Сначала удалите обсуждения этого типа.');return}
+  const before=cats.slice();cats=cats.filter(x=>x!==c);
+  try{await saveCats();renderCats()}catch(e){cats=before;alert(e.message||'Не удалось удалить тип.')}
+};
+
+const ti=topicImage,tp=topicPreview,tpi=topicPreviewImg;
+ti.addEventListener('change',async()=>{
+  const f=ti.files&&ti.files[0];if(!f)return;
+  try{
+    topicImageData=await imageToData(f,2600);
+    tpi.src=topicImageData;tp.classList.add('show');
+  }catch(e){
+    topicImageData='';ti.value='';tp.classList.remove('show');
+    alert(e.message||'Не удалось обработать изображение.');
+  }
+});
+
+function canDeleteTopic(t){
+  return !!currentUser&&(isAdmin||(t.ownerId?String(t.ownerId)===String(currentUser.id):currentUser.nickname===t.author));
+}
+function render(){
+  const host=document.getElementById('topics');
+  const list=(active==='Все темы'?window.__forumTopics:window.__forumTopics.filter(t=>t.category===active)).slice().reverse();
+  host.innerHTML=list.length?list.map(t=>`
+  <article class="panel topic">
+    <span class="tag">${esc(t.category)}</span>
+    <h3>${esc(t.title)}</h3>
+    ${authorHtml(t.ownerId,t.author,t.authorRole,false,t.authorAvatar||'')}
+    <div class="date-line">Добавлено: ${esc(t.createdAt||'Ранее')}</div>
+    <p>${renderMessage(t.text)}</p>
+    ${t.image?`<img class="topic-img" src="${t.image}" loading="lazy">`:''}
+    <div class="topic-tools"><button class="btn secondary" onclick="toggleReply(${t.id})">Ответить</button>${canDeleteTopic(t)?`<button class="btn danger" onclick="deleteTopic(${t.id})">Удалить обсуждение</button>`:''}</div>
+    <div>${(t.replies||[]).map(r=>`<div class="reply">${authorHtml(r.ownerId,r.author,r.role,true,r.avatarUrl||'')}<div class="date-line">${esc(r.createdAt||'Ранее')}</div><div class="muted">${renderMessage(r.text)}</div>${r.image?`<img class="reply-img" src="${r.image}" loading="lazy">`:''}</div>`).join('')}</div>
+    <div class="reply-box" id="reply-${t.id}">
+      ${currentUser?`<div class="reply-as">${authorHtml(currentUser.id,currentUser.nickname,currentUser.role,true)}<span>Ваш ответ</span></div>`:''}
+      <textarea id="replyText-${t.id}" placeholder="Ваш ответ..."></textarea>
+      <button class="btn secondary aow-smile-trigger" type="button" onclick="openSmilePicker('replyText-${t.id}')">Смайлы Age of Wushu</button>
+      <div class="filebox"><label>Картинка к ответу</label><input id="replyImage-${t.id}" type="file" accept="image/*"></div>
+      <button class="btn" onclick="sendReply(${t.id})">Отправить</button>
+    </div>
+  </article>`).join(''):'<div class="panel" style="padding:22px">Нет обсуждений.</div>';
+}
+
+createTopic.addEventListener('click',async()=>{
+  if(!currentUser){alert('Сначала зарегистрируйтесь');location.href='register.html';return}
+  const titleValue=topicTitle.value.trim(),textValue=topicText.value.trim(),category=topicCategory.value;
+  if(!titleValue||!textValue){alert('Заполните название и текст');return}
+
+  const btn=createTopic,old=btn.textContent,before=window.__forumTopics.slice();
+  btn.disabled=true;btn.textContent='Публикация...';forumStatus.textContent='';
+  window.__forumTopics.push({
+    id:Date.now(),title:titleValue,text:textValue,category,image:topicImageData,
+    author:currentUser.nickname,ownerId:currentUser.id||'',authorRole:currentUser.role||'user',authorAvatar:currentUser.avatarUrl||'',
+    createdAt:new Date().toLocaleDateString('ru-RU'),replies:[]
+  });
+  topics=window.__forumTopics;
+
+  try{
+    await saveTopics();
+    window.__forumTopics=topics;
+    topicTitle.value='';topicText.value='';topicImageData='';ti.value='';tp.classList.remove('show');
+    forumStatus.style.color='#c8f4d8';forumStatus.textContent='Обсуждение опубликовано.';
+    render();
+  }catch(e){
+    window.__forumTopics=before;topics=before;
+    forumStatus.style.color='#ffd0d0';forumStatus.textContent=e.message||'Не удалось опубликовать обсуждение.';
+  }finally{btn.disabled=false;btn.textContent=old}
+});
+
+window.toggleReply=id=>{
+  if(!currentUser){alert('Сначала зарегистрируйтесь');return}
+  document.getElementById('reply-'+id)?.classList.toggle('open')
+};
+window.sendReply=async id=>{
+  if(!currentUser)return;
+  const textarea=document.getElementById('replyText-'+id);
+  const textValue=textarea?.value.trim();if(!textValue)return;
+  const input=document.getElementById('replyImage-'+id);
+  let image='';
+  if(input?.files?.[0]){
+    try{image=await imageToData(input.files[0],2400)}
+    catch(e){alert(e.message||'Не удалось обработать изображение.');return}
+  }
+
+  const before=JSON.parse(JSON.stringify(window.__forumTopics));
+  const topic=window.__forumTopics.find(x=>x.id===id);if(!topic)return;
+  topic.replies=topic.replies||[];
+  topic.replies.push({
+    author:currentUser.nickname,ownerId:currentUser.id||'',role:currentUser.role||'user',avatarUrl:currentUser.avatarUrl||'',
+    text:textValue,image,createdAt:new Date().toLocaleDateString('ru-RU')
+  });
+  topics=window.__forumTopics;
+  try{
+    await saveTopics();window.__forumTopics=topics;render();
+  }catch(e){
+    window.__forumTopics=before;topics=before;alert(e.message||'Не удалось отправить ответ.');
+  }
+};
+window.deleteTopic=async id=>{
+  const topic=window.__forumTopics.find(x=>x.id===id);if(!topic||!canDeleteTopic(topic))return;
+  if(!confirm('Удалить обсуждение?'))return;
+  const before=window.__forumTopics.slice();
+  window.__forumTopics=window.__forumTopics.filter(x=>x.id!==id);topics=window.__forumTopics;
+  try{await saveTopics();window.__forumTopics=topics;render()}
+  catch(e){window.__forumTopics=before;topics=before;alert(e.message||'Не удалось удалить обсуждение.')}
+};
+
+async function initForum(){
+  if(window.KFSupabase?.configured){
+    try{await KFSupabase.ready;currentUser=await KFSupabase.getCurrentProfile()}catch{}
+  }
+  if(!currentUser){
+    try{currentUser=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null')}catch{}
+  }
+  isAdmin=!!currentUser&&(currentUser.role||'user')==='admin';
+  userBadge.innerHTML=currentUser?authorHtml(currentUser.id,currentUser.nickname,currentUser.role,true,currentUser.avatarUrl||''):'Гость';
+  if(isAdmin)typeManager.classList.add('show');
+
+  const loadedCats=await readShared('kungfuForumCategories',cats);
+  const loadedTopics=await readShared('kungfuForumTopics',[]);
+  if(Array.isArray(loadedCats)&&loadedCats.length)cats=loadedCats;
+  window.__forumTopics=Array.isArray(loadedTopics)?loadedTopics:[];
+  topics=window.__forumTopics;
+  await hydratePublicProfiles();
+  renderCats();render();
+}
+initForum();
+</script>
+<script src="image-tools-0.0.48.js?v=0.0.70"></script>
+<script src="site-effects-0.0.66.js?v=0.0.66"></script>
+</body></html>
