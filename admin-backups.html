@@ -44,15 +44,15 @@ a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;displa
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
-<script src="storage-config.js?v=0.0.70"></script>
-<script src="supabase-sync.js?v=0.0.70"></script>
+<script src="storage-config.js?v=0.0.72"></script>
+<script src="supabase-sync.js?v=0.0.72"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav"><a href="index.html">Главная</a><a href="updates.html">Обновления</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="account.html">Аккаунт</a></nav></header>
 <main class="wrap" id="app">
 <section class="panel"><h1>Резервные копии</h1>
-<p class="muted">В версии <b id="siteVersion">0.0.70</b> код сайта хранится в GitHub, данные и авторизация — в Supabase, а новые изображения можно переводить в Cloudflare R2 без переноса старых файлов.</p>
+<p class="muted">В версии <b id="siteVersion">0.0.72</b> код сайта хранится в GitHub, данные и авторизация — в Supabase, а новые изображения можно переводить в Yandex Object Storage без переноса старых файлов.</p>
 <div class="status" id="status">Проверка подключения...</div></section>
 
 <section class="grid">
@@ -74,7 +74,7 @@ a{text-decoration:none;color:inherit}.top{min-height:76px;padding:0 3.5vw;displa
 <a class="btn secondary" id="dbBackupsLink" target="_blank" rel="noopener">Открыть Database → Backups</a>
 </article>
 <article class="panel"><h2>Изображения</h2>
-<p class="muted">Старые файлы Supabase Storage продолжают работать. После подключения R2 новые изображения будут сохраняться в Cloudflare R2, а в Supabase останутся ссылки.</p>
+<p class="muted">Старые файлы Supabase Storage продолжают работать. После подключения Yandex Object Storage новые изображения будут сохраняться там, а в Supabase останутся ссылки.</p>
 <div class="status" id="storageMode">Проверка хранилища...</div>
 <a class="btn secondary" id="storageLink" target="_blank" rel="noopener">Открыть Supabase Storage</a>
 </article>
@@ -229,10 +229,10 @@ async function init(){
   if(!me||me.role!=='admin'){app.classList.add('hidden');denied.classList.remove('hidden');return}
   statusBox.textContent='Supabase подключён. Администратор: '+me.email;
   siteVersion.textContent='0.0.70';
-  const storageInfo=KFSupabase.getStorageInfo?.()||{provider:'supabase',r2Configured:false,fallbackToSupabase:true};
-  storageMode.textContent=storageInfo.provider==='r2'
-    ?`Cloudflare R2 подключён${storageInfo.fallbackToSupabase?' (резерв: Supabase Storage)':''}.`
-    :'Сейчас используется Supabase Storage. R2 подготовлен, но адрес Worker ещё не указан.';
+  const storageInfo=KFSupabase.getStorageInfo?.()||{provider:'supabase',yandexConfigured:false,fallbackToSupabase:true};
+  storageMode.textContent=storageInfo.provider==='yandex'
+    ?`Yandex Object Storage подключён${storageInfo.fallbackToSupabase?' (резерв: Supabase Storage)':''}.`
+    :'Сейчас используется Supabase Storage. Yandex Object Storage подготовлен, но адрес Cloud Function ещё не указан.';
   try{
     discordSections=KFSupabase.getDiscordSections();
     const ds=await KFSupabase.getDiscordNotifications();

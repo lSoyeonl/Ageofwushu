@@ -1,16 +1,17 @@
 // Легенды Кунг-Фу — публичная конфигурация файлового хранилища.
 // Этот файл можно хранить в GitHub: секретных ключей здесь быть НЕ должно.
 window.KF_STORAGE_CONFIG = {
-  // auto: использовать R2, если указан r2UploadEndpoint; иначе Supabase Storage.
-  // r2: требовать R2 и не публиковать изображение при ошибке R2.
+  // auto: использовать Yandex Object Storage, если указан yandexPresignEndpoint; иначе Supabase Storage.
+  // yandex: требовать Yandex Object Storage и не публиковать изображение при ошибке.
   // supabase: использовать только Supabase Storage.
   provider: 'auto',
 
-  // После создания Cloudflare Worker вставьте сюда адрес вида:
-  // https://kungfu-images.<ваш-subdomain>.workers.dev/upload
-  r2UploadEndpoint: '',
+  // HTTPS-адрес публичной Yandex Cloud Function, которая выдаёт короткоживущую
+  // подписанную ссылку PUT для загрузки в Object Storage.
+  // Пример: https://functions.yandexcloud.net/<function-id>
+  yandexPresignEndpoint: '',
 
-  // На этапе подключения можно оставить true. После проверки R2 рекомендуется false,
-  // чтобы при ошибке R2 сайт не расходовал Supabase Storage незаметно.
+  // Пока Yandex Object Storage настраивается, оставляем true. После проверки
+  // рекомендуется false, чтобы ошибка нового хранилища не расходовала Supabase Storage незаметно.
   fallbackToSupabase: true
 };

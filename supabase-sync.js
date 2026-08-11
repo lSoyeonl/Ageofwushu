@@ -1,6 +1,6 @@
 (function(){
-  if(window.__KF_SUPABASE_V0070__)return;
-  window.__KF_SUPABASE_V0070__=true;
+  if(window.__KF_SUPABASE_V0072__)return;
+  window.__KF_SUPABASE_V0072__=true;
 
   const cfg=window.KF_SUPABASE_CONFIG||{};
   const storageCfg=window.KF_STORAGE_CONFIG||{};
@@ -358,10 +358,10 @@
 
   function storageProvider(){
     const provider=String(storageCfg.provider||'auto').toLowerCase();
-    const endpoint=String(storageCfg.r2UploadEndpoint||'').trim();
+    const endpoint=String(storageCfg.yandexPresignEndpoint||'').trim();
     if(provider==='supabase')return 'supabase';
-    if(provider==='r2')return 'r2';
-    return endpoint?'r2':'supabase';
+    if(provider==='yandex')return 'yandex';
+    return endpoint?'yandex':'supabase';
   }
 
   async function uploadDataUrlSupabase(dataUrl){
@@ -384,40 +384,50 @@
     return data.publicUrl;
   }
 
-  async function uploadDataUrlR2(dataUrl,options={}){
-    const endpoint=String(storageCfg.r2UploadEndpoint||'').trim();
-    if(!endpoint)throw new Error('Cloudflare R2 ещё не настроен: не указан r2UploadEndpoint.');
+  async function uploadDataUrlYandex(dataUrl,options={}){
+    const endpoint=String(storageCfg.yandexPresignEndpoint||'').trim();
+    if(!endpoint)throw new Error('Yandex Object Storage ещё не настроен: не указан yandexPresignEndpoint.');
     if(!configured||!client)throw new Error('Supabase Auth не настроен.');
     const {data:{session},error}=await client.auth.getSession();
     if(error)throw error;
     if(!session?.access_token)throw new Error('Для загрузки изображения необходимо войти.');
+
     const blob=await dataUrlToBlob(dataUrl);
-    const purpose=String(options.purpose||'admin').toLowerCase();
-    const res=await fetch(endpoint,{
+    const contentType=String(blob.type||'image/jpeg').toLowerCase();
+    const purpose=String(options.purpose||'admin').toLowerCase()==='community'?'community':'admin';
+    const ext=extensionFor(contentType);
+
+    const signRes=await fetch(endpoint,{
       method:'POST',
       headers:{
         Authorization:`Bearer ${session.access_token}`,
-        'Content-Type':blob.type||'image/jpeg',
-        'X-KF-Purpose':purpose
+        'Content-Type':'application/json'
       },
+      body:JSON.stringify({purpose,contentType,size:blob.size,extension:ext})
+    });
+    let signed=null;
+    try{signed=await signRes.json()}catch{}
+    if(!signRes.ok)throw new Error(signed?.error||`Yandex Cloud Function: ошибка ${signRes.status}.`);
+    if(!signed?.uploadUrl||!signed?.url)throw new Error('Yandex Cloud Function не вернула ссылку для загрузки.');
+
+    const putRes=await fetch(signed.uploadUrl,{
+      method:'PUT',
+      headers:{'Content-Type':contentType},
       body:blob
     });
-    let body=null;
-    try{body=await res.json()}catch{}
-    if(!res.ok)throw new Error(body?.error||`Cloudflare R2: ошибка ${res.status}.`);
-    if(!body?.url)throw new Error('Cloudflare R2 не вернул URL изображения.');
-    return body.url;
+    if(!putRes.ok)throw new Error(`Yandex Object Storage: ошибка загрузки ${putRes.status}.`);
+    return String(signed.url);
   }
 
   async function uploadDataUrl(dataUrl,options={}){
     if(!/^data:image\//i.test(String(dataUrl||'')))return dataUrl;
     const provider=storageProvider();
-    if(provider==='r2'){
-      try{return await uploadDataUrlR2(dataUrl,options)}
+    if(provider==='yandex'){
+      try{return await uploadDataUrlYandex(dataUrl,options)}
       catch(e){
-        const mayFallback=storageCfg.fallbackToSupabase!==false && String(storageCfg.provider||'auto').toLowerCase()!=='r2';
+        const mayFallback=storageCfg.fallbackToSupabase!==false && String(storageCfg.provider||'auto').toLowerCase()!=='yandex';
         if(!mayFallback)throw e;
-        console.warn('R2 upload failed, using Supabase Storage fallback:',e?.message||e);
+        console.warn('Yandex Object Storage upload failed, using Supabase Storage fallback:',e?.message||e);
       }
     }
     return await uploadDataUrlSupabase(dataUrl);
@@ -682,7 +692,7 @@
     uploadImageDataUrl:uploadDataUrl,
     uploadImageDataUrlStrict:uploadDataUrl,
     uploadAvatarDataUrlStrict:(dataUrl)=>uploadDataUrl(dataUrl,{purpose:'avatar'}),
-    getStorageInfo:()=>({provider:storageProvider(),r2Configured:!!String(storageCfg.r2UploadEndpoint||'').trim(),fallbackToSupabase:storageCfg.fallbackToSupabase!==false}),
+    getStorageInfo:()=>({provider:storageProvider(),yandexConfigured:!!String(storageCfg.yandexPresignEndpoint||'').trim(),fallbackToSupabase:storageCfg.fallbackToSupabase!==false}),
     prepareValue,
     async refreshStore(){await ready;return await bootstrapStore()}
   };
