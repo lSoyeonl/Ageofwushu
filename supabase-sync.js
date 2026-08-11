@@ -1,6 +1,6 @@
 (function(){
-  if(window.__KF_SUPABASE_V0073__)return;
-  window.__KF_SUPABASE_V0073__=true;
+  if(window.__KF_SUPABASE_V0076__)return;
+  window.__KF_SUPABASE_V0076__=true;
 
   const cfg=window.KF_SUPABASE_CONFIG||{};
   const storageCfg=window.KF_STORAGE_CONFIG||{};
@@ -385,30 +385,36 @@
   }
 
   async function uploadDataUrlYandex(dataUrl,options={}){
-    const endpoint=String(storageCfg.yandexPresignEndpoint||'').trim();
-    if(!endpoint)throw new Error('Yandex Object Storage ещё не настроен: не указан yandexPresignEndpoint.');
+    // 0.0.76: подпись загрузки выдаёт Supabase Edge Function.
+    // Это убирает сетевую зависимость Yandex Cloud Function -> Supabase,
+    // которая давала `fetch failed` в Yandex Cloud Functions.
     if(!configured||!client)throw new Error('Supabase Auth не настроен.');
+    const functionName=String(storageCfg.supabaseEdgeFunction||'kungfu-media-presign').trim();
+    if(!functionName)throw new Error('Не указано имя Supabase Edge Function для загрузки.');
+    const endpoint=`${String(cfg.url||'').replace(/\/$/,'')}/functions/v1/${encodeURIComponent(functionName)}`;
+
     const {data:{session},error}=await client.auth.getSession();
     if(error)throw error;
     if(!session?.access_token)throw new Error('Для загрузки изображения необходимо войти.');
 
-    const blob=await dataUrlToBlob(dataUrl);
-    const contentType=String(blob.type||'image/jpeg').toLowerCase();
+    const blob=dataUrlToBlob(dataUrl);
+    const contentType=String(blob.type||'image/webp').toLowerCase();
     const purpose=String(options.purpose||'admin').toLowerCase()==='community'?'community':'admin';
     const ext=extensionFor(contentType);
 
     const signRes=await fetch(endpoint,{
       method:'POST',
       headers:{
-        'X-KF-Session':session.access_token,
+        'Authorization':`Bearer ${session.access_token}`,
+        'apikey':apiKey,
         'Content-Type':'application/json'
       },
       body:JSON.stringify({purpose,contentType,size:blob.size,extension:ext})
     });
     let signed=null;
     try{signed=await signRes.json()}catch{}
-    if(!signRes.ok)throw new Error(signed?.error||`Yandex Cloud Function: ошибка ${signRes.status}.`);
-    if(!signed?.uploadUrl||!signed?.url)throw new Error('Yandex Cloud Function не вернула ссылку для загрузки.');
+    if(!signRes.ok)throw new Error(signed?.error||`Supabase Edge Function: ошибка ${signRes.status}.`);
+    if(!signed?.uploadUrl||!signed?.url)throw new Error('Supabase Edge Function не вернула ссылку для загрузки.');
 
     let uploadRes;
     if(signed?.fields&&typeof signed.fields==='object'){
@@ -418,7 +424,7 @@
       uploadRes=await fetch(signed.uploadUrl,{method:'POST',body:form});
     }else{
       uploadRes=await fetch(signed.uploadUrl,{
-        method:'PUT',
+        method:String(signed.uploadMethod||'PUT').toUpperCase(),
         headers:{'Content-Type':contentType},
         body:blob
       });
@@ -704,7 +710,7 @@
     uploadImageDataUrl:uploadDataUrl,
     uploadImageDataUrlStrict:uploadDataUrl,
     uploadAvatarDataUrlStrict:(dataUrl)=>uploadDataUrl(dataUrl,{purpose:'community'}),
-    getStorageInfo:()=>({provider:storageProvider(),yandexConfigured:!!String(storageCfg.yandexPresignEndpoint||'').trim(),fallbackToSupabase:storageCfg.fallbackToSupabase!==false}),
+    getStorageInfo:()=>({provider:storageProvider(),yandexConfigured:!!String(storageCfg.supabaseEdgeFunction||storageCfg.yandexPresignEndpoint||'').trim(),fallbackToSupabase:storageCfg.fallbackToSupabase!==false}),
     prepareValue,
     async refreshStore(){await ready;return await bootstrapStore()}
   };
