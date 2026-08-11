@@ -400,7 +400,7 @@
     const signRes=await fetch(endpoint,{
       method:'POST',
       headers:{
-        Authorization:`Bearer ${session.access_token}`,
+        'X-KF-Session':session.access_token,
         'Content-Type':'application/json'
       },
       body:JSON.stringify({purpose,contentType,size:blob.size,extension:ext})
