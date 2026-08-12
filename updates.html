@@ -46,14 +46,19 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 .article-expand-btn{min-height:39px;border:1px solid rgba(228,180,94,.3);border-radius:9px;padding:0 15px;background:#153247;color:#ffe2a0;font-weight:800;cursor:pointer}
 .article-expand-btn:hover{border-color:rgba(255,226,160,.65)}
 
+/* 0.0.78: все обновления компактно в одной ленте */
+.update-feed{display:grid;gap:10px}.update-card{scroll-margin-top:96px}
+.update-card.is-collapsed{padding:14px 16px}.update-card.is-collapsed h2{font-size:22px;margin:4px 0}.update-card.is-collapsed .update-body-grid.has-image{grid-template-columns:110px minmax(0,1fr);gap:12px}.update-card.is-collapsed .published-update-image{width:110px;height:110px;object-fit:cover}.update-card.is-collapsed .article-intro{margin:5px 0;padding:10px 12px;font-size:13px}
+@media(max-width:620px){.update-card.is-collapsed .update-body-grid.has-image{grid-template-columns:82px minmax(0,1fr)}.update-card.is-collapsed .published-update-image{width:82px;height:82px}}
+
 </style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.77"></script>
+<script src="supabase-sync.js?v=0.0.78"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
-<script src="reactions-0.0.48.js?v=0.0.66"></script>
+<script src="reactions-0.0.48.js?v=0.0.78"></script>
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -254,11 +259,10 @@ window.toggleUpdateArticle=id=>{
 };
 function card(x,preview=false){
   const hasImage=!!x.image;
-  const long=!preview&&isLongUpdate(x);
-  const expanded=preview||!long||expandedUpdateIds.has(String(x.id));
+  const expanded=preview||expandedUpdateIds.has(String(x.id));
   const intro=String(x.intro||'').trim();
   const summary=updateSummary(x);
-  return `<article class="panel update-card ${x.pinned?'pinned-update':''}">
+  return `<article id="update-card-${String(x.id).replace(/[^a-zA-Z0-9_-]/g,'_')}" class="panel update-card ${expanded?'is-expanded':'is-collapsed'} ${x.pinned?'pinned-update':''}">
     ${x.pinned?'<span class="tag pin-tag">📌 Закреплено</span> ':''}<span class="tag">${esc(x.server||x.category||'Пиратка')}</span> <span class="tag">${esc(x.kind||'Прочие Добавления')}</span>
     <h2>${esc(x.title||'Без заголовка')}${!preview?'<span class="content-admin-badge">Админ</span>':''}</h2>
     <div class="date-line">${esc(x.periodLabel||x.date||'')}</div>
@@ -273,13 +277,13 @@ function card(x,preview=false){
           :`<div class="article-intro"><b>Вступление.</b> ${esc(summary)}</div>`}
       </div>
     </div>
-    ${long?`<div class="article-expand-row"><button class="article-expand-btn" type="button" onclick="toggleUpdateArticle('${x.id}')">${expanded?'Свернуть запись':'Развернуть запись полностью'}</button></div>`:''}
+    ${!preview?`<div class="article-expand-row"><button class="article-expand-btn" type="button" onclick="toggleUpdateArticle('${x.id}')">${expanded?'Свернуть запись':'Открыть запись'}</button></div>`:''}
     ${!preview?`<div id="kf-update-reactions-${x.id}"></div>`:''}
     ${isAdmin&&!preview?`<div class="entry-actions"><button class="btn secondary" onclick="togglePin(${x.id})">${x.pinned?'Открепить':'Закрепить'}</button><button class="btn secondary" onclick="editUpdate(${x.id})">Редактировать</button><button class="btn danger" onclick="delUpdate(${x.id})">Удалить</button></div>`:''}
   </article>`;
 }
-function render(){const sf=serverFilter.value,list=items.filter(x=>(sf==='Все серверы'||(x.server||x.category||'Пиратка')===sf)&&(activeKind==='Все'||(x.kind||'Прочие Добавления')===activeKind)).slice().sort((a,b)=>(Number(!!b.pinned)-Number(!!a.pinned))||((b.id||0)-(a.id||0)));tocList.innerHTML=list.map(x=>`<button class="filter-btn" onclick="selectUpdate(${x.id})">${x.pinned?'📌 ':''}${esc(x.title)}<small style="display:block;color:#9db0b8">${esc(x.periodLabel||x.date||'')}</small></button>`).join('')||'<div class="muted">Пусто</div>';const x=items.find(a=>a.id===selected&&list.includes(a))||list[0];if(x)selected=x.id;content.innerHTML=x?card(x):'<div class="panel empty">Обновлений пока нет.</div>';renderKinds();if(x)setTimeout(()=>{if(window.KFReactions)KFReactions.mountSmiles('kf-update-reactions-'+x.id,'kungfuUpdates',x.id)},0)}
-window.selectUpdate=id=>{selected=id;render()};window.togglePin=async id=>{if(!isAdmin)return;const x=items.find(a=>a.id===id);if(!x)return;const before=!!x.pinned;x.pinned=!x.pinned;selected=id;try{await save();render()}catch(e){x.pinned=before;alert(e.message||'Не удалось изменить закрепление')}};
+function render(){const sf=serverFilter.value,list=items.filter(x=>(sf==='Все серверы'||(x.server||x.category||'Пиратка')===sf)&&(activeKind==='Все'||(x.kind||'Прочие Добавления')===activeKind)).slice().sort((a,b)=>(Number(!!b.pinned)-Number(!!a.pinned))||((b.id||0)-(a.id||0)));tocList.innerHTML=list.map(x=>`<button class="filter-btn ${String(x.id)===String(selected)?'active':''}" onclick="selectUpdate(${x.id})">${x.pinned?'📌 ':''}${esc(x.title)}<small style="display:block;color:#9db0b8">${esc(x.periodLabel||x.date||'')}</small></button>`).join('')||'<div class="muted">Пусто</div>';if(list.length&&(selected===null||selected===undefined||!list.some(x=>String(x.id)===String(selected))))selected=list[0].id;content.innerHTML=list.length?`<div class="update-feed">${list.map(x=>card(x)).join('')}</div>`:'<div class="panel empty">Обновлений пока нет.</div>';renderKinds();setTimeout(()=>{if(window.KFReactions)list.forEach(x=>KFReactions.mountSmiles('kf-update-reactions-'+x.id,'kungfuUpdates',x.id))},0)}
+window.selectUpdate=id=>{selected=id;render();requestAnimationFrame(()=>document.getElementById('update-card-'+String(id).replace(/[^a-zA-Z0-9_-]/g,'_'))?.scrollIntoView({behavior:'smooth',block:'start'}))};window.togglePin=async id=>{if(!isAdmin)return;const x=items.find(a=>a.id===id);if(!x)return;const before=!!x.pinned;x.pinned=!x.pinned;selected=id;try{await save();render()}catch(e){x.pinned=before;alert(e.message||'Не удалось изменить закрепление')}};
 function reset(){editingId=null;title.value='';intro.value='';server.value='Пиратка';kind.value=kinds[0]||'';dateMode.value='date';dateEndWrap.style.display='none';dateStart.value=today;dateEnd.value=today;promoCodes.value='';draftRewards=[''];renderRewardsBuilder();rewardWrap.style.display='none';draftLinks=[{url:'',note:''}];renderLinkBuilder();pinned.checked=false;rich.innerHTML='';img.value='';image='';updateImagePreview.src='';updateImagePreview.classList.remove('show');editorTitle.textContent='Добавить обновление';editNote.classList.remove('show');saveBtn.textContent='Опубликовать';cancelBtn.style.display='none'}
 window.editUpdate=id=>{if(!isAdmin)return;const x=items.find(a=>a.id===id);if(!x)return;editingId=id;title.value=x.title||'';intro.value=x.intro||'';server.value=x.server||x.category||'Пиратка';kind.value=x.kind||kinds[0]||'';dateMode.value=x.dateMode||'date';dateStart.value=x.dateStart||today;dateEnd.value=x.dateEnd||x.dateStart||today;dateEndWrap.style.display=dateMode.value==='period'?'block':'none';promoCodes.value=x.promoCodes||'';draftRewards=normalizeRewards(x);if(!draftRewards.length)draftRewards=[''];renderRewardsBuilder();toggleRewardField();draftLinks=normalizeLinks(x.links);if(!draftLinks.length)draftLinks=[{url:'',note:''}];renderLinkBuilder();pinned.checked=!!x.pinned;rich.innerHTML=x.content||x.text||'';image=x.image||'';if(image){updateImagePreview.src=image;updateImagePreview.classList.add('show')}else{updateImagePreview.classList.remove('show')}editorTitle.textContent='Редактировать обновление';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'})}
 cancelBtn.onclick=reset;

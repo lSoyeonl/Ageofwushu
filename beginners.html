@@ -48,13 +48,22 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 .beginner-collapsed-preview.article-intro{margin-top:0;padding-bottom:13px}
 .beginner-collapsed-preview.article-intro::after{display:none}
 
+/* 0.0.78: компактная лента материалов */
+.beginner-card{scroll-margin-top:96px;transition:border-color .18s ease,background .18s ease}
+.beginner-card.is-selected{border-color:rgba(255,226,160,.56)}
+.beginner-card.is-collapsed{padding:14px 16px}.beginner-card.is-collapsed h2{font-size:22px;margin-bottom:5px}
+.beginner-card.is-collapsed .beginner-cover-preview img{width:96px;height:96px;flex-basis:96px}
+.beginner-card.is-collapsed .article-intro{margin:6px 0;padding:10px 12px;font-size:13px}
+@media(max-width:620px){.beginner-card.is-collapsed .beginner-cover-preview img{width:100%;height:150px}}
+
 </style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.77"></script>
+<script src="supabase-sync.js?v=0.0.78"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
+<script src="reactions-0.0.48.js?v=0.0.78"></script>
 </head><body><header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
   <a href="taiwan.html">О Тайвани</a>
@@ -216,40 +225,51 @@ function collapsedGuideHtml(x){
   const summary=shortPreview(x);
   return `${imgs[0]?`<div class="beginner-cover-preview"><img src="${imgs[0]}" loading="lazy" decoding="async"><div class="beginner-collapsed-preview article-intro"><b>Вступление.</b> ${esc(summary)}</div></div>`:`<div class="beginner-collapsed-preview article-intro"><b>Вступление.</b> ${esc(summary)}</div>`}`;
 }
+function guideDomId(id){return 'guide-card-'+String(id).replace(/[^a-zA-Z0-9_-]/g,'_')}
+function guideCard(x,preview=false){
+  const expanded=preview||expandedIds.has(String(x.id));
+  const body=expanded?fullGuideHtml(x):collapsedGuideHtml(x);
+  const selectedClass=String(x.id)===String(selected)?' is-selected':'';
+  return `<article id="${guideDomId(x.id)}" class="panel beginner-card ${expanded?'is-expanded':'is-collapsed'}${selectedClass}">
+    <span class="tag">${esc(x.type||'Общее')}</span>
+    <h2>${esc(x.title)}</h2>
+    ${body}
+    ${!preview?`<div class="beginner-expand-row"><button class="beginner-expand-btn" type="button" onclick="toggleGuide('${encodeURIComponent(String(x.id))}')">${expanded?'Свернуть запись':'Открыть запись'}</button></div>`:''}
+    ${!preview?`<div id="kf-beginner-reactions-${guideDomId(x.id)}"></div>`:''}
+    <div class="entry-actions ${isAdmin&&!preview?'show':''}">
+      <button class="btn secondary" type="button" onclick="editItem('${encodeURIComponent(String(x.id))}')">Редактировать</button>
+      <button class="btn danger" type="button" onclick="delItem('${encodeURIComponent(String(x.id))}')">Удалить</button>
+    </div>
+  </article>`;
+}
 function render(){
   document.getElementById('toc').innerHTML=items.length?types.map(type=>{
-    const a=items.filter(x=>(x.type||'Общее')===type);
+    const a=items.filter(x=>(x.type||'Общее')===type).slice().reverse();
     if(!a.length)return '';
     return `<div class="toc-group">${esc(type)}</div>`+a.map(x=>`<a class="toc-item ${String(x.id)===String(selected)?'active':''}" onclick="sel('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title)}</b></a>`).join('')
   }).join(''):'<div class="muted">Пока пусто</div>';
 
-  const x=items.find(a=>String(a.id)===String(selected))||items[0];
-  if(x)selected=x.id;
-  if(!x){
+  const list=items.slice().reverse();
+  if(!list.length){
     document.getElementById('content').innerHTML='<div class="panel empty">Материалы пока не добавлены.</div>';
     return;
   }
-
-  const long=isLongGuide(x);
-  const expanded=expandedIds.has(String(x.id));
-  const body=long&&!expanded?collapsedGuideHtml(x):fullGuideHtml(x);
-  const toggle=long?`<div class="beginner-expand-row"><button class="beginner-expand-btn" type="button" onclick="toggleGuide('${encodeURIComponent(String(x.id))}')">${expanded?'Свернуть запись':'Развернуть запись полностью'}</button></div>`:'';
-
-  document.getElementById('content').innerHTML=`<article class="panel beginner-card">
-    <span class="tag">${esc(x.type||'Общее')}</span>
-    <h2>${esc(x.title)}</h2>
-    ${body}
-    ${toggle}
-    <div class="entry-actions ${isAdmin?'show':''}">
-      <button class="btn secondary" onclick="editItem('${encodeURIComponent(String(x.id))}')">Редактировать</button>
-      <button class="btn danger" onclick="delItem('${encodeURIComponent(String(x.id))}')">Удалить</button>
-    </div>
-  </article>`;
+  if(selected===null||selected===undefined||!items.some(x=>String(x.id)===String(selected)))selected=list[0].id;
+  document.getElementById('content').innerHTML=list.map(x=>guideCard(x)).join('');
+  setTimeout(()=>{
+    if(!window.KFReactions)return;
+    list.forEach(x=>KFReactions.mountSmiles('kf-beginner-reactions-'+guideDomId(x.id),'kungfuBeginners',x.id));
+  },0);
 }
-window.sel=enc=>{selected=decodeURIComponent(enc);render()};
+window.sel=enc=>{
+  selected=decodeURIComponent(enc);
+  render();
+  requestAnimationFrame(()=>document.getElementById(guideDomId(selected))?.scrollIntoView({behavior:'smooth',block:'start'}));
+};
 window.toggleGuide=enc=>{
   const id=decodeURIComponent(enc);
   if(expandedIds.has(String(id)))expandedIds.delete(String(id));else expandedIds.add(String(id));
+  selected=id;
   render();
 };
 
