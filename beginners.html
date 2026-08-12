@@ -48,7 +48,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 .beginner-collapsed-preview.article-intro{margin-top:0;padding-bottom:13px}
 .beginner-collapsed-preview.article-intro::after{display:none}
 
-/* 0.0.78: компактная лента материалов */
+/* 0.0.79: компактная лента; материалы открыты по умолчанию и не закрывают друг друга */
 .beginner-card{scroll-margin-top:96px;transition:border-color .18s ease,background .18s ease}
 .beginner-card.is-selected{border-color:rgba(255,226,160,.56)}
 .beginner-card.is-collapsed{padding:14px 16px}.beginner-card.is-collapsed h2{font-size:22px;margin-bottom:5px}
@@ -63,7 +63,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="supabase-sync.js?v=0.0.78"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
-<script src="reactions-0.0.48.js?v=0.0.78"></script>
+<script src="reactions-0.0.48.js?v=0.0.79"></script>
 </head><body><header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
   <a href="taiwan.html">О Тайвани</a>
@@ -115,7 +115,7 @@ async function filesToData(fileList,limit=8){
 
 const GUIDE_KEY='kungfuBeginnerGuides',TYPE_KEY='kungfuBeginnerTypes';
 let currentUser=null,isAdmin=false,items=[],types=['Общее'],selected=null,editingId=null,draftImages=[];
-const expandedIds=new Set();
+const collapsedIds=new Set();
 
 function setSaveStatus(text='',kind=''){
   const el=document.getElementById('saveStatus');
@@ -227,7 +227,7 @@ function collapsedGuideHtml(x){
 }
 function guideDomId(id){return 'guide-card-'+String(id).replace(/[^a-zA-Z0-9_-]/g,'_')}
 function guideCard(x,preview=false){
-  const expanded=preview||expandedIds.has(String(x.id));
+  const expanded=preview||!collapsedIds.has(String(x.id));
   const body=expanded?fullGuideHtml(x):collapsedGuideHtml(x);
   const selectedClass=String(x.id)===String(selected)?' is-selected':'';
   return `<article id="${guideDomId(x.id)}" class="panel beginner-card ${expanded?'is-expanded':'is-collapsed'}${selectedClass}">
@@ -268,7 +268,7 @@ window.sel=enc=>{
 };
 window.toggleGuide=enc=>{
   const id=decodeURIComponent(enc);
-  if(expandedIds.has(String(id)))expandedIds.delete(String(id));else expandedIds.add(String(id));
+  if(collapsedIds.has(String(id)))collapsedIds.delete(String(id));else collapsedIds.add(String(id));
   selected=id;
   render();
 };
@@ -356,7 +356,7 @@ document.getElementById('saveBtn').onclick=async()=>{
   try{
     await saveGuides(next);
     selected=item.id;
-    expandedIds.delete(String(item.id));
+    collapsedIds.delete(String(item.id));
     reset();
     render();
     setSaveStatus('Материал сохранён и опубликован.','ok');
@@ -378,7 +378,7 @@ window.delItem=async enc=>{
   setSaveStatus('Удаление...');
   try{
     await saveGuides(next);
-    expandedIds.delete(String(id));
+    collapsedIds.delete(String(id));
     selected=items.length?items[0].id:null;
     render();
     setSaveStatus('Материал удалён.','ok');

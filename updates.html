@@ -46,7 +46,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 .article-expand-btn{min-height:39px;border:1px solid rgba(228,180,94,.3);border-radius:9px;padding:0 15px;background:#153247;color:#ffe2a0;font-weight:800;cursor:pointer}
 .article-expand-btn:hover{border-color:rgba(255,226,160,.65)}
 
-/* 0.0.78: все обновления компактно в одной ленте */
+/* 0.0.79: все обновления в одной ленте; записи открыты по умолчанию и сворачиваются только вручную */
 .update-feed{display:grid;gap:10px}.update-card{scroll-margin-top:96px}
 .update-card.is-collapsed{padding:14px 16px}.update-card.is-collapsed h2{font-size:22px;margin:4px 0}.update-card.is-collapsed .update-body-grid.has-image{grid-template-columns:110px minmax(0,1fr);gap:12px}.update-card.is-collapsed .published-update-image{width:110px;height:110px;object-fit:cover}.update-card.is-collapsed .article-intro{margin:5px 0;padding:10px 12px;font-size:13px}
 @media(max-width:620px){.update-card.is-collapsed .update-body-grid.has-image{grid-template-columns:82px minmax(0,1fr)}.update-card.is-collapsed .published-update-image{width:82px;height:82px}}
@@ -58,7 +58,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="supabase-sync.js?v=0.0.78"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
-<script src="reactions-0.0.48.js?v=0.0.78"></script>
+<script src="reactions-0.0.48.js?v=0.0.79"></script>
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -236,7 +236,7 @@ dateMode.onchange=()=>dateEndWrap.style.display=dateMode.value==='period'?'block
 const today=new Date().toISOString().slice(0,10);dateStart.value=today;dateEnd.value=today;function toggleRewardField(){rewardWrap.style.display=promoCodes.value.trim()?'block':'none';if(promoCodes.value.trim()&&!draftRewards.length){draftRewards=[''];renderRewardsBuilder()}}promoCodes.addEventListener('input',toggleRewardField);toggleRewardField();
 img.onchange=async()=>{const f=img.files[0];if(!f)return;try{image=await imageToData(f,1800);updateImagePreview.src=image;updateImagePreview.classList.add('show')}catch(e){alert(e.message||'Не удалось обработать изображение');img.value=''}};
 function fd(v){if(!v)return '';const [y,m,d]=v.split('-');return `${d}.${m}.${y}`}
-const expandedUpdateIds=new Set();
+const collapsedUpdateIds=new Set();
 function updatePlainText(html){
   const box=document.createElement('div');
   box.innerHTML=cleanRich(html||'');
@@ -254,12 +254,12 @@ function isLongUpdate(x){
 }
 window.toggleUpdateArticle=id=>{
   const key=String(id);
-  if(expandedUpdateIds.has(key))expandedUpdateIds.delete(key);else expandedUpdateIds.add(key);
+  if(collapsedUpdateIds.has(key))collapsedUpdateIds.delete(key);else collapsedUpdateIds.add(key);
   render();
 };
 function card(x,preview=false){
   const hasImage=!!x.image;
-  const expanded=preview||expandedUpdateIds.has(String(x.id));
+  const expanded=preview||!collapsedUpdateIds.has(String(x.id));
   const intro=String(x.intro||'').trim();
   const summary=updateSummary(x);
   return `<article id="update-card-${String(x.id).replace(/[^a-zA-Z0-9_-]/g,'_')}" class="panel update-card ${expanded?'is-expanded':'is-collapsed'} ${x.pinned?'pinned-update':''}">

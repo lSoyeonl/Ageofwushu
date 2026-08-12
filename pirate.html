@@ -47,7 +47,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 .article-expand-btn:hover{border-color:rgba(255,226,160,.65)}
 @media(max-width:650px){.article-summary-grid{grid-template-columns:1fr}.article-summary-grid img{width:100%;height:220px}}
 
-/* 0.0.78: компактная независимая лента записей */
+/* 0.0.79: независимая лента; записи открыты по умолчанию и сворачиваются только вручную */
 .post{scroll-margin-top:96px}.post.is-collapsed{padding:14px 16px}.post.is-collapsed h2{font-size:22px;margin:3px 0 6px}.post.is-collapsed .article-summary-grid{grid-template-columns:100px minmax(0,1fr);gap:12px;margin:8px 0}.post.is-collapsed .article-summary-grid img{width:100px;height:100px}.post.is-collapsed .article-intro{margin:5px 0;padding:10px 12px;font-size:13px}
 @media(max-width:650px){.post.is-collapsed .article-summary-grid{grid-template-columns:82px minmax(0,1fr)}.post.is-collapsed .article-summary-grid img{width:82px;height:82px}}
 
@@ -58,7 +58,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="supabase-sync.js?v=0.0.78"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
-<script src="reactions-0.0.48.js?v=0.0.78"></script>
+<script src="reactions-0.0.48.js?v=0.0.79"></script>
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -154,7 +154,7 @@ function imagesFor(x){const a=Array.isArray(x.images)?x.images.slice():[];if(!a.
 function renderDraft(){draftGallery.innerHTML=draftImages.map((src,i)=>`<div class="draft-img"><img src="${src}" loading="lazy" decoding="async"><button type="button" onclick="removeDraft(${i})">×</button></div>`).join('')}
 window.removeDraft=i=>{draftImages.splice(i,1);renderDraft()};
 imagesInput.onchange=async()=>{for(const f of [...imagesInput.files]){try{draftImages.push(await imageToData(f))}catch(e){alert(e.message)}}imagesInput.value='';renderDraft()};
-const expandedPostIds=new Set();
+const collapsedPostIds=new Set();
 function postPlainText(html){
   const box=document.createElement('div');
   box.innerHTML=cleanRich(html||'');
@@ -172,12 +172,12 @@ function isLongPost(x){
 }
 window.toggleLongPost=id=>{
   const key=String(id);
-  if(expandedPostIds.has(key))expandedPostIds.delete(key);else expandedPostIds.add(key);
+  if(collapsedPostIds.has(key))collapsedPostIds.delete(key);else collapsedPostIds.add(key);
   render();
 };
 function card(x,preview=false){
   const imgs=imagesFor(x);
-  const expanded=preview||expandedPostIds.has(String(x.id));
+  const expanded=preview||!collapsedPostIds.has(String(x.id));
   const intro=String(x.intro||'').trim();
   const summary=postSummary(x);
   const contentHtml=expanded

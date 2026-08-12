@@ -1,6 +1,6 @@
 (function(){
-  if(window.__KF_REACTIONS_V0078__)return;
-  window.__KF_REACTIONS_V0078__=true;
+  if(window.__KF_REACTIONS_V0079__)return;
+  window.__KF_REACTIONS_V0079__=true;
 
   const scriptSrc=(document.currentScript&&document.currentScript.src)||location.href;
   const BASE_URL=new URL('.',scriptSrc);
@@ -10,11 +10,11 @@
     return new URL(`smiles/smile_${String(n).padStart(3,'0')}.gif`,BASE_URL).href;
   }
   function ensureStyles(){
-    if(document.getElementById('kf-reactions-0078-style'))return;
+    if(document.getElementById('kf-reactions-0079-style'))return;
     const st=document.createElement('style');
-    st.id='kf-reactions-0078-style';
+    st.id='kf-reactions-0079-style';
     st.textContent=`
-      .kf-reaction-icon-img{display:block;width:32px;height:32px;object-fit:contain;pointer-events:none}
+      .kf-reaction-icon-img{display:block;width:32px;height:32px;object-fit:contain;pointer-events:none}.kf-reaction-icon-img.is-broken{font-size:24px;line-height:32px}
       .kf-reaction-count .kf-reaction-icon-img{width:27px;height:27px}
       .kf-reaction-smiles button{display:grid;place-items:center;transition:transform .12s ease,border-color .12s ease}
       .kf-reaction-smiles button:hover{transform:translateY(-2px) scale(1.06);border-color:#ffe2a0}
@@ -24,7 +24,9 @@
   }
   ensureStyles();
 
-  function iconHtml(n){return `<img class="kf-reaction-icon-img" src="${smileUrl(n)}" alt="" aria-hidden="true">`}
+  function markSmileLoaded(img){img.classList.add('is-loaded')}
+  function markSmileBroken(img){img.classList.add('is-broken');img.removeAttribute('src');img.alt='🙂'}
+  function iconHtml(n){return `<img class="kf-reaction-icon-img" src="${smileUrl(n)}" alt="🙂" data-smile-number="${n}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-broken');this.removeAttribute('src')">`}
 
   async function getUser(){
     if(!window.KFSupabase?.configured)return null;
@@ -70,7 +72,7 @@
   function ensurePicker(){
     if(picker)return picker;
     picker=document.createElement('div');picker.className='kf-reaction-picker';
-    picker.innerHTML=`<div class="kf-reaction-picker-box"><div class="kf-reaction-picker-head"><b>Выберите реакцию</b><button type="button" data-close>×</button></div><div class="kf-reaction-smiles">${Array.from({length:88},(_,i)=>`<button type="button" data-smile="${i+1}" title="Смайл ${i+1}" aria-label="Смайл ${i+1}"><img class="kf-reaction-icon-img" data-smile-src="${smileUrl(i+1)}" alt=""></button>`).join('')}</div></div>`;
+    picker.innerHTML=`<div class="kf-reaction-picker-box"><div class="kf-reaction-picker-head"><b>Выберите реакцию</b><button type="button" data-close>×</button></div><div class="kf-reaction-smiles">${Array.from({length:88},(_,i)=>`<button type="button" data-smile="${i+1}" title="Смайл ${i+1}" aria-label="Смайл ${i+1}"><img class="kf-reaction-icon-img" data-smile-src="${smileUrl(i+1)}" alt="🙂" onerror="this.classList.add('is-broken');this.removeAttribute('src')"></button>`).join('')}</div></div>`;
     picker.querySelector('[data-close]').onclick=()=>picker.classList.remove('open');
     picker.onclick=e=>{if(e.target===picker)picker.classList.remove('open')};
     document.body.appendChild(picker);return picker;
