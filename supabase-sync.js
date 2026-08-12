@@ -397,7 +397,8 @@
     if(error)throw error;
     if(!session?.access_token)throw new Error('Для загрузки изображения необходимо войти.');
 
-    const blob=dataUrlToBlob(dataUrl);
+    const blob=await dataUrlToBlob(dataUrl);
+    if(!blob||!Number.isFinite(blob.size)||blob.size<=0)throw new Error('Не удалось подготовить изображение к загрузке.');
     const contentType=String(blob.type||'image/webp').toLowerCase();
     const purpose=String(options.purpose||'admin').toLowerCase()==='community'?'community':'admin';
     const ext=extensionFor(contentType);

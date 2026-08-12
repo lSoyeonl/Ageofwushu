@@ -24,7 +24,7 @@ input,textarea,select{width:100%;padding:10px;border:1px solid rgba(228,180,94,.
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.76"></script>
+<script src="supabase-sync.js?v=0.0.77"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
@@ -148,7 +148,7 @@ add.onclick=async()=>{
     let finalAvatar=avatarData||(old&&old.avatar)||'';
     if(finalAvatar&&/^data:image\//i.test(finalAvatar)&&window.KFSupabase?.configured){
       try{finalAvatar=await KFSupabase.uploadImageDataUrlStrict(finalAvatar,{purpose:'community'})}
-      catch(e){console.warn('Avatar Storage fallback:',e?.message||e)}
+      catch(e){throw new Error(e?.message||'Не удалось загрузить изображение в файловое хранилище.')}
     }
 
     const item={
