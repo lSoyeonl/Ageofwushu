@@ -157,6 +157,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 </div>
 
 <script src="image-tools-0.0.48.js?v=0.0.70"></script>
+<script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
 <script>
 const roleNote=document.getElementById('roleNote');
 const editor=document.getElementById('editor');
@@ -191,7 +192,7 @@ let reviewChannel=null;
 const openReviews=new Set();
 const reviewRatings=new Map();
 
-const smiles=Array.from({length:88},(_,i)=>({file:`smiles/smile_${String(i+1).padStart(3,'0')}.gif`,title:`Смайл ${i+1}`}));
+const smiles=Array.from({length:88},(_,i)=>({file:window.KFSmilePack?.get(i+1)||'',title:window.KFSmilePack?.title(i+1)||`Смайл ${i+1}`}));
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
 function safeUrl(v){try{const u=new URL(String(v||'').trim());return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}}
