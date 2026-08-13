@@ -51,6 +51,76 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 .update-card.is-collapsed{padding:14px 16px}.update-card.is-collapsed h2{font-size:22px;margin:4px 0}.update-card.is-collapsed .update-body-grid.has-image{grid-template-columns:110px minmax(0,1fr);gap:12px}.update-card.is-collapsed .published-update-image{width:110px;height:110px;object-fit:cover}.update-card.is-collapsed .article-intro{margin:5px 0;padding:10px 12px;font-size:13px}
 @media(max-width:620px){.update-card.is-collapsed .update-body-grid.has-image{grid-template-columns:82px minmax(0,1fr)}.update-card.is-collapsed .published-update-image{width:82px;height:82px}}
 
+
+/* ===== 0.0.80 — аккуратные скроллбары по всему сайту ===== */
+html{
+  scrollbar-width:thin;
+  scrollbar-color:#8fd8ff #081b29;
+}
+::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+::-webkit-scrollbar-track{
+  background:linear-gradient(180deg,#071925 0%,#0a2435 100%);
+  border:1px solid rgba(228,180,94,.18);
+  border-radius:999px;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.35);
+}
+::-webkit-scrollbar-thumb{
+  min-width:44px;
+  min-height:44px;
+  border:2px solid #081b29;
+  border-radius:999px;
+  background:linear-gradient(90deg,#d7aa55 0%,#f0d18b 26%,#8ed8ff 64%,#4da9dc 100%);
+  box-shadow:0 0 8px rgba(112,202,255,.20),inset 0 1px 0 rgba(255,255,255,.28);
+}
+::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(90deg,#efc86f 0%,#ffe5a7 28%,#a9e5ff 66%,#62bce9 100%);
+  box-shadow:0 0 12px rgba(112,202,255,.35),inset 0 1px 0 rgba(255,255,255,.34);
+}
+::-webkit-scrollbar-thumb:active{
+  background:linear-gradient(90deg,#c99743 0%,#e6bf6d 30%,#79c9ef 68%,#3f94c2 100%);
+}
+::-webkit-scrollbar-corner{
+  background:#081b29;
+}
+.update-copy-col,
+.rich-output{
+  min-width:0;
+  max-width:100%;
+}
+.rich-output{
+  overflow-x:auto;
+  overflow-y:visible;
+  scrollbar-width:thin;
+  scrollbar-color:#8fd8ff #081b29;
+}
+.rich-output img,
+.rich-output video,
+.rich-output canvas,
+.rich-output svg{
+  max-width:100%!important;
+  height:auto!important;
+}
+.rich-output table{
+  max-width:100%;
+}
+body{
+  overflow-x:hidden;
+}
+@media(max-width:760px){
+  ::-webkit-scrollbar{
+    width:7px;
+    height:7px;
+  }
+  ::-webkit-scrollbar-thumb{
+    min-width:34px;
+    min-height:34px;
+    border-width:1px;
+  }
+}
+
 </style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
