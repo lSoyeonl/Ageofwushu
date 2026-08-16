@@ -150,3 +150,22 @@ body.kf-wiki-reader .wrap,
   .wiki-summary-actions .wiki-expand-panel{grid-column:1/-1}
   .wiki-summary-actions .btn,.wiki-summary-actions .wiki-expand-panel{width:100%}
 }
+
+
+/* 0.0.93 — стабильный Wiki Reader без конкурирующего layout engine */
+body.kf-wiki-reader .wrap{width:min(1380px,calc(100vw - 28px))!important;max-width:1380px!important;margin-left:auto!important;margin-right:auto!important}
+.wiki-shell{width:100%!important;max-width:100%!important;min-width:0!important;grid-template-columns:300px minmax(0,1fr)!important}
+.wiki-sidebar{width:300px!important;min-width:300px!important;max-width:300px!important}
+.wiki-search-wrap,.wiki-search{width:100%!important;min-width:0!important;max-width:100%!important}
+.wiki-content{width:100%!important;min-width:0!important;max-width:100%!important}
+.wiki-content>.panel,.wiki-article{width:100%!important;min-width:0!important;max-width:100%!important}
+.wiki-summary-card{width:100%!important;min-width:0!important;max-width:100%!important;grid-template-columns:minmax(210px,30%) minmax(0,1fr)!important}
+.wiki-summary-main{min-width:0!important;max-width:100%!important;overflow:hidden}
+.wiki-summary-description{max-width:100%!important;word-break:normal!important;overflow-wrap:break-word!important}
+.wiki-summary-actions{min-width:0;max-width:100%}
+@media(max-width:900px){
+  body.kf-wiki-reader .wrap{width:calc(100vw - 20px)!important;max-width:calc(100vw - 20px)!important}
+  .wiki-shell{grid-template-columns:minmax(0,1fr)!important}
+  .wiki-sidebar{width:min(86vw,350px)!important;min-width:0!important;max-width:min(86vw,350px)!important}
+  .wiki-summary-card{grid-template-columns:1fr!important}
+}

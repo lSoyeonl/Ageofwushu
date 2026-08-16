@@ -379,3 +379,19 @@ html,body{max-width:100%;overflow-x:hidden}
 main,.wrap,.panel,section,article,.content-area,.wiki-shell,.wiki-content{min-width:0;max-width:100%}
 img,video,canvas,svg{max-width:100%}
 .rich-output,.article-intro,.desc,.wiki-article-sub{min-width:0;overflow-wrap:anywhere;word-break:break-word}
+
+
+/* 0.0.93 — единый стабилизатор геометрии контентных разделов */
+html,body{width:100%;max-width:100%;overflow-x:clip}
+body>main,main.wrap,.wrap{min-width:0;max-width:calc(100vw - 16px)}
+.panel,.two-col,.layout,.content-area,.wiki-shell,.wiki-content,.posts,.post,.toolbar,.editor,.page-head{min-width:0;max-width:100%}
+.two-col,.layout,.wiki-shell{width:100%}
+.two-col>*,.layout>*,.wiki-shell>*{min-width:0;max-width:100%}
+.toc,.wiki-sidebar{min-width:0;max-width:100%}
+.toolbar,.wiki-search-wrap,.kf-guide-toolbar{min-width:0;max-width:100%}
+.search,.toc-search,.wiki-search,.kf-guide-search,input[type="search"]{min-width:0;max-width:100%}
+.content-area,.wiki-content,.wiki-article,.wiki-article-head,.wiki-article-body,.wiki-summary-card,.wiki-summary-main{min-width:0;max-width:100%}
+.wiki-article h1,.wiki-article h2,.wiki-article h3,.wiki-summary-main h2{word-break:normal!important;overflow-wrap:break-word!important}
+@media(max-width:900px){
+  body>main,main.wrap,.wrap{max-width:calc(100vw - 12px)}
+}
