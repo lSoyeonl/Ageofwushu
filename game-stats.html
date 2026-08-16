@@ -21,7 +21,7 @@ a{text-decoration:none;color:inherit}button,input,textarea{font:inherit}
 .toolbar{margin-top:16px;display:grid;grid-template-columns:minmax(240px,1fr) auto;gap:10px;align-items:center}.search{width:100%;min-height:42px;border:1px solid rgba(228,180,94,.28);border-radius:10px;background:#071824;color:#fff;outline:0;padding:10px 12px}.search:focus{border-color:rgba(255,226,160,.78);box-shadow:0 0 0 3px rgba(228,180,94,.06)}
 .toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.btn{min-height:40px;border:0;border-radius:9px;padding:0 14px;background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:800;cursor:pointer}.btn.secondary{background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)}.btn.danger{background:#50252a;color:#ffd7d7;border:1px solid rgba(255,140,140,.2)}.btn.small{min-height:31px;padding:0 9px;font-size:11px}.btn:disabled{opacity:.5;cursor:not-allowed}
 .staff-tools{display:none;margin-top:14px;padding:14px;border:1px solid rgba(255,226,160,.18);border-radius:12px;background:rgba(3,21,32,.58)}.staff-tools.show{display:block}.staff-tools-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.staff-tools h2{font-size:18px;margin:0;color:var(--gold2)}.column-list{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.column-chip{display:flex;align-items:center;gap:6px;border:1px solid rgba(126,204,234,.16);border-radius:999px;background:rgba(126,204,234,.05);padding:5px 6px 5px 10px;font-size:12px}.column-chip button{border:0;background:transparent;color:#d9edf5;cursor:pointer;padding:2px 5px}.column-chip button:hover{color:var(--gold2)}.core-note{font-size:11px;color:#9db1ba;margin-top:8px}
-.table-panel{margin-top:16px;padding:0;overflow:hidden}.table-top{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(228,180,94,.18)}.result-count{color:#b9ccd4;font-size:13px}.table-wrap{width:100%;overflow:auto;max-height:70vh;scrollbar-width:thin;scrollbar-color:#8fd8ff #081b29}.stats-table{width:100%;border-collapse:separate;border-spacing:0;min-width:1050px}.stats-table th,.stats-table td{padding:11px 12px;border-right:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.07);vertical-align:top;text-align:left}.stats-table th{position:sticky;top:0;z-index:4;background:#0a2839;color:#ffe2a0;font-size:12px;letter-spacing:.02em;white-space:nowrap}.stats-table td{font-size:13px;color:#dce8ed;background:rgba(5,25,37,.78)}.stats-table tbody tr:nth-child(even) td{background:rgba(7,31,44,.82)}.stats-table tbody tr:hover td{background:rgba(17,51,66,.9)}.stats-table th:first-child,.stats-table td:first-child{position:sticky;left:0;z-index:3}.stats-table th:first-child{z-index:6}.stats-table td:first-child{background:#0a2636;color:#9fc5d5;width:58px;text-align:center}.stats-table .name-ru{font-weight:800;color:#ffe2a0;min-width:190px}.stats-table .name-en{min-width:180px}.stats-table .name-zh{min-width:180px;font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",Arial,sans-serif;font-size:14px}.stats-table .desc{min-width:300px;max-width:460px;white-space:pre-wrap;line-height:1.45}.stats-table .custom-cell{min-width:150px;max-width:340px;white-space:pre-wrap;overflow-wrap:anywhere}.empty-cell{color:#718995}.actions-cell{min-width:150px;white-space:nowrap}.row-actions{display:flex;gap:6px}.empty{padding:34px;text-align:center;color:#9db0b8}
+.table-panel{margin-top:16px;padding:0;overflow:hidden}.table-top{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(228,180,94,.18)}.result-count{color:#b9ccd4;font-size:13px}.table-wrap{width:100%;overflow:auto;max-height:70vh;scrollbar-width:thin;scrollbar-color:#8fd8ff #081b29}.stats-table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}.stats-table th,.stats-table td{padding:11px 12px;border-right:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.07);vertical-align:top;text-align:left;overflow:hidden}.stats-table th{position:sticky;top:0;z-index:4;background:#0a2839;color:#ffe2a0;font-size:12px;letter-spacing:.02em;white-space:nowrap;overflow:visible}.stats-table th .th-label{display:block;overflow:hidden;text-overflow:ellipsis;padding-right:5px}.stats-table td{font-size:13px;color:#dce8ed;background:rgba(5,25,37,.78);overflow-wrap:anywhere}.stats-table tbody tr:nth-child(even) td{background:rgba(7,31,44,.82)}.stats-table tbody tr:hover td{background:rgba(17,51,66,.9)}.stats-table tbody tr.staff-row{cursor:pointer}.stats-table tbody tr.staff-row:hover td{box-shadow:inset 0 0 0 1px rgba(255,226,160,.08)}.stats-table th:first-child,.stats-table td:first-child{position:sticky;left:0;z-index:3}.stats-table th:first-child{z-index:6}.stats-table td:first-child{background:#0a2636;color:#9fc5d5;text-align:center}.stats-table .name-ru{font-weight:800;color:#ffe2a0}.stats-table .name-zh{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",Arial,sans-serif;font-size:14px}.stats-table .desc,.stats-table .custom-cell{white-space:pre-wrap;line-height:1.45}.empty-cell{color:#718995}.resize-handle{position:absolute;top:0;right:-4px;width:9px;height:100%;cursor:col-resize;z-index:12;touch-action:none}.resize-handle:after{content:"";position:absolute;top:18%;bottom:18%;left:4px;width:1px;background:rgba(255,226,160,.28);opacity:0;transition:.15s}.stats-table th:hover .resize-handle:after,.resize-handle.dragging:after{opacity:1;background:#ffe2a0}.resize-handle.dragging{background:rgba(255,226,160,.06)}.empty{padding:34px;text-align:center;color:#9db0b8}
 .editor-backdrop{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.72);padding:22px;align-items:center;justify-content:center}.editor-backdrop.open{display:flex}.editor-box{width:min(900px,96vw);max-height:90vh;overflow:auto;padding:20px;border:1px solid rgba(228,180,94,.4);border-radius:16px;background:linear-gradient(180deg,#0a2636,#061721);box-shadow:0 25px 80px rgba(0,0,0,.55)}.editor-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.editor-head h2{margin:0;color:#ffe2a0}.close-btn{width:38px;height:38px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:#102c3d;color:#fff;cursor:pointer;font-size:20px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-top:12px}label{display:block;margin-bottom:5px;color:#dce7eb;font-weight:700;font-size:13px}input,textarea{width:100%;border:1px solid rgba(228,180,94,.28);border-radius:9px;background:#071824;color:#fff;outline:0;padding:10px 11px}textarea{min-height:100px;resize:vertical}input:focus,textarea:focus{border-color:rgba(255,226,160,.78);box-shadow:0 0 0 3px rgba(228,180,94,.06)}.required{color:#ffb6b6}.editor-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}.field-wide{grid-column:1/-1}
 @media(max-width:980px){.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.toolbar{grid-template-columns:1fr}.toolbar-actions{justify-content:flex-start}}
 @media(max-width:650px){.wrap{width:min(100% - 18px,1600px);margin-top:18px}.page-head{padding:17px}.page-head h1{font-size:32px}.form-grid{grid-template-columns:1fr}.field-wide{grid-column:auto}.editor-backdrop{padding:8px}.editor-box{padding:15px}.table-top{align-items:flex-start;flex-direction:column}}
@@ -65,7 +65,7 @@ a{text-decoration:none;color:inherit}button,input,textarea{font:inherit}
     <div class="staff-tools" id="staffTools">
       <div class="staff-tools-head"><h2>Дополнительные колонки</h2><button class="btn small" type="button" id="addColumnBtn">+ Добавить колонку</button></div>
       <div class="column-list" id="columnList"></div>
-      <div class="core-note">Основные колонки «Русское название», «English», «中文» и «Описание» закреплены. Дополнительные колонки можно переименовывать и удалять.</div>
+      <div class="core-note">Основные колонки «Русское название», «English», «中文» и «Описание» закреплены. Дополнительные колонки можно переименовывать и удалять. Ширину любой колонки администратор или модератор меняет перетаскиванием её правой границы в заголовке таблицы.</div>
     </div>
     <div class="save-status" id="saveStatus"></div>
   </section>
@@ -73,10 +73,11 @@ a{text-decoration:none;color:inherit}button,input,textarea{font:inherit}
   <section class="panel table-panel">
     <div class="table-top">
       <div class="result-count" id="resultCount">0 характеристик</div>
-      <div class="muted" style="font-size:12px">Таблица прокручивается горизонтально, если колонок много.</div>
+      <div class="muted" style="font-size:12px">Для редактирования строки нажмите на неё. Ширина колонок меняется перетаскиванием границы заголовка.</div>
     </div>
     <div class="table-wrap">
       <table class="stats-table" id="statsTable">
+        <colgroup id="statsCols"></colgroup>
         <thead id="statsHead"></thead>
         <tbody id="statsBody"></tbody>
       </table>
@@ -88,7 +89,7 @@ a{text-decoration:none;color:inherit}button,input,textarea{font:inherit}
   <div class="editor-box" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
     <div class="editor-head"><h2 id="editorTitle">Добавить характеристику</h2><button class="close-btn" id="closeEditorBtn" type="button" aria-label="Закрыть">×</button></div>
     <div class="form-grid" id="editorFields"></div>
-    <div class="editor-actions"><button class="btn secondary" id="cancelEditorBtn" type="button">Отмена</button><button class="btn" id="saveRowBtn" type="button">Сохранить</button></div>
+    <div class="editor-actions"><button class="btn danger" id="deleteEditorBtn" type="button" style="display:none;margin-right:auto">Удалить характеристику</button><button class="btn secondary" id="cancelEditorBtn" type="button">Отмена</button><button class="btn" id="saveRowBtn" type="button">Сохранить</button></div>
   </div>
 </div>
 
@@ -103,11 +104,13 @@ const CORE=[
   {id:'description',label:'Описание',required:false,kind:'textarea'}
 ];
 const $=id=>document.getElementById(id);
-let currentUser=null,isStaff=false,state={version:1,columns:[],rows:[]},editingId=null,saving=false;
+const DEFAULT_WIDTHS={index:58,ru:280,en:240,zh:240,description:380};
+const MIN_WIDTH=80,MAX_WIDTH=760;
+let currentUser=null,isStaff=false,state={version:2,columns:[],rows:[],widths:{...DEFAULT_WIDTHS}},editingId=null,saving=false,resizing=null;
 
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function uid(prefix='id'){return prefix+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
-function defaultState(){return {version:1,columns:[],rows:[]}}
+function defaultState(){return {version:2,columns:[],rows:[],widths:{...DEFAULT_WIDTHS}}}
 function normalize(raw){
   const x=raw&&typeof raw==='object'?raw:defaultState();
   const columns=Array.isArray(x.columns)?x.columns.filter(c=>c&&c.id&&c.label).map(c=>({id:String(c.id),label:String(c.label).slice(0,80)})):[];
@@ -117,7 +120,10 @@ function normalize(raw){
     id:String(r.id||uid('stat')),ru:String(r.ru||''),en:String(r.en||''),zh:String(r.zh||''),description:String(r.description||''),
     extra:r.extra&&typeof r.extra==='object'?r.extra:{},author:String(r.author||''),authorRole:String(r.authorRole||''),createdAt:r.createdAt||null,updatedAt:r.updatedAt||null
   })):[];
-  return {version:1,columns:safeCols,rows};
+  const widths={...DEFAULT_WIDTHS};
+  if(x.widths&&typeof x.widths==='object')Object.entries(x.widths).forEach(([id,value])=>{const n=Number(value);if(Number.isFinite(n))widths[id]=Math.max(id==='index'?48:MIN_WIDTH,Math.min(MAX_WIDTH,Math.round(n)))});
+  safeCols.forEach(c=>{if(!Number.isFinite(Number(widths[c.id])))widths[c.id]=180});
+  return {version:2,columns:safeCols,rows,widths};
 }
 function roleText(){
   if(!currentUser)return 'Просмотр доступен всем. Для редактирования войдите в аккаунт администратора или модератора.';
@@ -134,20 +140,24 @@ function renderColumnsManager(){
   if(!state.columns.length){box.innerHTML='<span class="muted" style="font-size:12px">Дополнительных колонок пока нет.</span>';return}
   box.innerHTML=state.columns.map(c=>`<span class="column-chip"><b>${esc(c.label)}</b><button type="button" data-rename="${esc(c.id)}" title="Переименовать">✎</button><button type="button" data-delete-col="${esc(c.id)}" title="Удалить">×</button></span>`).join('');
 }
+function columnDefs(){return [{id:'index',label:'№'},...CORE,...state.columns]}
+function widthOf(id){const v=Number(state.widths?.[id]);return Number.isFinite(v)?Math.max(id==='index'?48:MIN_WIDTH,Math.min(MAX_WIDTH,Math.round(v))):(id==='index'?58:180)}
 function render(){
   const q=$('searchInput').value.trim().toLocaleLowerCase();
   const rows=state.rows.filter(r=>!q||allText(r).includes(q));
-  const customHeaders=state.columns.map(c=>`<th>${esc(c.label)}</th>`).join('');
-  $('statsHead').innerHTML=`<tr><th>№</th><th>Русское название</th><th>English</th><th>中文</th><th>Описание</th>${customHeaders}${isStaff?'<th>Действия</th>':''}</tr>`;
+  const defs=columnDefs();
+  $('statsCols').innerHTML=defs.map(c=>`<col data-col-id="${esc(c.id)}" style="width:${widthOf(c.id)}px">`).join('');
+  $('statsHead').innerHTML='<tr>'+defs.map(c=>`<th data-col-id="${esc(c.id)}"><span class="th-label">${esc(c.label)}</span>${isStaff?`<span class="resize-handle" data-resize="${esc(c.id)}" title="Изменить ширину"></span>`:''}</th>`).join('')+'</tr>';
   if(!rows.length){
-    $('statsBody').innerHTML=`<tr><td colspan="${5+state.columns.length+(isStaff?1:0)}"><div class="empty">${q?'По вашему запросу ничего не найдено.':'Характеристики пока не добавлены.'}</div></td></tr>`;
+    $('statsBody').innerHTML=`<tr><td colspan="${defs.length}"><div class="empty">${q?'По вашему запросу ничего не найдено.':'Характеристики пока не добавлены.'}</div></td></tr>`;
   }else{
     $('statsBody').innerHTML=rows.map((r,i)=>{
       const extras=state.columns.map(c=>cell(r.extra?.[c.id]||'','custom-cell')).join('');
-      const actions=isStaff?`<td class="actions-cell"><div class="row-actions"><button class="btn secondary small" type="button" data-edit="${esc(r.id)}">Изменить</button><button class="btn danger small" type="button" data-delete="${esc(r.id)}">Удалить</button></div></td>`:'';
-      return `<tr><td>${i+1}</td>${cell(r.ru,'name-ru')}${cell(r.en,'name-en')}${cell(r.zh,'name-zh')}${cell(r.description,'desc')}${extras}${actions}</tr>`;
+      return `<tr${isStaff?` class="staff-row" data-row-id="${esc(r.id)}" title="Нажмите, чтобы редактировать"`:''}><td>${i+1}</td>${cell(r.ru,'name-ru')}${cell(r.en,'name-en')}${cell(r.zh,'name-zh')}${cell(r.description,'desc')}${extras}</tr>`;
     }).join('');
   }
+  const total=defs.reduce((sum,c)=>sum+widthOf(c.id),0);
+  $('statsTable').style.width=Math.max(total,$('statsTable').parentElement.clientWidth||0)+'px';
   $('resultCount').textContent=rows.length+' '+plural(rows.length)+(q?' из '+state.rows.length:'');
   renderColumnsManager();
 }
@@ -172,6 +182,7 @@ function openEditor(id=null){
   editingId=id;
   const row=id?state.rows.find(r=>r.id===id):null;
   $('editorTitle').textContent=row?'Редактировать характеристику':'Добавить характеристику';
+  $('deleteEditorBtn').style.display=row?'inline-flex':'none';
   const fields=[...CORE,...state.columns.map(c=>({id:'extra:'+c.id,label:c.label,required:false,kind:'input'}))];
   $('editorFields').innerHTML=fields.map(f=>{
     let value='';
@@ -194,14 +205,15 @@ async function saveEditor(){
   try{await persist(old?'Характеристика обновлена.':'Характеристика добавлена.');closeEditor()}catch{}
 }
 async function deleteRow(id){
-  if(!isStaff)return;const row=state.rows.find(r=>r.id===id);if(!row)return;
-  if(!confirm('Удалить характеристику «'+(row.ru||row.en||row.zh)+'»?'))return;
-  state.rows=state.rows.filter(r=>r.id!==id);try{await persist('Характеристика удалена.')}catch{}
+  if(!isStaff)return false;const row=state.rows.find(r=>r.id===id);if(!row)return false;
+  if(!confirm('Удалить характеристику «'+(row.ru||row.en||row.zh)+'»?'))return false;
+  const before=state.rows;state.rows=state.rows.filter(r=>r.id!==id);
+  try{await persist('Характеристика удалена.');return true}catch{state.rows=before;render();return false}
 }
 async function addColumn(){
   if(!isStaff)return;const label=prompt('Название новой колонки:');if(label===null)return;const name=label.trim();if(!name)return;
   if([...CORE,...state.columns].some(c=>c.label.toLocaleLowerCase()===name.toLocaleLowerCase())){setStatus('Колонка с таким названием уже существует.',true);return}
-  state.columns.push({id:uid('col'),label:name.slice(0,80)});try{await persist('Колонка добавлена.')}catch{}
+  const id=uid('col');state.columns.push({id,label:name.slice(0,80)});state.widths[id]=180;try{await persist('Колонка добавлена.')}catch{}
 }
 async function renameColumn(id){
   if(!isStaff)return;const col=state.columns.find(c=>c.id===id);if(!col)return;const label=prompt('Новое название колонки:',col.label);if(label===null)return;const name=label.trim();if(!name)return;
@@ -211,7 +223,26 @@ async function renameColumn(id){
 async function deleteColumn(id){
   if(!isStaff)return;const col=state.columns.find(c=>c.id===id);if(!col)return;
   if(!confirm('Удалить колонку «'+col.label+'»? Данные этой колонки во всех строках также будут удалены.'))return;
-  state.columns=state.columns.filter(c=>c.id!==id);state.rows.forEach(r=>{if(r.extra)delete r.extra[id]});try{await persist('Колонка удалена.')}catch{}
+  state.columns=state.columns.filter(c=>c.id!==id);state.rows.forEach(r=>{if(r.extra)delete r.extra[id]});delete state.widths[id];try{await persist('Колонка удалена.')}catch{}
+}
+function beginResize(e){
+  if(!isStaff)return;
+  const handle=e.target.closest('[data-resize]');if(!handle)return;
+  e.preventDefault();e.stopPropagation();
+  const id=handle.dataset.resize;resizing={id,startX:e.clientX,startWidth:widthOf(id),handle};handle.classList.add('dragging');
+  document.body.style.cursor='col-resize';document.body.style.userSelect='none';
+}
+function moveResize(e){
+  if(!resizing)return;
+  const min=resizing.id==='index'?48:MIN_WIDTH;
+  state.widths[resizing.id]=Math.max(min,Math.min(MAX_WIDTH,Math.round(resizing.startWidth+(e.clientX-resizing.startX))));
+  const col=$('statsCols').querySelector(`[data-col-id="${CSS.escape(resizing.id)}"]`);if(col)col.style.width=state.widths[resizing.id]+'px';
+  const defs=columnDefs(),total=defs.reduce((sum,c)=>sum+widthOf(c.id),0);$('statsTable').style.width=Math.max(total,$('statsTable').parentElement.clientWidth||0)+'px';
+}
+async function endResize(){
+  if(!resizing)return;
+  resizing.handle?.classList.remove('dragging');resizing=null;document.body.style.cursor='';document.body.style.userSelect='';
+  try{await persist('Ширина колонок сохранена.')}catch{}
 }
 async function load(remoteOnly=false){
   try{
@@ -225,9 +256,10 @@ $('searchInput').addEventListener('input',render);
 $('addRowBtn').addEventListener('click',()=>openEditor());
 $('manageColumnsBtn').addEventListener('click',()=>$('staffTools').classList.toggle('show'));
 $('addColumnBtn').addEventListener('click',addColumn);
-$('closeEditorBtn').addEventListener('click',closeEditor);$('cancelEditorBtn').addEventListener('click',closeEditor);$('saveRowBtn').addEventListener('click',saveEditor);
+$('closeEditorBtn').addEventListener('click',closeEditor);$('cancelEditorBtn').addEventListener('click',closeEditor);$('saveRowBtn').addEventListener('click',saveEditor);$('deleteEditorBtn').addEventListener('click',async()=>{if(editingId&&await deleteRow(editingId))closeEditor()});
 $('editorBackdrop').addEventListener('click',e=>{if(e.target===$('editorBackdrop'))closeEditor()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('editorBackdrop').classList.contains('open'))closeEditor()});
-$('statsBody').addEventListener('click',e=>{const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(edit)openEditor(edit.dataset.edit);if(del)deleteRow(del.dataset.delete)});
+$('statsBody').addEventListener('click',e=>{if(!isStaff)return;const row=e.target.closest('[data-row-id]');if(row)openEditor(row.dataset.rowId)});
+$('statsHead').addEventListener('pointerdown',beginResize);window.addEventListener('pointermove',moveResize);window.addEventListener('pointerup',endResize);
 $('columnList').addEventListener('click',e=>{const rn=e.target.closest('[data-rename]'),del=e.target.closest('[data-delete-col]');if(rn)renameColumn(rn.dataset.rename);if(del)deleteColumn(del.dataset.deleteCol)});
 window.addEventListener('kf-supabase-synced',e=>{if(e.detail?.key===KEY&&!saving)setTimeout(()=>load(true),120)});
 load();
