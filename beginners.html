@@ -57,26 +57,6 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 .beginner-card.is-collapsed .article-intro{margin:6px 0;padding:10px 12px;font-size:13px}
 @media(max-width:620px){.beginner-card.is-collapsed .beginner-cover-preview img{width:100%;height:150px}}
 
-
-/* v0.0.90 — компактная карточка статьи */
-.wiki-article.is-summary{overflow:hidden}
-.wiki-article.is-summary .wiki-article-head{padding:0!important}
-.wiki-summary-card{display:grid;grid-template-columns:minmax(220px,30%) minmax(0,1fr);min-height:245px}
-.wiki-summary-media{min-height:245px;background:linear-gradient(145deg,rgba(18,55,71,.82),rgba(4,20,30,.96));border-right:1px solid rgba(228,180,94,.24);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.wiki-summary-media img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover}
-.wiki-summary-media.is-empty:before{content:'📖';font-size:70px;opacity:.24;filter:grayscale(1)}
-.wiki-summary-media.is-empty:after{content:'Изображение не добавлено';position:absolute;bottom:18px;left:16px;right:16px;text-align:center;color:#9fb3bc;font-size:12px}
-.wiki-summary-main{min-width:0;padding:22px 24px 16px;display:flex;flex-direction:column}
-.wiki-summary-main .wiki-breadcrumb{margin-bottom:10px}
-.wiki-summary-main h2{margin:0 0 10px;font-size:clamp(28px,3vw,46px);line-height:1.08}
-.wiki-summary-description{color:#d0dde2;font-size:14px;line-height:1.6;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
-.wiki-summary-footer-v90{margin-top:auto;padding-top:16px;display:flex;align-items:flex-end;justify-content:space-between;gap:14px;border-top:1px solid rgba(228,180,94,.12)}
-.wiki-summary-actions-v90{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;margin-left:auto}
-.wiki-summary-actions-v90 .btn,.wiki-summary-actions-v90 .wiki-expand-panel{min-height:39px;margin:0;white-space:nowrap}
-.wiki-summary-actions-v90 .wiki-expand-panel{position:static;width:auto;min-width:170px;padding:0 18px}
-.wiki-summary-meta-v90{min-width:0}
-@media(max-width:900px){.wiki-summary-card{grid-template-columns:200px minmax(0,1fr)}.wiki-summary-main{padding:18px}.wiki-summary-main h2{font-size:30px}}
-@media(max-width:700px){.wiki-summary-card{grid-template-columns:1fr}.wiki-summary-media{min-height:200px;border-right:0;border-bottom:1px solid rgba(228,180,94,.24)}.wiki-summary-footer-v90{align-items:stretch;flex-direction:column}.wiki-summary-actions-v90{margin-left:0;justify-content:flex-start}}
 </style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
@@ -93,7 +73,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
   <a href="taiwan.html">О Тайвани</a>
   <a href="pirate.html">О Пиратке</a>
   <a href="updates.html">Обновления</a>
-  <a href="https://funpay.com/chips/49/" target="_blank" rel="noopener noreferrer">Продажа Персонажа</a>
+  <a href="accounts-sale.html">Продажа Аккаунтов</a>
   <a href="forum.html">Форум</a>
       <a href="partners.html">Партнеры</a>
   <a href="register.html">Регистрация</a>
@@ -483,21 +463,20 @@ init();
     const base=visibleOrder(),a=base.some(v=>String(v.id)===String(x.id))?base:order(),i=a.findIndex(v=>String(v.id)===String(x.id)),prev=a[i-1],next=a[i+1];
     return `<div class="wiki-prevnext"><a class="${prev?'':'disabled'}" ${prev?`onclick="wikiBeginnerSelect('${encodeURIComponent(String(prev.id))}')"`:''}><small>← Новее</small><b>${prev?esc(prev.title):'Нет материала'}</b></a><a class="${next?'':'disabled'}" ${next?`onclick="wikiBeginnerSelect('${encodeURIComponent(String(next.id))}')"`:''}><small>Дальше →</small><b>${next?esc(next.title):'Конец раздела'}</b></a></div>`
   }
-  function summaryDescription(x){
+  function summaryText(x){
     const intro=String(x?.intro||'').trim();
     if(intro)return intro;
-    const box=document.createElement('div');box.innerHTML=cleanRich(x?.content||'');
-    const text=(box.innerText||box.textContent||'').replace(/\s+/g,' ').trim();
-    return text||'Описание материала не добавлено.';
+    const text=String(KFWiki.plain(x?.content||'')||'').replace(/\s+/g,' ').trim();
+    if(!text)return 'Описание пока не добавлено.';
+    return text.length>520?text.slice(0,517)+'…':text;
   }
   function article(x){
     const date=KFWiki.itemDate(x),author=KFWiki.author(x),expanded=wikiExpandedIds.has(String(x.id));
-    const cover=imagesFor(x)[0]||'';
-    const desc=summaryDescription(x);
+    const imgs=imagesFor(x),cover=imgs[0]||'',summary=summaryText(x),id=encodeURIComponent(String(x.id));
     if(!expanded){
-      return `<article id="${guideDomId(x.id)}" class="panel wiki-article is-summary"><div class="wiki-summary-card"><div class="wiki-summary-media ${cover?'':'is-empty'}">${cover?`<img src="${cover}" alt="${esc(x.title)}" loading="lazy" decoding="async">`:''}</div><div class="wiki-summary-main"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>Справочник новичкам</span><span>›</span><span>Общее</span></div><h2>${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin')||''}</h2><div class="wiki-summary-description">${esc(desc)}</div><div class="wiki-summary-footer-v90"><div class="wiki-summary-meta-v90 wiki-meta"><span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div><div class="wiki-summary-actions-v90">${isAdmin?`<button class="btn danger" type="button" onclick="delItem('${encodeURIComponent(String(x.id))}')">Удалить</button><button class="btn secondary" type="button" onclick="editItem('${encodeURIComponent(String(x.id))}')">Редактировать</button>`:''}<button class="wiki-expand-panel" type="button" onclick="toggleBeginnerWikiArticle('${encodeURIComponent(String(x.id))}')">Развернуть</button></div></div></div></div></article>`;
+      return `<article id="${guideDomId(x.id)}" class="panel wiki-article is-summary"><div class="wiki-summary-card"><div class="wiki-summary-media">${cover?`<img src="${cover}" loading="lazy" decoding="async" alt="${esc(x.title||'Материал')}">`:`<div class="wiki-summary-placeholder">Изображение не добавлено</div>`}</div><div class="wiki-summary-main"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>Справочник новичкам</span></div><h2>${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin')||''}</h2><div class="wiki-summary-description">${esc(summary)}</div><div class="wiki-summary-footer"><div class="wiki-meta"><span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div><div class="wiki-summary-actions">${isAdmin?`<button class="btn danger" type="button" onclick="delItem('${id}')">Удалить</button><button class="btn secondary" type="button" onclick="editItem('${id}')">Редактировать</button>`:''}<button class="wiki-expand-panel" type="button" onclick="toggleBeginnerWikiArticle('${id}')">Развернуть</button></div></div></div></div></article>`;
     }
-    return `<article id="${guideDomId(x.id)}" class="panel wiki-article is-expanded"><div class="wiki-article-head"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>Справочник новичкам</span><span>›</span><span>Общее</span></div><h2>${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin')||''}</h2>${x.intro?`<div class="wiki-article-sub">${esc(x.intro)}</div>`:''}<div class="wiki-meta"><span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div></div><div class="wiki-article-body"><div class="wiki-reader-actions"><button class="wiki-reader-btn" type="button" onclick="KFWiki.copyLink('guide','${encodeURIComponent(String(x.id))}',this)">🔗 Скопировать ссылку</button>${isAdmin?`<button class="wiki-reader-btn" type="button" onclick="editItem('${encodeURIComponent(String(x.id))}')">✎ Редактировать</button>`:''}</div>${fullGuideHtml(x)}<div id="kf-beginner-reactions-${guideDomId(x.id)}"></div>${isAdmin?`<div class="entry-actions show"><button class="btn danger" type="button" onclick="delItem('${encodeURIComponent(String(x.id))}')">Удалить материал</button></div>`:''}<div class="wiki-collapse-wide"><button type="button" onclick="toggleBeginnerWikiArticle('${encodeURIComponent(String(x.id))}')">Свернуть статью</button></div>${prevNext(x)}</div></article>`
+    return `<article id="${guideDomId(x.id)}" class="panel wiki-article is-expanded"><div class="wiki-article-head"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>Справочник новичкам</span></div><h2>${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin')||''}</h2>${x.intro?`<div class="wiki-article-sub">${esc(x.intro)}</div>`:''}<div class="wiki-meta"><span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div></div><div class="wiki-article-body"><div class="wiki-reader-actions"><button class="wiki-reader-btn" type="button" onclick="KFWiki.copyLink('guide','${id}',this)">🔗 Скопировать ссылку</button>${isAdmin?`<button class="wiki-reader-btn" type="button" onclick="editItem('${id}')">✎ Редактировать</button>`:''}</div>${fullGuideHtml(x)}<div id="kf-beginner-reactions-${guideDomId(x.id)}"></div>${isAdmin?`<div class="entry-actions show"><button class="btn danger" type="button" onclick="delItem('${id}')">Удалить материал</button></div>`:''}<div class="wiki-collapse-wide"><button type="button" onclick="toggleBeginnerWikiArticle('${id}')">Свернуть статью</button></div>${prevNext(x)}</div></article>`
   }
 
   render=function(){

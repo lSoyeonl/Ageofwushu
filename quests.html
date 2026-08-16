@@ -19,19 +19,6 @@
 .preview-modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.76);padding:22px;align-items:center;justify-content:center}.preview-modal.open{display:flex}.preview-box{width:min(980px,96vw);max-height:90vh;overflow:auto;padding:20px;border:1px solid rgba(228,180,94,.42);border-radius:16px;background:linear-gradient(180deg,#0a2636,#061721);box-shadow:0 25px 80px rgba(0,0,0,.55)}.preview-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.preview-head h2{color:#ffe2a0;margin:0}
 @media(max-width:900px){.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.quest-grid{grid-template-columns:1fr}}
 @media(max-width:620px){.wrap{width:calc(100% - 18px);margin-top:18px}.page-head{padding:17px}.page-head h1{font-size:32px}.toolbar{grid-template-columns:1fr}.toolbar .btn{width:100%}.reward-edit-row{grid-template-columns:78px 1fr}.reward-edit-media{width:78px;height:70px}.reward-edit-row .remove-reward{grid-column:1/-1;width:100%}.reward-list{grid-template-columns:1fr}}
-
-/* v0.0.90 — выравнивание редактора квестов */
-.toolbar{align-items:center}.toolbar #newQuestBtn{min-width:170px;white-space:nowrap;justify-self:end}
-.editor{overflow:hidden}.editor h2{font-size:28px;line-height:1.1}
-.reward-edit-row{grid-template-columns:148px minmax(0,1fr) 108px;gap:12px;align-items:stretch;padding:10px}
-.reward-edit-media{width:148px;height:92px;min-height:92px}
-.reward-edit-media label{inset:auto 7px 7px 7px;padding:6px 8px;font-size:11px;line-height:1.1;white-space:nowrap}
-.reward-edit-row>[data-reward-name]{align-self:center;min-height:44px}
-.reward-edit-row .remove-reward{align-self:center;min-width:100px;height:42px}
-#addRewardBtn{width:100%;margin-top:2px}
-.editor-actions{align-items:center}.editor-actions .btn{white-space:nowrap}
-@media(max-width:760px){.toolbar{grid-template-columns:1fr}.toolbar #newQuestBtn{width:100%;justify-self:stretch}.reward-edit-row{grid-template-columns:112px minmax(0,1fr)}.reward-edit-media{width:112px;height:84px}.reward-edit-row .remove-reward{grid-column:1/-1;width:100%}}
-@media(max-width:480px){.reward-edit-row{grid-template-columns:1fr}.reward-edit-media{width:100%;height:130px}.reward-edit-row .remove-reward{grid-column:auto}}
 </style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -41,7 +28,7 @@
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 </head>
 <body>
-<header class="top"><a class="brand" href="index.html"><img src="logo.png" alt="Логотип"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav"><a href="index.html">Главная</a><a href="taiwan.html">О Тайвани</a><a href="pirate.html">О Пиратке</a><a href="updates.html">Обновления</a><a href="https://funpay.com/chips/49/" target="_blank" rel="noopener noreferrer">Продажа Персонажа</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="register.html">Регистрация</a><a href="login.html">Вход</a></nav></header>
+<header class="top"><a class="brand" href="index.html"><img src="logo.png" alt="Логотип"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav"><a href="index.html">Главная</a><a href="taiwan.html">О Тайвани</a><a href="pirate.html">О Пиратке</a><a href="updates.html">Обновления</a><a href="accounts-sale.html">Продажа Аккаунтов</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="register.html">Регистрация</a><a href="login.html">Вход</a></nav></header>
 <main class="wrap">
 <section class="panel page-head">
 <h1>Сборник Квестов</h1>
