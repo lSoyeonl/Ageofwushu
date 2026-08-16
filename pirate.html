@@ -57,6 +57,8 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="storage-config.js?v=0.0.76"></script>
 <script src="supabase-sync.js?v=0.0.84"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
+<link rel="stylesheet" href="wiki-reader-0.0.86.css?v=0.0.86">
+<link rel="stylesheet" href="guide-layout-0.0.86.css?v=0.0.86">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
 <script src="reactions-0.0.48.js?v=0.0.80"></script>
@@ -206,9 +208,95 @@ window.delPost=async id=>{if(!isAdmin||!confirm('Удалить материал
 window.addEventListener('storage',e=>{if(e.key==='kungfuPublicDataV1'||e.key==='kungfuPirateContent')render()});
 window.addEventListener('kf-public-data-change',e=>{if(e.detail&&e.detail.key==='kungfuPirateContent')render()});window.addEventListener('kf-supabase-synced',e=>{if(e.detail&&e.detail.key==='kungfuPirateContent'){posts=readPublishedPosts();render()}});
 renderDraft();render();hydratePublishedPosts();
-</script><script src="image-tools-0.0.48.js?v=0.0.70"></script>
+</script><script src="wiki-reader-0.0.86.js?v=0.0.86"></script>
+<script>
+(function(){
+  KFWiki.bindCommon();
+  const active='pirate',hashPrefix='pirate',sectionName='О пиратке',storeName='kungfuPirateContent';
+  const postsEl=document.getElementById('posts');if(!postsEl)return;
+  postsEl.classList.add('wiki-content');
+  const shell=document.createElement('div');shell.className='wiki-shell';
+  postsEl.parentNode.insertBefore(shell,postsEl);shell.appendChild(postsEl);
+  const side=document.createElement('aside');side.className='panel wiki-sidebar';
+  side.innerHTML=KFWiki.sidebarChrome(active,'Поиск по материалам…',posts.length);
+  shell.insertBefore(side,postsEl);KFWiki.mobileButton(shell);
+  let wikiQuery='',selectedPost=null;
+  const fromHash=KFWiki.hashId(hashPrefix);if(fromHash&&posts.some(x=>String(x.id)===String(fromHash)))selectedPost=fromHash;
+
+  function order(){return posts.slice().reverse()}
+  function searchable(x){return [x.title,x.intro,KFWiki.plain(x.content)].join(' ').toLowerCase()}
+  function filtered(){const q=wikiQuery.trim().toLowerCase();return q?order().filter(x=>searchable(x).includes(q)):order()}
+  function selectPost(id){
+    selectedPost=decodeURIComponent(String(id));
+    KFWiki.setHash(hashPrefix,selectedPost);
+    render();
+    KFWiki.closeToc();
+    requestAnimationFrame(()=>postsEl.scrollIntoView({behavior:'smooth',block:'start'}))
+  }
+  window.wikiPirateSelect=selectPost;
+
+  function navHtml(list){
+    if(!list.length)return '<div class="wiki-no-results">Ничего не найдено</div>';
+    const important=list.filter(x=>x.important),normal=list.filter(x=>!x.important);
+    const group=(title,arr)=>arr.length?`<div class="wiki-group-title">${title}</div>`+arr.map(x=>`<a class="wiki-nav-item ${String(x.id)===String(selectedPost)?'active':''}" onclick="wikiPirateSelect('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title||'Без заголовка')}</b><small>${esc(KFWiki.itemDate(x)||'Материал раздела')}</small></a>`).join(''):'';
+    return group('Важное',important)+group('Все материалы',normal);
+  }
+  function prevNext(x){
+    const a=order(),i=a.findIndex(v=>String(v.id)===String(x.id)),prev=a[i-1],next=a[i+1];
+    return `<div class="wiki-prevnext"><a class="${prev?'':'disabled'}" ${prev?`onclick="wikiPirateSelect('${encodeURIComponent(String(prev.id))}')"`:''}><small>← Новее</small><b>${prev?esc(prev.title):'Нет материала'}</b></a><a class="${next?'':'disabled'}" ${next?`onclick="wikiPirateSelect('${encodeURIComponent(String(next.id))}')"`:''}><small>Дальше →</small><b>${next?esc(next.title):'Конец раздела'}</b></a></div>`
+  }
+  function article(x){
+    const imgs=imagesFor(x),date=KFWiki.itemDate(x),intro=String(x.intro||'').trim(),author=KFWiki.author(x),reactionId='wiki-react-'+String(x.id).replace(/[^a-zA-Z0-9_-]/g,'_');
+    const editArg=JSON.stringify(x.id);
+    return `<article class="panel wiki-article"><div class="wiki-article-head"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>${sectionName}</span></div><h2>${esc(x.title||'Без заголовка')}${x.authorRole?'<span class="content-admin-badge">'+(x.authorRole==='moderator'?'Модератор':'Админ')+'</span>':''}</h2>${intro?`<div class="wiki-article-sub">${esc(intro)}</div>`:''}<div class="wiki-meta">${x.important?'<span class="wiki-meta-chip important">◆ Важное</span>':''}<span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div></div><div class="wiki-article-body"><div class="wiki-reader-actions"><button class="wiki-reader-btn" type="button" onclick="KFWiki.copyLink('${hashPrefix}','${encodeURIComponent(String(x.id))}',this)">🔗 Скопировать ссылку</button>${isAdmin?`<button class="wiki-reader-btn" type="button" onclick='editPost(${editArg})'>✎ Редактировать</button>`:''}</div>${imgs.length?`<div class="gallery">${imgs.map(src=>`<img src="${src}" loading="lazy" decoding="async">`).join('')}</div>`:''}${intro?`<div class="article-intro"><b>Кратко.</b> ${esc(intro)}</div>`:''}<div class="rich-output">${cleanRich(x.content||'')}</div>${x.link&&safeUrl(x.link)?`<a class="safe-link" href="${safeUrl(x.link)}" target="_blank" rel="noopener">Перейти по дополнительной ссылке</a>`:''}<div id="${reactionId}"></div>${isAdmin?`<div class="entry-actions"><button class="btn danger" onclick='delPost(${editArg})'>Удалить материал</button></div>`:''}${prevNext(x)}</div></article>`
+  }
+
+  render=function(){
+    const list=filtered(),all=order(),hashNow=KFWiki.hashId('pirate');
+    if(hashNow&&posts.some(x=>String(x.id)===String(hashNow)))selectedPost=hashNow;
+    if(!all.length){
+      selectedPost=null;
+      document.getElementById('wikiNav').innerHTML='<div class="wiki-no-results">Материалов пока нет</div>';
+      document.getElementById('wikiCount').textContent='0';
+      postsEl.innerHTML='<div class="panel wiki-empty-reader"><b>Материалы пока не опубликованы</b>После публикации они появятся в оглавлении.</div>';
+      return
+    }
+    if(wikiQuery&&list.length&&!list.some(x=>String(x.id)===String(selectedPost)))selectedPost=list[0].id;
+    if(wikiQuery&&!list.length){
+      document.getElementById('wikiNav').innerHTML=navHtml(list);
+      document.getElementById('wikiCount').textContent='0 / '+String(posts.length);
+      postsEl.innerHTML='<div class="panel wiki-empty-reader"><b>Ничего не найдено</b>Измените запрос или очистите строку поиска.</div>';
+      return
+    }
+    if(selectedPost==null||!posts.some(x=>String(x.id)===String(selectedPost)))selectedPost=all[0].id;
+    document.getElementById('wikiNav').innerHTML=navHtml(list);
+    document.getElementById('wikiCount').textContent=String(list.length)+' / '+String(posts.length);
+    const x=posts.find(v=>String(v.id)===String(selectedPost));
+    postsEl.innerHTML=x?article(x):'<div class="panel wiki-empty-reader">Материал не найден.</div>';
+    requestAnimationFrame(()=>{
+      const a=postsEl.querySelector('.wiki-article');
+      KFWiki.decorateHeadings(a);
+      if(window.KFReactions&&x){
+        const rid='wiki-react-'+String(x.id).replace(/[^a-zA-Z0-9_-]/g,'_');
+        KFReactions.mountCheck(rid,storeName,x.id)
+      }
+    });
+  };
+
+  const search=document.getElementById('wikiSearch'),clear=document.getElementById('wikiSearchClear');
+  search.addEventListener('input',()=>{wikiQuery=search.value;render()});
+  clear.onclick=()=>{search.value='';wikiQuery='';render();search.focus()};
+  addEventListener('hashchange',()=>{
+    const id=KFWiki.hashId(hashPrefix);
+    if(id&&posts.some(x=>String(x.id)===String(id))){selectedPost=id;render()}
+  });
+  render();
+})();
+</script>
+<script src="image-tools-0.0.48.js?v=0.0.70"></script>
 <script src="rich-table-tools-0.0.62.js?v=0.0.62"></script>
 <script src="draft-recovery-0.0.69.js?v=0.0.69"></script>
 <script src="word-editor-0.0.69.js?v=0.0.69"></script>
+<script src="guide-layout-0.0.86.js?v=0.0.86"></script>
 <script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body></html>

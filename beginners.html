@@ -62,6 +62,8 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="storage-config.js?v=0.0.76"></script>
 <script src="supabase-sync.js?v=0.0.84"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
+<link rel="stylesheet" href="wiki-reader-0.0.86.css?v=0.0.86">
+<link rel="stylesheet" href="guide-layout-0.0.86.css?v=0.0.86">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
 <script src="reactions-0.0.48.js?v=0.0.80"></script>
@@ -427,9 +429,84 @@ async function init(){
   }
 }
 init();
-</script><script src="image-tools-0.0.48.js?v=0.0.70"></script>
+</script><script src="wiki-reader-0.0.86.js?v=0.0.86"></script>
+<script>
+(function(){
+  KFWiki.bindCommon();
+  const shell=document.querySelector('.two-col'),side=document.querySelector('.toc'),content=document.getElementById('content');
+  if(!shell||!side||!content)return;
+  shell.classList.add('wiki-shell');side.classList.add('wiki-sidebar');content.classList.add('wiki-content');
+  side.innerHTML=KFWiki.sidebarChrome('beginners','Поиск по справочнику…',items.length);
+  KFWiki.mobileButton(shell);
+  let wikiQuery='';
+  const hashId=KFWiki.hashId('guide');if(hashId&&items.some(x=>String(x.id)===String(hashId)))selected=hashId;
+
+  function searchable(x){return [x.type,x.title,x.intro,KFWiki.plain(x.content)].join(' ').toLowerCase()}
+  function order(){return items.slice().reverse()}
+  function filtered(){const q=wikiQuery.trim().toLowerCase();return q?order().filter(x=>searchable(x).includes(q)):order()}
+  function moveTo(id){selected=decodeURIComponent(String(id));KFWiki.setHash('guide',selected);render();KFWiki.closeToc();requestAnimationFrame(()=>content.scrollIntoView({behavior:'smooth',block:'start'}))}
+  window.wikiBeginnerSelect=moveTo;
+
+  function navHtml(list){
+    if(!list.length)return '<div class="wiki-no-results">Ничего не найдено</div>';
+    return types.map(type=>{
+      const rows=list.filter(x=>(x.type||'Общее')===type);
+      if(!rows.length)return '';
+      return `<div class="wiki-group-title">${esc(type)}</div>`+rows.map(x=>`<a class="wiki-nav-item ${String(x.id)===String(selected)?'active':''}" onclick="wikiBeginnerSelect('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title)}</b><small>${esc(KFWiki.itemDate(x)||'Материал справочника')}</small></a>`).join('')
+    }).join('');
+  }
+  function prevNext(x){
+    const a=order(),i=a.findIndex(v=>String(v.id)===String(x.id)),prev=a[i-1],next=a[i+1];
+    return `<div class="wiki-prevnext"><a class="${prev?'':'disabled'}" ${prev?`onclick="wikiBeginnerSelect('${encodeURIComponent(String(prev.id))}')"`:''}><small>← Новее</small><b>${prev?esc(prev.title):'Нет материала'}</b></a><a class="${next?'':'disabled'}" ${next?`onclick="wikiBeginnerSelect('${encodeURIComponent(String(next.id))}')"`:''}><small>Дальше →</small><b>${next?esc(next.title):'Конец раздела'}</b></a></div>`
+  }
+  function article(x){
+    const date=KFWiki.itemDate(x),author=KFWiki.author(x);
+    return `<article id="${guideDomId(x.id)}" class="panel wiki-article"><div class="wiki-article-head"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>Справочник новичкам</span><span>›</span><span>${esc(x.type||'Общее')}</span></div><h2>${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin')||''}</h2>${x.intro?`<div class="wiki-article-sub">${esc(x.intro)}</div>`:''}<div class="wiki-meta"><span class="wiki-meta-chip"><b>Раздел:</b> ${esc(x.type||'Общее')}</span><span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div></div><div class="wiki-article-body"><div class="wiki-reader-actions"><button class="wiki-reader-btn" type="button" onclick="KFWiki.copyLink('guide','${encodeURIComponent(String(x.id))}',this)">🔗 Скопировать ссылку</button>${isAdmin?`<button class="wiki-reader-btn" type="button" onclick="editItem('${encodeURIComponent(String(x.id))}')">✎ Редактировать</button>`:''}</div>${fullGuideHtml(x)}<div id="kf-beginner-reactions-${guideDomId(x.id)}"></div>${isAdmin?`<div class="entry-actions show"><button class="btn danger" type="button" onclick="delItem('${encodeURIComponent(String(x.id))}')">Удалить материал</button></div>`:''}${prevNext(x)}</div></article>`
+  }
+
+  render=function(){
+    const list=filtered(),all=order(),hashNow=KFWiki.hashId('guide');
+    if(hashNow&&items.some(x=>String(x.id)===String(hashNow)))selected=hashNow;
+    if(!all.length){
+      selected=null;
+      document.getElementById('wikiNav').innerHTML='<div class="wiki-no-results">Справочник пока пуст</div>';
+      content.innerHTML='<div class="panel wiki-empty-reader"><b>Материалы пока не добавлены</b>После публикации статьи появятся в оглавлении слева.</div>';
+      document.getElementById('wikiCount').textContent='0';
+      return
+    }
+    if(wikiQuery&&list.length&&!list.some(x=>String(x.id)===String(selected)))selected=list[0].id;
+    if(wikiQuery&&!list.length){
+      document.getElementById('wikiNav').innerHTML=navHtml(list);
+      document.getElementById('wikiCount').textContent='0 / '+String(items.length);
+      content.innerHTML='<div class="panel wiki-empty-reader"><b>Ничего не найдено</b>Измените запрос или очистите строку поиска.</div>';
+      return
+    }
+    if(selected==null||!items.some(x=>String(x.id)===String(selected)))selected=all[0].id;
+    document.getElementById('wikiNav').innerHTML=navHtml(list);
+    document.getElementById('wikiCount').textContent=String(list.length)+' / '+String(items.length);
+    const x=items.find(v=>String(v.id)===String(selected));
+    content.innerHTML=x?article(x):'<div class="panel wiki-empty-reader">Материал не найден.</div>';
+    requestAnimationFrame(()=>{
+      const a=content.querySelector('.wiki-article');
+      KFWiki.decorateHeadings(a);
+      if(window.KFReactions&&x)KFReactions.mountSmiles('kf-beginner-reactions-'+guideDomId(x.id),'kungfuBeginners',x.id)
+    });
+  };
+  window.sel=enc=>moveTo(enc);
+  const search=document.getElementById('wikiSearch'),clear=document.getElementById('wikiSearchClear');
+  search.addEventListener('input',()=>{wikiQuery=search.value;render()});
+  clear.onclick=()=>{search.value='';wikiQuery='';render();search.focus()};
+  addEventListener('hashchange',()=>{
+    const id=KFWiki.hashId('guide');
+    if(id&&items.some(x=>String(x.id)===String(id))){selected=id;render()}
+  });
+  render();
+})();
+</script>
+<script src="image-tools-0.0.48.js?v=0.0.70"></script>
 <script src="rich-table-tools-0.0.62.js?v=0.0.62"></script>
 <script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
 <script src="word-editor-0.0.69.js?v=0.0.69"></script>
+<script src="guide-layout-0.0.86.js?v=0.0.86"></script>
 <script src="site-effects-0.0.66.js?v=0.0.66"></script>
 </body></html>
