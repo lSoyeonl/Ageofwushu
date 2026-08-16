@@ -60,7 +60,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.79"></script>
+<script src="supabase-sync.js?v=0.0.81"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
@@ -395,14 +395,14 @@ async function init(){
     if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
     await KFSupabase.ready;
     currentUser=await KFSupabase.getCurrentProfile().catch(()=>null);
-    isAdmin=!!currentUser&&(currentUser.role||'user')==='admin';
+    isAdmin=!!currentUser&&['admin','moderator'].includes(currentUser.role||'user');
 
     if(isAdmin){
       document.getElementById('editor').classList.add('show');
-      document.getElementById('adminBadge').innerHTML='<span class="admin-badge">АДМИН</span>';
+      document.getElementById('adminBadge').innerHTML='<span class="admin-badge">'+(currentUser.role==='moderator'?'МОДЕРАТОР':'АДМИН')+'</span>';
       document.getElementById('roleNote').textContent='Можно добавлять, редактировать и предварительно просматривать материалы.'
     }else{
-      document.getElementById('roleNote').textContent='Добавление и редактирование доступно только администратору.'
+      document.getElementById('roleNote').textContent='Добавление и редактирование доступно только администратору или модератору.'
     }
 
     const [remoteItems,remoteTypes]=await Promise.all([

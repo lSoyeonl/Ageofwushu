@@ -39,7 +39,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.77"></script>
+<script src="supabase-sync.js?v=0.0.81"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head><body><header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -83,7 +83,7 @@ async function imageToData(file,maxSide=1400){
 function openPreview(html){document.getElementById('previewContent').innerHTML=html;document.getElementById('previewModal').classList.add('open')}
 function closePreview(){document.getElementById('previewModal').classList.remove('open')}
 
-const u=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null'),isAdmin=!!u&&(u.role||'user')==='admin';if(isAdmin){editor.classList.add('show');roleNote.textContent='Администратор может добавлять и редактировать опубликованный контент.'}else roleNote.textContent='Редактирование доступно только администратору.';
+const u=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null'),isAdmin=!!u&&['admin','moderator'].includes(u.role||'user');if(isAdmin){editor.classList.add('show');roleNote.textContent='Администратор и модератор могут добавлять и редактировать опубликованный контент.'}else roleNote.textContent='Редактирование доступно только администратору или модератору.';
 let data=JSON.parse(localStorage.getItem('kungfuSchoolsForcesSects')||'[]'),editingId=null,mainImage='',draftNeigongs=[],draftSkills=[];
 imageInput.onchange=async()=>{const f=imageInput.files[0];if(!f)return;try{mainImage=await imageToData(f);imagePreview.src=mainImage;imagePreview.classList.add('show')}catch(e){alert(e.message)}};
 function save(){localStorage.setItem('kungfuSchoolsForcesSects',JSON.stringify(data))}function lines(v){return String(v||'').split(/\n+/).map(x=>x.trim()).filter(Boolean)}

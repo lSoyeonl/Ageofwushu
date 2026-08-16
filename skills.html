@@ -35,7 +35,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.77"></script>
+<script src="supabase-sync.js?v=0.0.81"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
@@ -49,7 +49,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
   <a href="register.html">Регистрация</a>
   <a href="login.html">Вход</a>
 </nav></header>
-<main class="wrap"><section class="panel page-head"><h1>Навыки <span id="adminBadge"></span></h1><p class="muted">Типы навыков создаёт администратор. К каждому навыку можно прикрепить один или несколько Скиллов для полного изучения.</p><div class="role-note" id="roleNote"></div>
+<main class="wrap"><section class="panel page-head"><h1>Навыки <span id="adminBadge"></span></h1><p class="muted">Типы навыков создаёт администратор или модератор. К каждому навыку можно прикрепить один или несколько Скиллов для полного изучения.</p><div class="role-note" id="roleNote"></div>
 <div class="editor" id="editor"><h2 id="editorTitle" style="margin-top:0">Добавить запись</h2><div class="edit-note" id="editNote">Режим редактирования опубликованной записи.</div><div class="grid2"><div class="field"><label>Название</label><input id="name" maxlength="180"></div><div class="field"><label>Тип</label><select id="type"></select></div><div class="field"><label>Принадлежность</label><input id="affiliation" maxlength="180"></div><div class="field"><label>Тип урона</label><select id="damageType"><option>Внешний</option><option>Инь</option><option>Жень</option><option>Ян</option><option>Муж</option></select></div><div class="field"><label>Описание</label><textarea id="description"></textarea></div><div class="field"><label>Код</label><input id="code" maxlength="180"></div></div>
 <div class="type-manager"><div class="field"><label>Новый тип</label><input id="newType" maxlength="80" placeholder="Введите новый тип"></div><button class="btn secondary" id="addType" type="button">Добавить тип</button></div><div class="chips" id="typeChips"></div>
 <div class="filebox"><label>Изображение</label><input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><img class="preview" id="imagePreview"></div>
@@ -87,8 +87,8 @@ async function filesToData(fileList,limit=8){
   return out;
 }
 
-const currentUser=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null');const isAdmin=!!currentUser&&(currentUser.role||'user')==='admin';
-if(isAdmin){document.getElementById('editor').classList.add('show');document.getElementById('adminBadge').innerHTML='<span class="admin-badge">АДМИН</span>';document.getElementById('roleNote').innerHTML='Можно добавлять, редактировать и предварительно просматривать контент.';}else document.getElementById('roleNote').textContent='Просмотр доступен всем. Добавление и редактирование — только администратору.';
+const currentUser=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null');const isAdmin=!!currentUser&&['admin','moderator'].includes(currentUser.role||'user');
+if(isAdmin){document.getElementById('editor').classList.add('show');document.getElementById('adminBadge').innerHTML='<span class="admin-badge">'+(currentUser.role==='moderator'?'МОДЕРАТОР':'АДМИН')+'</span>';document.getElementById('roleNote').innerHTML='Можно добавлять, редактировать и предварительно просматривать контент.';}else document.getElementById('roleNote').textContent='Просмотр доступен всем. Добавление и редактирование — только администратору или модератору.';
 let selectedImage='';const imageInput=document.getElementById('imageInput'),imagePreview=document.getElementById('imagePreview');
 imageInput.onchange=async()=>{const f=imageInput.files&&imageInput.files[0];if(!f)return;try{selectedImage=await imageToData(f);imagePreview.src=selectedImage;imagePreview.classList.add('show')}catch(e){alert(e.message);imageInput.value=''}};
 let entries=JSON.parse(localStorage.getItem('kungfuSkills')||'[]'),selectedId=entries.length?entries[0].id:null,editingId=null;

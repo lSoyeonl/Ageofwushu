@@ -44,7 +44,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.77"></script>
+<script src="supabase-sync.js?v=0.0.81"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head><body><header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -318,7 +318,7 @@ saveBtn.addEventListener('click',async()=>{
   if(!isAdmin){
     saveStatus.style.display='block';
     saveStatus.style.color='#ffd0d0';
-    saveStatus.textContent='Публикация доступна только администратору.';
+    saveStatus.textContent='Публикация доступна только администратору или модератору.';
     return;
   }
 
@@ -412,13 +412,13 @@ async function initItems(){
     try{currentUser=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null')}catch{}
   }
 
-  isAdmin=!!currentUser&&(currentUser.role||'user')==='admin';
+  isAdmin=!!currentUser&&['admin','moderator'].includes(currentUser.role||'user');
   if(isAdmin){
     editor.classList.add('show');
     roleNote.textContent='Можно добавлять и редактировать предметы.';
   }else{
     editor.classList.remove('show');
-    roleNote.textContent='Редактирование доступно только администратору.';
+    roleNote.textContent='Редактирование доступно только администратору или модератору.';
   }
 
   const loadedEntries=await readStore('kungfuItems',[]);

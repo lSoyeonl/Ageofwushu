@@ -100,7 +100,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.79"></script>
+<script src="supabase-sync.js?v=0.0.81"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
@@ -520,8 +520,8 @@ async function initPartners(){
   }
   await KFSupabase.ready;
   try{currentUser=await KFSupabase.getCurrentProfile()}catch{}
-  isAdmin=!!currentUser&&currentUser.role==='admin';
-  if(isAdmin){editor.classList.add('show');roleNote.textContent='Администратор может добавлять, редактировать, удалять и закреплять партнеров.'}
+  isAdmin=!!currentUser&&['admin','moderator'].includes(currentUser.role);
+  if(isAdmin){editor.classList.add('show');roleNote.textContent='Администратор и модератор могут добавлять, редактировать, удалять и закреплять партнеров.'}
   else roleNote.textContent=currentUser?'Вы можете оставлять отзывы о партнерах.':'Просмотр доступен всем. Для отзыва необходимо войти или зарегистрироваться.';
 
   try{

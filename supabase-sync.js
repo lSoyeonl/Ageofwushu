@@ -1,6 +1,6 @@
 (function(){
-  if(window.__KF_SUPABASE_V0076__)return;
-  window.__KF_SUPABASE_V0076__=true;
+  if(window.__KF_SUPABASE_V0081__)return;
+  window.__KF_SUPABASE_V0081__=true;
 
   const cfg=window.KF_SUPABASE_CONFIG||{};
   const storageCfg=window.KF_STORAGE_CONFIG||{};
@@ -22,6 +22,8 @@
   let client=null;
   let currentProfile=parse(nativeGet.call(localStorage,'kungfuCurrentUser'),null);
   let realtimeChannel=null;
+
+  function isStaffRole(role){return role==='admin'||role==='moderator'}
 
   function deepClone(value){
     if(value===undefined)return undefined;
@@ -222,10 +224,10 @@
     if(!meta)return;
 
     let profile=currentProfile;
-    if(profile?.role!=='admin'){
+    if(!isStaffRole(profile?.role)){
       try{profile=await getCurrentProfile()}catch{}
     }
-    if(profile?.role!=='admin')return;
+    if(!isStaffRole(profile?.role))return;
 
     const raw=memory[discordSettingsKey]??parse(nativeGet.call(localStorage,discordSettingsKey),null);
     const settings=normalizeDiscordSettings(raw);
@@ -546,6 +548,19 @@
     return profile;
   }
 
+  async function moderatorLogin(emailValue,password){
+    if(!configured||!client)throw new Error('Supabase не настроен.');
+    const email=String(emailValue||'').trim();
+    if(!email||!email.includes('@'))throw new Error('Укажите e-mail модератора.');
+    const profile=await login(email,password);
+    if(!profile||profile.role!=='moderator'){
+      await client.auth.signOut();
+      cacheProfile(null);
+      throw new Error('У аккаунта нет роли модератора.');
+    }
+    return profile;
+  }
+
   async function logout(){
     if(client)await client.auth.signOut();
     cacheProfile(null);
@@ -706,7 +721,7 @@
     configured,
     get client(){return client},
     ready,
-    register,login,adminLogin,logout,getCurrentProfile,updateMyAvatar,updateMyBio,getPublicProfiles,
+    register,login,adminLogin,moderatorLogin,logout,getCurrentProfile,updateMyAvatar,updateMyBio,getPublicProfiles,
     getStore,saveStore,getDiscordNotifications,setDiscordNotifications,testDiscordNotification,getDiscordSections,
     uploadImageDataUrl:uploadDataUrl,
     uploadImageDataUrlStrict:uploadDataUrl,

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Вход администратора — Легенды Кунг-Фу</title>
+<title>Вход модератора — Легенды Кунг-Фу</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="shortcut icon" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
@@ -29,16 +29,16 @@ button,a.btn{display:inline-flex;align-items:center;justify-content:center;min-h
 </head>
 <body>
 <div class="card">
-  <h1>Вход администратора</h1>
-  <p>Администратор может публиковать и редактировать материалы сайта. Обычные игроки — только создавать обсуждения и ответы на форуме.</p>
-  <label>Логин или e-mail</label>
-  <input id="login" autocomplete="username" placeholder="admin">
+  <h1>Вход модератора</h1>
+  <p>Модератор имеет те же права управления материалами, что и администратор, но на сайте отображается с подписью «Модератор».</p>
+  <label>E-mail модератора</label>
+  <input id="login" type="email" autocomplete="username" placeholder="moderator@example.com">
   <label>Пароль</label>
   <input id="pass" type="password" autocomplete="current-password" placeholder="Введите пароль">
-  <button id="go">Войти как администратор</button>
+  <button id="go">Войти как модератор</button>
   <div class="err" id="err"></div>
-  <div class="note">Права администратора проверяются через роль профиля в Supabase.</div>
-  <a class="btn" href="index.html" style="background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.28)">← На главную</a><a class="btn" href="partners.html" style="margin-left:8px;background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.28)">Партнеры</a>
+  <div class="note">Права модератора проверяются через роль <b>moderator</b> в профиле Supabase.</div>
+  <a class="btn" href="index.html" style="background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.28)">← На главную</a><a class="btn" href="admin-login.html" style="margin-left:8px;background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.28)">Вход администратора</a>
 </div>
 
 
@@ -49,16 +49,16 @@ document.getElementById('go').addEventListener('click',async()=>{
   const err=document.getElementById('err');
 
   if(!KFSupabase.configured){
-    err.textContent='Центральный сервис аккаунтов администратора ещё не подключён. Проверьте настройку Supabase перед публикацией сайта.';
+    err.textContent='Центральный сервис аккаунтов модератора ещё не подключён. Проверьте настройку Supabase перед публикацией сайта.';
     return;
   }
 
   err.textContent='Проверка прав...';
   try{
-    await KFSupabase.adminLogin(login,password);
+    await KFSupabase.moderatorLogin(login,password);
     location.href='admin-backups.html';
   }catch(e){
-    err.textContent=e.message||'Не удалось войти как администратор.';
+    err.textContent=e.message||'Не удалось войти как модератор.';
   }
 });
 </script>

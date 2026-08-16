@@ -36,7 +36,7 @@ input,textarea,select{width:100%;border:1px solid rgba(228,180,94,.28);border-ra
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.77"></script>
+<script src="supabase-sync.js?v=0.0.81"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
@@ -270,9 +270,9 @@ async function init(){
   try{
     await KFSupabase.ready;
     currentUser=await KFSupabase.getCurrentProfile().catch(()=>null);
-    isAdmin=!!currentUser&&currentUser.role==='admin';
-    if(isAdmin){$('editor').classList.add('show');$('adminBadge').innerHTML='<span class="admin-badge">АДМИН</span>';$('roleNote').textContent='Можно добавлять и редактировать тайники, ранги, боссов и навыки.'}
-    else $('roleNote').textContent=currentUser?'Просмотр доступен. Можно ставить реакции. Добавление контента — только администратору.':'Просмотр доступен всем. Для реакций войдите или зарегистрируйтесь.';
+    isAdmin=!!currentUser&&['admin','moderator'].includes(currentUser.role);
+    if(isAdmin){$('editor').classList.add('show');$('adminBadge').innerHTML='<span class="admin-badge">'+(currentUser.role==='moderator'?'МОДЕРАТОР':'АДМИН')+'</span>';$('roleNote').textContent='Можно добавлять и редактировать тайники, ранги, боссов и навыки.'}
+    else $('roleNote').textContent=currentUser?'Просмотр доступен. Можно ставить реакции. Добавление контента — только администратору или модератору.':'Просмотр доступен всем. Для реакций войдите или зарегистрируйтесь.';
     const [loadedEntries,loadedRanks]=await Promise.all([loadStore(KEY,[]),loadStore(RANK_KEY,['Не указан'])]);
     entries=Array.isArray(loadedEntries)?loadedEntries:[];ranks=Array.isArray(loadedRanks)&&loadedRanks.length?loadedRanks:['Не указан'];selectedId=entries[0]?.id||null;renderRanks();resetForm();render();
   }catch(e){$('roleNote').style.color='#ffd0d0';$('roleNote').textContent='Не удалось подключиться к Supabase: '+(e.message||e);renderRanks();renderBossEditors();render()}

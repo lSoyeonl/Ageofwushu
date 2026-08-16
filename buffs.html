@@ -56,7 +56,7 @@ textarea{min-height:100px;resize:vertical}input:focus,textarea:focus,select:focu
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.77"></script>
+<script src="supabase-sync.js?v=0.0.81"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
@@ -315,7 +315,7 @@ $('saveBtn').onclick=async()=>{
     image:finalImage,
     createdAt:existing?.createdAt||new Date().toISOString(),
     updatedAt:new Date().toISOString(),
-    authorRole:'admin'
+    authorRole:existing?.authorRole||currentUser?.role||'admin'
   };
 
   const btn=$('saveBtn'),old=btn.textContent;
@@ -365,13 +365,13 @@ async function init(){
     if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
     await KFSupabase.ready;
     currentUser=await KFSupabase.getCurrentProfile().catch(()=>null);
-    isAdmin=!!currentUser&&currentUser.role==='admin';
+    isAdmin=!!currentUser&&['admin','moderator'].includes(currentUser.role);
     if(isAdmin){
       $('editor').classList.add('show');
-      $('roleNote').textContent='Администратор может добавлять, редактировать и удалять баффы и дебаффы.';
+      $('roleNote').textContent='Администратор и модератор могут добавлять, редактировать и удалять баффы и дебаффы.';
     }else{
       $('editor').classList.remove('show');
-      $('roleNote').textContent='Справочник доступен всем. Добавление и редактирование — только администратору.';
+      $('roleNote').textContent='Справочник доступен всем. Добавление и редактирование — только администратору или модератору.';
     }
     entries=await loadEntries();
     selectedId=entries[0]?.id||null;

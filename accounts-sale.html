@@ -24,7 +24,7 @@ input,textarea,select{width:100%;padding:10px;border:1px solid rgba(228,180,94,.
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.77"></script>
+<script src="supabase-sync.js?v=0.0.81"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head>
 <body>
@@ -64,7 +64,7 @@ let u=null,avatarData='',ads=[],editingId=null;
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
 function safeUrl(v){try{const u=new URL(String(v||'').trim());return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}}
 function contactHtml(v){const value=String(v||'').trim();if(!value)return '';const url=safeUrl(value);return url?`<div class="contact-line"><b>Связаться:</b> <a href="${url}" target="_blank" rel="noopener">${esc(value)}</a></div>`:`<div class="contact-line"><b>Связаться:</b> ${esc(value)}</div>`}
-function canEdit(x){return !!u&&(u.role==='admin'||(x.ownerId?String(x.ownerId)===String(u.id):u.nickname===x.author))}
+function canEdit(x){return !!u&&(['admin','moderator'].includes(u.role)||(x.ownerId?String(x.ownerId)===String(u.id):u.nickname===x.author))}
 function readAds(){try{const x=JSON.parse(localStorage.getItem('kungfuAccountSales')||'[]');return Array.isArray(x)?x:[]}catch{return []}}
 async function loadAds(){
   if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');
@@ -208,7 +208,7 @@ window.delAd=async id=>{
   await loadAds();
   if(u){
     composer.classList.add('show');
-    if(u.role==='admin')supabaseAdminNote.style.display='block';
+    if(['admin','moderator'].includes(u.role))supabaseAdminNote.style.display='block';
     loginNote.textContent='Вы вошли как '+(u.nickname||'пользователь')+'.';
   }else{
     composer.classList.remove('show');

@@ -28,7 +28,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.77"></script>
+<script src="supabase-sync.js?v=0.0.81"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 </head>
@@ -150,7 +150,7 @@ function itemHtml(item,preview=false){
   return `<article class="panel bot-card">
     <div class="bot-top">
       ${item.image?`<img class="bot-image" src="${item.image}" alt="${esc(item.name||'Бот')}" loading="lazy" decoding="async">`:'<div class="bot-image placeholder">Нет изображения</div>'}
-      <div><h2>${esc(item.name||'Бот без названия')}${!preview?'<span class="content-admin-badge">Админ</span>':''}</h2>
+      <div><h2>${esc(item.name||'Бот без названия')}${!preview?'<span class="content-admin-badge">'+(item.authorRole==='moderator'?'Модератор':'Админ')+'</span>':''}</h2>
         <div class="link-grid">
           <div class="link-box"><b>Ссылка на бота</b>${botLink?`<a class="safe-link" href="${esc(botLink)}" target="_blank" rel="noopener noreferrer">Открыть ссылку →</a>`:'<span class="muted">Не указана</span>'}</div>
           <div class="link-box"><b>Дискорд</b>${discord?`<a class="safe-link" href="${esc(discord)}" target="_blank" rel="noopener noreferrer">Открыть Discord →</a>`:'<span class="muted">Не указан</span>'}<div class="discord-note">Покупка бота осуществляется через селлера - партнера или в самом дискорде криптой, долларами и другими валютами, кроме рублей.</div></div>
@@ -186,13 +186,13 @@ $('publishBtn').onclick=async()=>{
   if(!isAdmin)return;const draft=collectDraft();if(!draft.name){alert('Укажите название бота.');return}if(!$('rich').innerText.trim()){alert('Добавьте описание бота.');return}
   for(const [label,url] of [['Ссылка на бота',draft.botLink],['Дискорд',draft.discordLink],['Получить ссылку дискорда',draft.sellerProfileLink]])if(url&&!safeUrl(url)){alert(`${label}: ссылка должна начинаться с http:// или https://`);return}
   const before=clone(entries),btn=$('publishBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Публикация...';$('saveStatus').style.color='#c8f4d8';$('saveStatus').textContent='Сохранение бота, текста и изображений в Supabase...';
-  try{const existing=editingId?entries.find(x=>String(x.id)===String(editingId)):null;const item={...draft,createdAt:existing?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),authorRole:'admin'};if(editingId){const i=entries.findIndex(x=>String(x.id)===String(editingId));entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;await saveEntries();resetForm();render();$('saveStatus').style.color='#c8f4d8';$('saveStatus').textContent=existing?'Изменения сохранены.':'Бот опубликован.'}
+  try{const existing=editingId?entries.find(x=>String(x.id)===String(editingId)):null;const item={...draft,createdAt:existing?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),authorRole:existing?.authorRole||currentUser?.role||'admin'};if(editingId){const i=entries.findIndex(x=>String(x.id)===String(editingId));entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;await saveEntries();resetForm();render();$('saveStatus').style.color='#c8f4d8';$('saveStatus').textContent=existing?'Изменения сохранены.':'Бот опубликован.'}
   catch(e){entries=before;$('saveStatus').style.color='#ffd0d0';$('saveStatus').textContent=e.message||'Не удалось опубликовать бота.';render()}
   finally{btn.disabled=false;if(btn.textContent==='Публикация...')btn.textContent=old}
 };
 
 async function init(){
-  try{await KFSupabase.ready;currentUser=await KFSupabase.getCurrentProfile().catch(()=>null);isAdmin=!!currentUser&&currentUser.role==='admin';if(isAdmin){$('editor').classList.add('show');$('adminBadge').innerHTML='<span class="admin-badge">АДМИН</span>';$('roleNote').textContent='Можно добавлять, редактировать и удалять ботов, ссылки, изображения и форматированное описание.'}else $('roleNote').textContent=currentUser?'Просмотр доступен. Можно ставить реакции из smiles. Добавление контента — только администратору.':'Просмотр доступен всем. Для реакций войдите или зарегистрируйтесь.';entries=await loadEntries();selectedId=entries[0]?.id||null;resetForm();render();window.KFImageTools?.bindEditors?.()}
+  try{await KFSupabase.ready;currentUser=await KFSupabase.getCurrentProfile().catch(()=>null);isAdmin=!!currentUser&&['admin','moderator'].includes(currentUser.role);if(isAdmin){$('editor').classList.add('show');$('adminBadge').innerHTML='<span class="admin-badge">'+(currentUser.role==='moderator'?'МОДЕРАТОР':'АДМИН')+'</span>';$('roleNote').textContent='Можно добавлять, редактировать и удалять ботов, ссылки, изображения и форматированное описание.'}else $('roleNote').textContent=currentUser?'Просмотр доступен. Можно ставить реакции из smiles. Добавление контента — только администратору или модератору.':'Просмотр доступен всем. Для реакций войдите или зарегистрируйтесь.';entries=await loadEntries();selectedId=entries[0]?.id||null;resetForm();render();window.KFImageTools?.bindEditors?.()}
   catch(e){$('roleNote').style.color='#ffd0d0';$('roleNote').textContent='Не удалось подключиться к Supabase: '+(e.message||e);render()}
 }
 init();

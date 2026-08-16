@@ -39,7 +39,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.77"></script>
+<script src="supabase-sync.js?v=0.0.81"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
 </head><body><header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -74,7 +74,7 @@ async function imageToData(file,maxSide=1400){
 function openPreview(html){document.getElementById('previewContent').innerHTML=html;document.getElementById('previewModal').classList.add('open')}
 function closePreview(){document.getElementById('previewModal').classList.remove('open')}
 
-const u=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null');const isAdmin=!!u&&(u.role||'user')==='admin';const canUse=!!u&&(u.role==='admin'||u.role==='user');if(canUse){composer.classList.add('show');loginNote.textContent='Вы вошли в аккаунт. Можно добавить карточку и ставить ❤️.'}else loginNote.innerHTML='Гость может смотреть карточки. Чтобы добавить себя или поставить ❤️ — <a href="login.html" style="color:#ffe2a0">войдите</a>.';
+const u=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null');const isAdmin=!!u&&['admin','moderator'].includes(u.role||'user');const canUse=!!u&&['admin','moderator','user'].includes(u.role||'user');if(canUse){composer.classList.add('show');loginNote.textContent='Вы вошли в аккаунт. Можно добавить карточку и ставить ❤️.'}else loginNote.innerHTML='Гость может смотреть карточки. Чтобы добавить себя или поставить ❤️ — <a href="login.html" style="color:#ffe2a0">войдите</a>.';
 let avatar='';image.onchange=async()=>{const f=image.files[0];if(!f)return;try{avatar=await imageToData(f)}catch(e){alert(e.message)}};
 let players=JSON.parse(localStorage.getItem('kungfuPlayers')||'[]');function save(){localStorage.setItem('kungfuPlayers',JSON.stringify(players))}
 function userKey(){return u?String(u.id||u.email||u.nickname):''}
