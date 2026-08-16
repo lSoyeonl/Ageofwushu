@@ -62,8 +62,8 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
 <script src="supabase-sync.js?v=0.0.84"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
-<link rel="stylesheet" href="wiki-reader-0.0.88.css?v=0.0.88">
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.92">
+<link rel="stylesheet" href="wiki-reader-0.0.88.css?v=0.0.92">
 <link rel="stylesheet" href="guide-layout-0.0.86.css?v=0.0.86">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
@@ -433,7 +433,7 @@ async function init(){
   }
 }
 init();
-</script><script src="wiki-reader-0.0.88.js?v=0.0.88"></script>
+</script><script src="wiki-reader-0.0.88.js?v=0.0.92"></script>
 <script>
 (function(){
   KFWiki.bindCommon();
@@ -463,20 +463,16 @@ init();
     const base=visibleOrder(),a=base.some(v=>String(v.id)===String(x.id))?base:order(),i=a.findIndex(v=>String(v.id)===String(x.id)),prev=a[i-1],next=a[i+1];
     return `<div class="wiki-prevnext"><a class="${prev?'':'disabled'}" ${prev?`onclick="wikiBeginnerSelect('${encodeURIComponent(String(prev.id))}')"`:''}><small>← Новее</small><b>${prev?esc(prev.title):'Нет материала'}</b></a><a class="${next?'':'disabled'}" ${next?`onclick="wikiBeginnerSelect('${encodeURIComponent(String(next.id))}')"`:''}><small>Дальше →</small><b>${next?esc(next.title):'Конец раздела'}</b></a></div>`
   }
-  function summaryText(x){
-    const intro=String(x?.intro||'').trim();
-    if(intro)return intro;
-    const text=String(KFWiki.plain(x?.content||'')||'').replace(/\s+/g,' ').trim();
-    if(!text)return 'Описание пока не добавлено.';
-    return text.length>520?text.slice(0,517)+'…':text;
-  }
   function article(x){
     const date=KFWiki.itemDate(x),author=KFWiki.author(x),expanded=wikiExpandedIds.has(String(x.id));
-    const imgs=imagesFor(x),cover=imgs[0]||'',summary=summaryText(x),id=encodeURIComponent(String(x.id));
+    const cover=(imagesFor(x)[0]||'').trim();
+    const rawSummary=(String(x.intro||'').trim()||KFWiki.plain(x.content||'')||'Описание пока не добавлено.').replace(/\s+/g,' ').trim();
+    const summary=rawSummary.length>560?rawSummary.slice(0,557)+'…':rawSummary;
+    const encoded=encodeURIComponent(String(x.id));
     if(!expanded){
-      return `<article id="${guideDomId(x.id)}" class="panel wiki-article is-summary"><div class="wiki-summary-card"><div class="wiki-summary-media">${cover?`<img src="${cover}" loading="lazy" decoding="async" alt="${esc(x.title||'Материал')}">`:`<div class="wiki-summary-placeholder">Изображение не добавлено</div>`}</div><div class="wiki-summary-main"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>Справочник новичкам</span></div><h2>${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin')||''}</h2><div class="wiki-summary-description">${esc(summary)}</div><div class="wiki-summary-footer"><div class="wiki-meta"><span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div><div class="wiki-summary-actions">${isAdmin?`<button class="btn danger" type="button" onclick="delItem('${id}')">Удалить</button><button class="btn secondary" type="button" onclick="editItem('${id}')">Редактировать</button>`:''}<button class="wiki-expand-panel" type="button" onclick="toggleBeginnerWikiArticle('${id}')">Развернуть</button></div></div></div></div></article>`;
+      return `<article id="${guideDomId(x.id)}" class="panel wiki-article is-summary"><div class="wiki-summary-card"><div class="wiki-summary-media">${cover?`<img src="${esc(cover)}" alt="${esc(x.title||'Изображение материала')}" loading="lazy" decoding="async">`:`<div class="wiki-summary-placeholder">Изображение не добавлено</div>`}</div><div class="wiki-summary-main"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>Справочник новичкам</span><span>›</span><span>Общее</span></div><h2>${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin')||''}</h2><div class="wiki-summary-description">${esc(summary)}</div><div class="wiki-summary-footer"><div class="wiki-meta"><span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div><div class="wiki-summary-actions">${isAdmin?`<button class="btn danger" type="button" onclick="delItem('${encoded}')">Удалить</button><button class="btn secondary" type="button" onclick="editItem('${encoded}')">Редактировать</button>`:''}<button class="wiki-expand-panel" type="button" onclick="toggleBeginnerWikiArticle('${encoded}')">Развернуть</button></div></div></div></div></article>`
     }
-    return `<article id="${guideDomId(x.id)}" class="panel wiki-article is-expanded"><div class="wiki-article-head"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>Справочник новичкам</span></div><h2>${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin')||''}</h2>${x.intro?`<div class="wiki-article-sub">${esc(x.intro)}</div>`:''}<div class="wiki-meta"><span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div></div><div class="wiki-article-body"><div class="wiki-reader-actions"><button class="wiki-reader-btn" type="button" onclick="KFWiki.copyLink('guide','${id}',this)">🔗 Скопировать ссылку</button>${isAdmin?`<button class="wiki-reader-btn" type="button" onclick="editItem('${id}')">✎ Редактировать</button>`:''}</div>${fullGuideHtml(x)}<div id="kf-beginner-reactions-${guideDomId(x.id)}"></div>${isAdmin?`<div class="entry-actions show"><button class="btn danger" type="button" onclick="delItem('${id}')">Удалить материал</button></div>`:''}<div class="wiki-collapse-wide"><button type="button" onclick="toggleBeginnerWikiArticle('${id}')">Свернуть статью</button></div>${prevNext(x)}</div></article>`
+    return `<article id="${guideDomId(x.id)}" class="panel wiki-article is-expanded"><div class="wiki-article-head"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>Справочник новичкам</span><span>›</span><span>Общее</span></div><h2>${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin')||''}</h2>${x.intro?`<div class="wiki-article-sub">${esc(x.intro)}</div>`:''}<div class="wiki-meta"><span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div></div><div class="wiki-article-body"><div class="wiki-reader-actions"><button class="wiki-reader-btn" type="button" onclick="KFWiki.copyLink('guide','${encoded}',this)">🔗 Скопировать ссылку</button>${isAdmin?`<button class="wiki-reader-btn" type="button" onclick="editItem('${encoded}')">✎ Редактировать</button>`:''}</div>${fullGuideHtml(x)}<div id="kf-beginner-reactions-${guideDomId(x.id)}"></div>${isAdmin?`<div class="entry-actions show"><button class="btn danger" type="button" onclick="delItem('${encoded}')">Удалить материал</button></div>`:''}<div class="wiki-collapse-wide"><button type="button" onclick="toggleBeginnerWikiArticle('${encoded}')">Свернуть статью</button></div>${prevNext(x)}</div></article>`
   }
 
   render=function(){

@@ -372,3 +372,10 @@ body.kf-subpage-shimmer .update-card>*{position:relative;z-index:1}
 .rich-output a,.safe-link,.update-link a{overflow-wrap:anywhere;word-break:break-word}
 .rich-output table{display:block;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin}
 .rich-output td,.rich-output th{white-space:normal!important;overflow-wrap:anywhere;word-break:break-word}
+
+
+/* 0.0.92 — viewport safety: no whole-page horizontal drift */
+html,body{max-width:100%;overflow-x:hidden}
+main,.wrap,.panel,section,article,.content-area,.wiki-shell,.wiki-content{min-width:0;max-width:100%}
+img,video,canvas,svg{max-width:100%}
+.rich-output,.article-intro,.desc,.wiki-article-sub{min-width:0;overflow-wrap:anywhere;word-break:break-word}
