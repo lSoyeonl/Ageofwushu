@@ -1,6 +1,6 @@
 (function(){
-  if(window.__KF_SUPABASE_V0081__)return;
-  window.__KF_SUPABASE_V0081__=true;
+  if(window.__KF_SUPABASE_V0084__)return;
+  window.__KF_SUPABASE_V0084__=true;
 
   const cfg=window.KF_SUPABASE_CONFIG||{};
   const storageCfg=window.KF_STORAGE_CONFIG||{};
@@ -24,6 +24,12 @@
   let realtimeChannel=null;
 
   function isStaffRole(role){return role==='admin'||role==='moderator'}
+  window.KFStaffBadge=function(role,extraClass=''){
+    const r=String(role||'').toLowerCase();
+    if(r!=='admin'&&r!=='moderator')return '';
+    const label=r==='moderator'?'Модератор':'Админ';
+    return '<span class="content-author-badge '+(r==='moderator'?'is-moderator ':'')+String(extraClass||'')+'">'+label+'</span>';
+  };
 
   function deepClone(value){
     if(value===undefined)return undefined;
@@ -60,7 +66,8 @@
     kungfuHideouts:{section:'Тайники: боссы и обход',page:'hideouts.html',fields:['name','title'],emoji:'🗝️',headline:'Новый тайник'},
     kungfuBots:{section:'Боты',page:'bots.html',fields:['name','title'],emoji:'🤖',headline:'Новый бот'},
     kungfuBuffs:{section:'Баффы',page:'buffs.html',fields:['name','otherNames','title'],emoji:'✨',headline:'Новый бафф или дебафф'},
-    kungfuContacts:{section:'Партнеры',page:'partners.html',fields:['nick','name','title'],emoji:'🤝',headline:'Новый партнер'}
+    kungfuContacts:{section:'Партнеры',page:'partners.html',fields:['nick','name','title'],emoji:'🤝',headline:'Новый партнер'},
+    kungfuQuests:{section:'Сборник Квестов',page:'quests.html',fields:['name','title'],emoji:'📜',headline:'Добавлен новый квест'}
   };
 
   function defaultDiscordTemplate(meta){

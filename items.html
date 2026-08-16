@@ -44,14 +44,15 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 </head><body><header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
   <a href="taiwan.html">О Тайвани</a>
   <a href="pirate.html">О Пиратке</a>
   <a href="updates.html">Обновления</a>
     <a href="game-stats.html">Характеристики</a>
+    <a href="quests.html">Квесты</a>
   <a href="accounts-sale.html">Продажа Аккаунтов</a>
   <a href="forum.html">Форум</a>
       <a href="partners.html">Партнеры</a>
@@ -217,7 +218,7 @@ function card(item,preview=false){
   return `<article id="item-card-${item.id}" class="panel catalog-card ${item.id===selectedId&&!preview?'active':''}" ${!preview?`onclick="selectEntry(${item.id})"`:''}>
     <div class="catalog-head">
       ${item.image?`<img class="catalog-img" src="${item.image}" loading="lazy" alt="${esc(item.name||'Предмет')}">`:'<div class="catalog-img"></div>'}
-      <div><h2>${esc(item.name||'Без названия')}</h2><div class="tags"><span class="tag">${esc(item.type||'Без типа')}</span></div></div>
+      <div><h2>${esc(item.name||'Без названия')}${window.KFStaffBadge?.(item.authorRole||'admin')||''}</h2><div class="tags"><span class="tag">${esc(item.type||'Без типа')}</span></div></div>
     </div>
     ${item.description?`<div class="desc" style="margin-top:8px">${esc(item.description).replace(/\n/g,'<br>')}</div>`:''}
     ${codeHtml(item)}
@@ -239,7 +240,7 @@ function render(){
     const rows=list.filter(x=>(x.type||types[0])===type);
     if(!rows.length)return '';
     return `<button class="toc-group toc-type-button" type="button" onclick="jumpType('${encodeURIComponent(type)}')"><b>${esc(type)}</b><span>${rows.length}</span></button>`+
-      rows.map(x=>`<a class="toc-item ${x.id===selectedId?'active':''}" onclick="selectEntry(${x.id})">${esc(x.name||'Без названия')}</a>`).join('');
+      rows.map(x=>`<a class="toc-item ${x.id===selectedId?'active':''}" onclick="selectEntry(${x.id})">${esc(x.name||'Без названия')}${window.KFStaffBadge?.(x.authorRole||'admin','in-button')||''}</a>`).join('');
   }).join('')||'<div class="muted">Пусто</div>';
 
   content.innerHTML=types.map(type=>{
@@ -356,7 +357,9 @@ saveBtn.addEventListener('click',async()=>{
       description:descriptionInput.value.trim(),
       code:codeInput.value.trim(),
       extraCodes:draftCodes.map(x=>x.trim()).filter(Boolean),
-      image:finalImage
+      image:finalImage,
+      author:old?.author||currentUser?.nickname||currentUser?.email||'',
+      authorRole:old?.authorRole||(old?'admin':currentUser?.role)||'admin'
     };
 
     if(editingId){

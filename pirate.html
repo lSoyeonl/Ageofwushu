@@ -55,8 +55,8 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
 <script src="reactions-0.0.48.js?v=0.0.80"></script>
@@ -67,6 +67,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
   <a href="pirate.html">О Пиратке</a>
   <a href="updates.html">Обновления</a>
     <a href="game-stats.html">Характеристики</a>
+    <a href="quests.html">Квесты</a>
   <a href="accounts-sale.html">Продажа Аккаунтов</a>
   <a href="forum.html">Форум</a>
       <a href="partners.html">Партнеры</a>
@@ -202,7 +203,7 @@ function reset(){editingId=null;postTitle.value='';postLink.value='';postIntro.v
 window.editPost=id=>{if(!isAdmin)return;const x=posts.find(a=>a.id===id);if(!x)return;editingId=id;postTitle.value=x.title||'';postLink.value=x.link||'';postIntro.value=x.intro||'';important.checked=!!x.important;rich.innerHTML=x.content||'';draftImages=imagesFor(x);renderDraft();editorTitle.textContent='Редактировать материал';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'})}
 cancelBtn.onclick=reset;
 previewBtn.onclick=()=>openPreview(card({id:'preview',title:postTitle.value.trim()||'Без заголовка',intro:postIntro.value.trim(),link:postLink.value.trim(),important:important.checked,content:cleanRich(rich.innerHTML),images:draftImages.slice()},true));
-saveBtn.onclick=async()=>{if(!isAdmin)return;const btn=saveBtn,oldText=btn.textContent;btn.disabled=true;btn.textContent=editingId?'Сохранение...':'Публикация...';try{const titleValue=postTitle.value.trim(),introValue=postIntro.value.trim(),contentValue=cleanRich(rich.innerHTML),linkValue=postLink.value.trim();if(!titleValue||!rich.innerText.trim())throw new Error('Заполните заголовок и содержание');if(isLongPost({content:contentValue,images:draftImages})&&!introValue)throw new Error('Для длинного материала заполните поле «Вступление» — оно будет показано до разворачивания полной статьи.');const item={id:editingId||Date.now(),title:titleValue,intro:introValue,link:linkValue,important:important.checked,content:contentValue,images:draftImages.slice(),image:draftImages[0]||'',authorRole:(editingId?posts.find(x=>x.id===editingId)?.authorRole:null)||u.role||'admin'};const before=posts.slice();if(editingId){const i=posts.findIndex(x=>x.id===editingId);if(i<0)throw new Error('Материал не найден');posts[i]={...posts[i],...item}}else posts.push(item);try{await save()}catch(e){posts=before;throw e}reset();render()}catch(e){alert(e.message||'Не удалось опубликовать материал')}finally{btn.disabled=false;btn.textContent=oldText}};
+saveBtn.onclick=async()=>{if(!isAdmin)return;const btn=saveBtn,oldText=btn.textContent;btn.disabled=true;btn.textContent=editingId?'Сохранение...':'Публикация...';try{const titleValue=postTitle.value.trim(),introValue=postIntro.value.trim(),contentValue=cleanRich(rich.innerHTML),linkValue=postLink.value.trim();if(!titleValue||!rich.innerText.trim())throw new Error('Заполните заголовок и содержание');if(isLongPost({content:contentValue,images:draftImages})&&!introValue)throw new Error('Для длинного материала заполните поле «Вступление» — оно будет показано до разворачивания полной статьи.');const item={id:editingId||Date.now(),title:titleValue,intro:introValue,link:linkValue,important:important.checked,content:contentValue,images:draftImages.slice(),image:draftImages[0]||'',authorRole:editingId?(posts.find(x=>x.id===editingId)?.authorRole||'admin'):(u.role||'admin')};const before=posts.slice();if(editingId){const i=posts.findIndex(x=>x.id===editingId);if(i<0)throw new Error('Материал не найден');posts[i]={...posts[i],...item}}else posts.push(item);try{await save()}catch(e){posts=before;throw e}reset();render()}catch(e){alert(e.message||'Не удалось опубликовать материал')}finally{btn.disabled=false;btn.textContent=oldText}};
 window.delPost=async id=>{if(!isAdmin||!confirm('Удалить материал?'))return;const before=posts.slice();posts=posts.filter(x=>x.id!==id);try{await save();if(editingId===id)reset();render()}catch(e){posts=before;alert(e.message||'Не удалось удалить материал')}};
 window.addEventListener('storage',e=>{if(e.key==='kungfuPublicDataV1'||e.key==='kungfuPirateContent')render()});
 window.addEventListener('kf-public-data-change',e=>{if(e.detail&&e.detail.key==='kungfuPirateContent')render()});window.addEventListener('kf-supabase-synced',e=>{if(e.detail&&e.detail.key==='kungfuPirateContent'){posts=readPublishedPosts();render()}});

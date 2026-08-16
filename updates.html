@@ -55,8 +55,8 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
 <script src="reactions-0.0.48.js?v=0.0.80"></script>
@@ -67,6 +67,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
   <a href="pirate.html">О Пиратке</a>
   <a href="updates.html">Обновления</a>
     <a href="game-stats.html">Характеристики</a>
+    <a href="quests.html">Квесты</a>
   <a href="accounts-sale.html">Продажа Аккаунтов</a>
   <a href="forum.html">Форум</a>
       <a href="partners.html">Партнеры</a>
@@ -284,7 +285,7 @@ function card(x,preview=false){
     ${isAdmin&&!preview?`<div class="entry-actions"><button class="btn secondary" onclick="togglePin(${x.id})">${x.pinned?'Открепить':'Закрепить'}</button><button class="btn secondary" onclick="editUpdate(${x.id})">Редактировать</button><button class="btn danger" onclick="delUpdate(${x.id})">Удалить</button></div>`:''}
   </article>`;
 }
-function render(){const sf=serverFilter.value,list=items.filter(x=>(sf==='Все серверы'||(x.server||x.category||'Пиратка')===sf)&&(activeKind==='Все'||(x.kind||'Прочие Добавления')===activeKind)).slice().sort((a,b)=>(Number(!!b.pinned)-Number(!!a.pinned))||((b.id||0)-(a.id||0)));tocList.innerHTML=list.map(x=>`<button class="filter-btn ${String(x.id)===String(selected)?'active':''}" onclick="selectUpdate(${x.id})">${x.pinned?'📌 ':''}${esc(x.title)}<small style="display:block;color:#9db0b8">${esc(x.periodLabel||x.date||'')}</small></button>`).join('')||'<div class="muted">Пусто</div>';if(list.length&&(selected===null||selected===undefined||!list.some(x=>String(x.id)===String(selected))))selected=list[0].id;content.innerHTML=list.length?`<div class="update-feed">${list.map(x=>card(x)).join('')}</div>`:'<div class="panel empty">Обновлений пока нет.</div>';renderKinds();setTimeout(()=>{if(window.KFReactions)list.forEach(x=>KFReactions.mountSmiles('kf-update-reactions-'+x.id,'kungfuUpdates',x.id))},0)}
+function render(){const sf=serverFilter.value,list=items.filter(x=>(sf==='Все серверы'||(x.server||x.category||'Пиратка')===sf)&&(activeKind==='Все'||(x.kind||'Прочие Добавления')===activeKind)).slice().sort((a,b)=>(Number(!!b.pinned)-Number(!!a.pinned))||((b.id||0)-(a.id||0)));tocList.innerHTML=list.map(x=>`<button class="filter-btn ${String(x.id)===String(selected)?'active':''}" onclick="selectUpdate(${x.id})">${x.pinned?'📌 ':''}${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin','in-button')||''}<small style="display:block;color:#9db0b8">${esc(x.periodLabel||x.date||'')}</small></button>`).join('')||'<div class="muted">Пусто</div>';if(list.length&&(selected===null||selected===undefined||!list.some(x=>String(x.id)===String(selected))))selected=list[0].id;content.innerHTML=list.length?`<div class="update-feed">${list.map(x=>card(x)).join('')}</div>`:'<div class="panel empty">Обновлений пока нет.</div>';renderKinds();setTimeout(()=>{if(window.KFReactions)list.forEach(x=>KFReactions.mountSmiles('kf-update-reactions-'+x.id,'kungfuUpdates',x.id))},0)}
 window.selectUpdate=id=>{selected=id;render();requestAnimationFrame(()=>document.getElementById('update-card-'+String(id).replace(/[^a-zA-Z0-9_-]/g,'_'))?.scrollIntoView({behavior:'smooth',block:'start'}))};window.togglePin=async id=>{if(!isAdmin)return;const x=items.find(a=>a.id===id);if(!x)return;const before=!!x.pinned;x.pinned=!x.pinned;selected=id;try{await save();render()}catch(e){x.pinned=before;alert(e.message||'Не удалось изменить закрепление')}};
 function reset(){editingId=null;title.value='';intro.value='';server.value='Пиратка';kind.value=kinds[0]||'';dateMode.value='date';dateEndWrap.style.display='none';dateStart.value=today;dateEnd.value=today;promoCodes.value='';draftRewards=[''];renderRewardsBuilder();rewardWrap.style.display='none';draftLinks=[{url:'',note:''}];renderLinkBuilder();pinned.checked=false;rich.innerHTML='';img.value='';image='';updateImagePreview.src='';updateImagePreview.classList.remove('show');editorTitle.textContent='Добавить обновление';editNote.classList.remove('show');saveBtn.textContent='Опубликовать';cancelBtn.style.display='none'}
 window.editUpdate=id=>{if(!isAdmin)return;const x=items.find(a=>a.id===id);if(!x)return;editingId=id;title.value=x.title||'';intro.value=x.intro||'';server.value=x.server||x.category||'Пиратка';kind.value=x.kind||kinds[0]||'';dateMode.value=x.dateMode||'date';dateStart.value=x.dateStart||today;dateEnd.value=x.dateEnd||x.dateStart||today;dateEndWrap.style.display=dateMode.value==='period'?'block':'none';promoCodes.value=x.promoCodes||'';draftRewards=normalizeRewards(x);if(!draftRewards.length)draftRewards=[''];renderRewardsBuilder();toggleRewardField();draftLinks=normalizeLinks(x.links);if(!draftLinks.length)draftLinks=[{url:'',note:''}];renderLinkBuilder();pinned.checked=!!x.pinned;rich.innerHTML=x.content||x.text||'';image=x.image||'';if(image){updateImagePreview.src=image;updateImagePreview.classList.add('show')}else{updateImagePreview.classList.remove('show')}editorTitle.textContent='Редактировать обновление';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'})}
@@ -325,7 +326,7 @@ saveBtn.onclick=async()=>{if(!isAdmin)return;const btn=saveBtn,oldText=btn.textC
     content:contentHtml,
     image:finalImage,
     author:(old&&old.author)||u.nickname,
-    authorRole:(old&&old.authorRole)||u.role||'admin'
+    authorRole:old?(old.authorRole||'admin'):(u.role||'admin')
   };
 
   const before=items.slice();

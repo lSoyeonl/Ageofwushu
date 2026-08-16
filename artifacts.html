@@ -39,8 +39,8 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -48,6 +48,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
   <a href="pirate.html">О Пиратке</a>
   <a href="updates.html">Обновления</a>
     <a href="game-stats.html">Характеристики</a>
+    <a href="quests.html">Квесты</a>
   <a href="accounts-sale.html">Продажа Аккаунтов</a>
   <a href="forum.html">Форум</a>
       <a href="partners.html">Партнеры</a>
@@ -132,7 +133,7 @@ function artifactCard(item){
     item.pirateDate?`<div class="artifact-meta-row"><b>Пиратка:</b> ${esc(formatDate(item.pirateDate))}</div>`:''
   ].join('');
   return `<article id="artifact-card-${item.id}" class="panel artifact-card ${item.id===selectedId?'active':''}">
-    <div class="artifact-head">${displayImage(item)}<div><h2>${esc(item.name||'Без названия')}</h2><div class="tags"><span class="tag">${esc(item.type||types[0])}</span></div>${item.otherNames?`<div class="muted"><b>Другие:</b> ${esc(item.otherNames)}</div>`:''}</div></div>
+    <div class="artifact-head">${displayImage(item)}<div><h2>${esc(item.name||'Без названия')}${window.KFStaffBadge?.(item.authorRole||'admin')||''}</h2><div class="tags"><span class="tag">${esc(item.type||types[0])}</span></div>${item.otherNames?`<div class="muted"><b>Другие:</b> ${esc(item.otherNames)}</div>`:''}</div></div>
     ${item.description?`<div class="desc">${esc(item.description).replace(/\n/g,'<br>')}</div>`:''}
     <div class="artifact-meta">
       ${item.code?`<div class="artifact-meta-row"><b>Код:</b> ${esc(item.code)}</div>`:''}
@@ -149,7 +150,7 @@ function render(){
     const rows=list.filter(x=>(x.type||types[0])===type);
     if(!rows.length)return '';
     return `<button class="toc-group toc-type-button" type="button" onclick="jumpArtifactType('${encodeURIComponent(type)}')"><b>${esc(type)}</b><span>${rows.length}</span></button>`+
-      rows.map(x=>`<a class="toc-item ${x.id===selectedId?'active':''}" onclick="selectEntry(${x.id})"><b>${esc(x.name||'Без названия')}</b></a>`).join('');
+      rows.map(x=>`<a class="toc-item ${x.id===selectedId?'active':''}" onclick="selectEntry(${x.id})"><b>${esc(x.name||'Без названия')}</b>${window.KFStaffBadge?.(x.authorRole||'admin','in-button')||''}</a>`).join('');
   }).join(''):'<div class="muted">Ничего не найдено</div>';
 
   document.getElementById('content').innerHTML=types.map(type=>{
@@ -183,7 +184,7 @@ item.description=document.getElementById('description').value.trim();
 item.type=document.getElementById('type').value.trim();
 item.code=document.getElementById('code').value.trim();
 item.price=document.getElementById('price').value.trim();
-item.chinaDate=dateValue('chinaDate');item.taiwanDate=dateValue('taiwanDate');item.pirateDate=dateValue('pirateDate');if(!item.name){alert('Укажите название');return}if(current&&!selectedImage)item.image=current.image||'';const before=entries.map(x=>({...x}));if(editingId){const i=entries.findIndex(x=>x.id===editingId);if(i>=0)entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;try{await save();resetForm();render()}catch(e){entries=before;render();alert(e.message||'Не удалось сохранить артефакт')}};
+item.chinaDate=dateValue('chinaDate');item.taiwanDate=dateValue('taiwanDate');item.pirateDate=dateValue('pirateDate');item.author=current?.author||currentUser?.nickname||currentUser?.email||'';item.authorRole=current?.authorRole||(current?'admin':currentUser?.role)||'admin';if(!item.name){alert('Укажите название');return}if(current&&!selectedImage)item.image=current.image||'';const before=entries.map(x=>({...x}));if(editingId){const i=entries.findIndex(x=>x.id===editingId);if(i>=0)entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;try{await save();resetForm();render()}catch(e){entries=before;render();alert(e.message||'Не удалось сохранить артефакт')}};
 window.removeEntry=async id=>{if(!isAdmin||!confirm('Удалить запись?'))return;const before=entries.slice();entries=entries.filter(x=>x.id!==id);if(editingId===id)resetForm();selectedId=entries.length?entries[0].id:null;try{await save();render()}catch(e){entries=before;render();alert(e.message||'Не удалось удалить артефакт')}};
 async function initArtifacts(){try{if(!window.KFSupabase?.configured)throw new Error('Supabase не настроен.');await KFSupabase.ready;currentUser=await KFSupabase.getCurrentProfile();isAdmin=!!currentUser&&['admin','moderator'].includes(currentUser.role);if(isAdmin){document.getElementById('editor').classList.add('show');document.getElementById('adminBadge').innerHTML='<span class="admin-badge">'+(currentUser.role==='moderator'?'МОДЕРАТОР':'АДМИН')+'</span>';document.getElementById('roleNote').textContent='Администратор и модератор могут добавлять, редактировать и удалять артефакты.'}else{document.getElementById('editor').classList.remove('show');document.getElementById('adminBadge').innerHTML='';document.getElementById('roleNote').textContent='Просмотр доступен всем. Редактирование и удаление — только администратору или модератору.'}const remoteEntries=await KFSupabase.getStore('kungfuArtifacts',[]);const remoteTypes=await KFSupabase.getStore('kungfuArtifactTypes',['Без типа']);entries=Array.isArray(remoteEntries)?remoteEntries:[];types=Array.isArray(remoteTypes)&&remoteTypes.length?remoteTypes:['Без типа'];selectedId=entries.length?entries[0].id:null;bindDateModes();renderTypes();render()}catch(e){document.getElementById('editor').classList.remove('show');document.getElementById('roleNote').textContent=e.message||'Не удалось загрузить артефакты.';bindDateModes();renderTypes();render()}}initArtifacts();
 </script><script src="image-tools-0.0.48.js?v=0.0.70"></script>

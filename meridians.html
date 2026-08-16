@@ -33,8 +33,8 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 </head><body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
@@ -42,6 +42,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
   <a href="pirate.html">О Пиратке</a>
   <a href="updates.html">Обновления</a>
     <a href="game-stats.html">Характеристики</a>
+    <a href="quests.html">Квесты</a>
   <a href="accounts-sale.html">Продажа Аккаунтов</a>
   <a href="forum.html">Форум</a>
       <a href="partners.html">Партнеры</a>
@@ -96,8 +97,8 @@ document.getElementById('addType').onclick=()=>{if(!isAdmin)return;const i=docum
 window.removeType=enc=>{if(!isAdmin)return;const v=decodeURIComponent(enc);if(entries.some(x=>(x.type||types[0])===v)){alert('Нельзя удалить тип, пока есть записи этого типа.');return}types=types.filter(x=>x!==v);if(!types.length)types=['Общее'];saveTypes();renderTypes()};
 
 function displayImage(item){return item.image?`<img class="compact-img" src="${item.image}" alt="${esc(item.name||'')}" loading="lazy" decoding="async">`:`<div class="compact-img"></div>`}
-function render(){const q=document.getElementById('search').value.trim().toLowerCase();const list=entries.filter(x=>[x.name,x.code,x.description,x.type].some(v=>String(v||'').toLowerCase().includes(q)));document.getElementById('tocList').innerHTML=list.length?types.map(type=>{const rows=list.filter(x=>(x.type||types[0])===type);if(!rows.length)return '';return `<div class="toc-group">${esc(type)}</div>`+rows.map(x=>`<a class="toc-item ${x.id===selectedId?'active':''}" onclick="selectEntry(${x.id})"><b>${esc(x.name||'Без названия')}</b><small>${esc(type)}</small></a>`).join('')}).join(''):'<div class="muted">Ничего не найдено</div>';
-const item=entries.find(x=>x.id===selectedId)||list[0];if(item&&!entries.find(x=>x.id===selectedId))selectedId=item.id;document.getElementById('content').innerHTML=item?`<article class="panel compact-card"><div class="compact-top">${displayImage(item)}<div class="compact-body"><h2>${esc(item.name||'Без названия')}</h2><div class="tags"><span class="tag">Тип: ${esc(item.type||types[0])}</span>${item.affiliation?`<span class="tag">Принадлежность: ${esc(item.affiliation)}</span>`:''}${item.level?`<span class="tag">Уровень: ${esc(item.level)}</span>`:''}</div>${item.description?`<div class="desc">${esc(item.description).replace(/\n/g,'<br>')}</div>`:''}${item.code?`<div class="code-under-description"><b>Код:</b> ${esc(item.code)}</div>`:''}${item.properties?`<div class="props"><b>Свойства</b><br>${esc(item.properties).replace(/\n/g,'<br>')}</div>`:''}<div class="entry-actions ${isAdmin?'show':''}"><button class="btn secondary" onclick="editEntry(${item.id})">Редактировать</button><button class="btn danger" onclick="removeEntry(${item.id})">Удалить</button></div></div></div></article>`:'<div class="panel empty">Пока нет контента.</div>'}
+function render(){const q=document.getElementById('search').value.trim().toLowerCase();const list=entries.filter(x=>[x.name,x.code,x.description,x.type].some(v=>String(v||'').toLowerCase().includes(q)));document.getElementById('tocList').innerHTML=list.length?types.map(type=>{const rows=list.filter(x=>(x.type||types[0])===type);if(!rows.length)return '';return `<div class="toc-group">${esc(type)}</div>`+rows.map(x=>`<a class="toc-item ${x.id===selectedId?'active':''}" onclick="selectEntry(${x.id})"><b>${esc(x.name||'Без названия')}</b>${window.KFStaffBadge?.(x.authorRole||'admin','in-button')||''}<small>${esc(type)}</small></a>`).join('')}).join(''):'<div class="muted">Ничего не найдено</div>';
+const item=entries.find(x=>x.id===selectedId)||list[0];if(item&&!entries.find(x=>x.id===selectedId))selectedId=item.id;document.getElementById('content').innerHTML=item?`<article class="panel compact-card"><div class="compact-top">${displayImage(item)}<div class="compact-body"><h2>${esc(item.name||'Без названия')}${window.KFStaffBadge?.(item.authorRole||'admin')||''}</h2><div class="tags"><span class="tag">Тип: ${esc(item.type||types[0])}</span>${item.affiliation?`<span class="tag">Принадлежность: ${esc(item.affiliation)}</span>`:''}${item.level?`<span class="tag">Уровень: ${esc(item.level)}</span>`:''}</div>${item.description?`<div class="desc">${esc(item.description).replace(/\n/g,'<br>')}</div>`:''}${item.code?`<div class="code-under-description"><b>Код:</b> ${esc(item.code)}</div>`:''}${item.properties?`<div class="props"><b>Свойства</b><br>${esc(item.properties).replace(/\n/g,'<br>')}</div>`:''}<div class="entry-actions ${isAdmin?'show':''}"><button class="btn secondary" onclick="editEntry(${item.id})">Редактировать</button><button class="btn danger" onclick="removeEntry(${item.id})">Удалить</button></div></div></div></article>`:'<div class="panel empty">Пока нет контента.</div>'}
 window.selectEntry=id=>{selectedId=id;render()};document.getElementById('search').oninput=render;
 function resetForm(){editingId=null;document.getElementById('editorTitle').textContent='Добавить запись';document.getElementById('editNote').classList.remove('show');document.getElementById('saveEntry').textContent='Добавить';document.getElementById('cancelEdit').style.display='none';if(document.getElementById('name').tagName!=='SELECT')document.getElementById('name').value='';
 if(document.getElementById('type').tagName!=='SELECT')document.getElementById('type').value='';
@@ -121,7 +122,7 @@ item.affiliation=document.getElementById('affiliation').value.trim();
 item.level=document.getElementById('level').value.trim();
 item.description=document.getElementById('description').value.trim();
 item.code=document.getElementById('code').value.trim();
-item.properties=document.getElementById('properties').value.trim(); if(!item.name){alert('Укажите название');return}if(current&&!selectedImage)item.image=current.image||''; if(editingId){const i=entries.findIndex(x=>x.id===editingId);if(i>=0)entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;save();resetForm();render()};
+item.properties=document.getElementById('properties').value.trim(); if(!item.name){alert('Укажите название');return}item.author=current?.author||currentUser?.nickname||currentUser?.email||'';item.authorRole=current?.authorRole||(current?'admin':currentUser?.role)||'admin';if(current&&!selectedImage)item.image=current.image||''; if(editingId){const i=entries.findIndex(x=>x.id===editingId);if(i>=0)entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;save();resetForm();render()};
 window.removeEntry=id=>{if(!isAdmin||!confirm('Удалить запись?'))return;entries=entries.filter(x=>x.id!==id);if(editingId===id)resetForm();selectedId=entries.length?entries[0].id:null;save();render()};renderTypes();render();
 </script><script src="image-tools-0.0.48.js?v=0.0.70"></script>
 <script src="draft-recovery-0.0.62.js?v=0.0.62"></script>

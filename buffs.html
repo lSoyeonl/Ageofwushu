@@ -56,8 +56,8 @@ textarea{min-height:100px;resize:vertical}input:focus,textarea:focus,select:focu
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 </head>
 <body>
 <header class="top">
@@ -68,6 +68,7 @@ textarea{min-height:100px;resize:vertical}input:focus,textarea:focus,select:focu
     <a href="pirate.html">О Пиратке</a>
     <a href="updates.html">Обновления</a>
     <a href="game-stats.html">Характеристики</a>
+    <a href="quests.html">Квесты</a>
     <a href="accounts-sale.html">Продажа Аккаунтов</a>
     <a href="forum.html">Форум</a>
     <a href="partners.html">Партнеры</a>
@@ -166,7 +167,7 @@ function card(item,preview=false){
       ${item.image?`<img class="buff-card-image" src="${esc(item.image)}" alt="${esc(item.name||'Бафф')}" loading="lazy">`:'<div class="buff-card-image-placeholder">Добавьте изображение</div>'}
       <div>
         <div class="buff-top">
-          <h2>${esc(item.name||'Без названия')}</h2>
+          <h2>${esc(item.name||'Без названия')}${!preview?(window.KFStaffBadge?.(item.authorRole||'admin')||''):''}</h2>
           <span class="type-tag ${typeClass(item.type)}">${esc(item.type||'Бафф')}</span>
         </div>
         ${item.otherNames?`<div class="other-names"><b>Другие:</b> ${esc(item.otherNames)}</div>`:''}
@@ -196,7 +197,7 @@ function render(){
     const rows=list.filter(x=>(x.type||'Бафф')===type);
     if(!rows.length)return '';
     return `<button class="toc-group" type="button" onclick="jumpType('${encodeURIComponent(type)}')"><b>${esc(type)}</b><span>${rows.length}</span></button>`+
-      rows.map(x=>`<a class="toc-item ${String(x.id)===String(selectedId)?'active':''}" onclick="selectEntry('${encodeURIComponent(String(x.id))}')">${esc(x.name||'Без названия')}</a>`).join('');
+      rows.map(x=>`<a class="toc-item ${String(x.id)===String(selectedId)?'active':''}" onclick="selectEntry('${encodeURIComponent(String(x.id))}')">${esc(x.name||'Без названия')}${window.KFStaffBadge?.(x.authorRole||'admin','in-button')||''}</a>`).join('');
   }).join('')||'<div class="muted">Ничего не найдено.</div>';
 
   $('content').innerHTML=TYPES.map(type=>{
@@ -316,7 +317,8 @@ $('saveBtn').onclick=async()=>{
     image:finalImage,
     createdAt:existing?.createdAt||new Date().toISOString(),
     updatedAt:new Date().toISOString(),
-    authorRole:existing?.authorRole||currentUser?.role||'admin'
+    author:existing?.author||currentUser?.nickname||currentUser?.email||'',
+    authorRole:existing?.authorRole||(existing?'admin':currentUser?.role)||'admin'
   };
 
   const btn=$('saveBtn'),old=btn.textContent;

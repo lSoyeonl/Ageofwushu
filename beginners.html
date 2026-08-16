@@ -60,8 +60,8 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
 <script src="reactions-0.0.48.js?v=0.0.80"></script>
@@ -71,6 +71,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
   <a href="pirate.html">О Пиратке</a>
   <a href="updates.html">Обновления</a>
     <a href="game-stats.html">Характеристики</a>
+    <a href="quests.html">Квесты</a>
   <a href="accounts-sale.html">Продажа Аккаунтов</a>
   <a href="forum.html">Форум</a>
       <a href="partners.html">Партнеры</a>
@@ -234,7 +235,7 @@ function guideCard(x,preview=false){
   const selectedClass=String(x.id)===String(selected)?' is-selected':'';
   return `<article id="${guideDomId(x.id)}" class="panel beginner-card ${expanded?'is-expanded':'is-collapsed'}${selectedClass}">
     <span class="tag">${esc(x.type||'Общее')}</span>
-    <h2>${esc(x.title)}</h2>
+    <h2>${esc(x.title)}${!preview?(window.KFStaffBadge?.(x.authorRole||'admin')||''):''}</h2>
     ${body}
     ${!preview?`<div class="beginner-expand-row"><button class="beginner-expand-btn" type="button" onclick="toggleGuide('${encodeURIComponent(String(x.id))}')">${expanded?'Свернуть запись':'Открыть запись'}</button></div>`:''}
     ${!preview?`<div id="kf-beginner-reactions-${guideDomId(x.id)}"></div>`:''}
@@ -331,6 +332,7 @@ document.getElementById('saveBtn').onclick=async()=>{
     alert('Для длинного материала заполните поле «Вступление» — оно будет аккуратно показано в свернутой карточке.');return
   }
 
+  const oldItem=editingId?items.find(x=>String(x.id)===String(editingId)):null;
   const item={
     id:editingId||Date.now(),
     type:document.getElementById('type').value,
@@ -339,7 +341,9 @@ document.getElementById('saveBtn').onclick=async()=>{
     content,
     extraLink:document.getElementById('extraLink').value.trim(),
     images:draftImages.slice(),
-    image:draftImages[0]||''
+    image:draftImages[0]||'',
+    author:oldItem?.author||currentUser?.nickname||currentUser?.email||'',
+    authorRole:oldItem?.authorRole||(oldItem?'admin':currentUser?.role)||'admin'
   };
 
   const before=items.slice();

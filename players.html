@@ -39,14 +39,15 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 </head><body><header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
   <a href="index.html">Главная</a>
   <a href="taiwan.html">О Тайвани</a>
   <a href="pirate.html">О Пиратке</a>
   <a href="updates.html">Обновления</a>
     <a href="game-stats.html">Характеристики</a>
+    <a href="quests.html">Квесты</a>
   <a href="accounts-sale.html">Продажа Аккаунтов</a>
   <a href="forum.html">Форум</a>
       <a href="partners.html">Партнеры</a>
@@ -80,9 +81,9 @@ let avatar='';image.onchange=async()=>{const f=image.files[0];if(!f)return;try{a
 let players=JSON.parse(localStorage.getItem('kungfuPlayers')||'[]');function save(){localStorage.setItem('kungfuPlayers',JSON.stringify(players))}
 function userKey(){return u?String(u.id||u.email||u.nickname):''}
 function contactHtml(v){const value=String(v||'').trim();if(!value)return '';return safeUrl(value)?`<div class="contact"><b>Связаться:</b> <a href="${safeUrl(value)}" target="_blank" rel="noopener">${esc(value)}</a></div>`:`<div class="contact"><b>Связаться:</b> ${esc(value)}</div>`}
-function card(x){const likes=Array.isArray(x.likes)?x.likes:[];const liked=canUse&&likes.includes(userKey());return `<article class="player">${x.avatar?`<img class="avatar" src="${x.avatar}" loading="lazy" decoding="async">`:'<div class="avatar"></div>'}<div><span class="tag">${esc(x.server)}</span><h3 style="margin:7px 0">${esc(x.nick)}</h3><div class="date">Добавлен: ${esc(x.createdAt||'Ранее')}</div><p class="muted">${esc(x.description||'').replace(/\n/g,'<br>')}</p>${contactHtml(x.contact)}<button class="heart ${liked?'liked':''}" ${canUse?'':'disabled'} onclick="toggleLike(${x.id})" title="${canUse?'Поставить или убрать ❤️':'Только для зарегистрированных'}">❤️ <span>${likes.length}</span></button>${u&&(isAdmin||u.nickname===x.owner)?`<div><button class="btn danger" onclick="delPlayer(${x.id})">Удалить</button></div>`:''}</div></article>`}
+function card(x){const likes=Array.isArray(x.likes)?x.likes:[];const liked=canUse&&likes.includes(userKey());return `<article class="player">${x.avatar?`<img class="avatar" src="${x.avatar}" loading="lazy" decoding="async">`:'<div class="avatar"></div>'}<div><span class="tag">${esc(x.server)}</span><h3 style="margin:7px 0">${esc(x.nick)}${window.KFStaffBadge?.(x.authorRole)||''}</h3><div class="date">Добавлен: ${esc(x.createdAt||'Ранее')}</div><p class="muted">${esc(x.description||'').replace(/\n/g,'<br>')}</p>${contactHtml(x.contact)}<button class="heart ${liked?'liked':''}" ${canUse?'':'disabled'} onclick="toggleLike(${x.id})" title="${canUse?'Поставить или убрать ❤️':'Только для зарегистрированных'}">❤️ <span>${likes.length}</span></button>${u&&(isAdmin||u.nickname===x.owner)?`<div><button class="btn danger" onclick="delPlayer(${x.id})">Удалить</button></div>`:''}</div></article>`}
 function render(){const p=players.filter(x=>x.server==='Пиратка').slice().reverse(),t=players.filter(x=>x.server==='Тайвань').slice().reverse();pirateCount.textContent=p.length+' игроков';taiwanCount.textContent=t.length+' игроков';piratePlayers.innerHTML=p.length?p.map(card).join(''):'<div class="empty">Игроков пока нет.</div>';taiwanPlayers.innerHTML=t.length?t.map(card).join(''):'<div class="empty">Игроков пока нет.</div>'}
-add.onclick=()=>{if(!canUse)return;const n=nick.value.trim();if(!n){alert('Укажите никнейм');return}players.push({id:Date.now(),nick:n,server:server.value,contact:contact.value.trim(),description:description.value.trim(),avatar,owner:u.nickname,createdAt:new Date().toLocaleDateString('ru-RU'),likes:[]});save();avatar='';image.value='';nick.value='';contact.value='';description.value='';render()};
+add.onclick=()=>{if(!canUse)return;const n=nick.value.trim();if(!n){alert('Укажите никнейм');return}players.push({id:Date.now(),nick:n,server:server.value,contact:contact.value.trim(),description:description.value.trim(),avatar,owner:u.nickname,authorRole:u.role||'user',createdAt:new Date().toLocaleDateString('ru-RU'),likes:[]});save();avatar='';image.value='';nick.value='';contact.value='';description.value='';render()};
 window.toggleLike=id=>{if(!canUse){alert('Поставить ❤️ могут только зарегистрированные пользователи.');return}const x=players.find(a=>a.id===id);if(!x)return;x.likes=Array.isArray(x.likes)?x.likes:[];const key=userKey(),i=x.likes.indexOf(key);if(i>=0)x.likes.splice(i,1);else x.likes.push(key);save();render()};
 window.delPlayer=id=>{const x=players.find(a=>a.id===id);if(!x||!u||!(isAdmin||u.nickname===x.owner))return;if(!confirm('Удалить карточку игрока?'))return;players=players.filter(a=>a.id!==id);save();render()};
 render();

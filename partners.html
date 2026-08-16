@@ -100,8 +100,8 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 </head>
 <body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
@@ -110,6 +110,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <a href="pirate.html">О Пиратке</a>
 <a href="updates.html">Обновления</a>
     <a href="game-stats.html">Характеристики</a>
+    <a href="quests.html">Квесты</a>
 <a href="accounts-sale.html">Продажа Аккаунтов</a>
 <a href="forum.html">Форум</a>
 <a href="partners.html">Партнеры</a>
@@ -317,7 +318,7 @@ function card(x,preview=false){
     <div class="partner-main">
       ${x.image?`<img class="avatar" src="${esc(x.image)}" loading="lazy" alt="${esc(x.nick||'Партнер')}">`:'<div class="avatar"></div>'}
       <div>
-        <div class="partner-head"><h2>${esc(x.nick||'Партнер')}</h2>${x.pinned?'<span class="pin-tag">📌 Закреплено</span>':''}</div>
+        <div class="partner-head"><h2>${esc(x.nick||'Партнер')}${!preview?(window.KFStaffBadge?.(x.authorRole||'admin')||''):''}</h2>${x.pinned?'<span class="pin-tag">📌 Закреплено</span>':''}</div>
         ${preview?'':`<div class="partner-rating">${ratingSummary(x.id)}</div>`}
         <div class="partner-desc">${esc(x.desc||'')}</div>
         <div class="contact-links">${contactValue('Вконтакте',vk)}${contactValue('Дискорд',discord)}</div>
@@ -409,7 +410,9 @@ saveBtn.onclick=async()=>{
     email:emailInput.value.trim(),
     image:image||(old&&old.image)||'',
     pinned:!!old?.pinned,
-    createdAt:old?.createdAt||new Date().toISOString()
+    createdAt:old?.createdAt||new Date().toISOString(),
+    author:old?.author||currentUser?.nickname||currentUser?.email||'',
+    authorRole:old?.authorRole||(old?'admin':currentUser?.role)||'admin'
   };
   if(editingId){
     const i=partners.findIndex(x=>String(x.id)===String(editingId));

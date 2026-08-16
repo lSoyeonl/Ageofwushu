@@ -24,13 +24,14 @@ input,textarea,select{width:100%;padding:10px;border:1px solid rgba(228,180,94,.
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 </head>
 <body>
 <header class="top"><a class="brand" href="index.html"><img src="logo.png"><span>Руководство Легенд Кунг-Фу</span></a><nav class="nav">
 <a href="index.html">Главная</a><a href="taiwan.html">О Тайвани</a><a href="pirate.html">О Пиратке</a><a href="updates.html">Обновления</a>
-    <a href="game-stats.html">Характеристики</a><a href="accounts-sale.html">Продажа Аккаунтов</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="register.html">Регистрация</a><a href="login.html">Вход</a>
+    <a href="game-stats.html">Характеристики</a>
+    <a href="quests.html">Квесты</a><a href="accounts-sale.html">Продажа Аккаунтов</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="register.html">Регистрация</a><a href="login.html">Вход</a>
 </nav></header>
 
 <main class="wrap">
@@ -83,7 +84,7 @@ async function saveAds(){
 function render(){
   cards.innerHTML=ads.length?ads.slice().reverse().map(x=>`<article class="panel sale">
   ${x.avatar?`<img class="avatar" src="${x.avatar}" loading="lazy">`:'<div class="avatar"></div>'}
-  <div><span class="status ${x.status==='Куплю'?'buy':''}">${esc(x.status||'Продаю')}</span><h2>${esc(x.nick||'Без имени')}</h2>
+  <div><span class="status ${x.status==='Куплю'?'buy':''}">${esc(x.status||'Продаю')}</span><h2>${esc(x.nick||'Без имени')}${window.KFStaffBadge?.(x.authorRole)||''}</h2>
   <div class="muted">Сервер: ${esc(x.server||'')} · Автор: ${esc(x.author||'')}</div>
   <div class="date">Добавлено: ${esc(x.createdAt||'Ранее')}</div>
   <div class="price-line"><b>Цена:</b> ${esc(x.price||'Не указана')}</div>
@@ -158,7 +159,7 @@ add.onclick=async()=>{
       meridians:meridians.value.trim(),neigongs:neigongs.value.trim(),gear:gear.value.trim(),
       pets:pets.value.trim(),profession:profession.value.trim(),other:other.value.trim(),
       contact:contact.value.trim(),avatar:finalAvatar,
-      ownerId:old?.ownerId||u.id||'',author:old?.author||u.nickname,
+      ownerId:old?.ownerId||u.id||'',author:old?.author||u.nickname,authorRole:old?.authorRole||u.role||'user',
       createdAt:old?.createdAt||new Date().toLocaleDateString('ru-RU'),
       updatedAt:new Date().toISOString()
     };

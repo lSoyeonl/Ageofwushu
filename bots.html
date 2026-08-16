@@ -28,15 +28,16 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 </head>
 <body>
 <header class="top">
   <a class="brand" href="index.html"><img src="logo.png" alt="Логотип"><span>Руководство Легенд Кунг-Фу</span></a>
   <nav class="nav"><a href="index.html">Главная</a><a href="taiwan.html">О Тайвани</a><a href="pirate.html">О Пиратке</a><a href="updates.html">Обновления</a>
-    <a href="game-stats.html">Характеристики</a><a href="accounts-sale.html">Продажа Аккаунтов</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="account.html">Аккаунт</a></nav>
+    <a href="game-stats.html">Характеристики</a>
+    <a href="quests.html">Квесты</a><a href="accounts-sale.html">Продажа Аккаунтов</a><a href="forum.html">Форум</a><a href="partners.html">Партнеры</a><a href="account.html">Аккаунт</a></nav>
 </header>
 <main class="wrap">
   <section class="panel page-head">
@@ -169,7 +170,7 @@ function itemHtml(item,preview=false){
 function render(){
   const q=$('search').value.trim().toLowerCase();
   const list=entries.filter(x=>String(x.name||'').toLowerCase().includes(q));
-  $('tocList').innerHTML=list.length?list.map(x=>`<a class="toc-item ${String(x.id)===String(selectedId)?'active':''}" onclick="selectEntry('${x.id}')"><b>${esc(x.name||'Без названия')}</b><small>${x.discordLink?'Discord указан':'Discord не указан'}</small></a>`).join(''):'<div class="muted">Ничего не найдено.</div>';
+  $('tocList').innerHTML=list.length?list.map(x=>`<a class="toc-item ${String(x.id)===String(selectedId)?'active':''}" onclick="selectEntry('${x.id}')"><b>${esc(x.name||'Без названия')}</b>${window.KFStaffBadge?.(x.authorRole||'admin','in-button')||''}<small>${x.discordLink?'Discord указан':'Discord не указан'}</small></a>`).join(''):'<div class="muted">Ничего не найдено.</div>';
   let item=entries.find(x=>String(x.id)===String(selectedId));if(!item)item=list[0]||null;if(item)selectedId=item.id;
   $('content').innerHTML=item?itemHtml(item):'<div class="panel empty">Боты пока не добавлены.</div>';
   if(item&&window.KFReactions)KFReactions.mountSmiles(`bot-reaction-${item.id}`,KEY,item.id);
@@ -187,7 +188,7 @@ $('publishBtn').onclick=async()=>{
   if(!isAdmin)return;const draft=collectDraft();if(!draft.name){alert('Укажите название бота.');return}if(!$('rich').innerText.trim()){alert('Добавьте описание бота.');return}
   for(const [label,url] of [['Ссылка на бота',draft.botLink],['Дискорд',draft.discordLink],['Получить ссылку дискорда',draft.sellerProfileLink]])if(url&&!safeUrl(url)){alert(`${label}: ссылка должна начинаться с http:// или https://`);return}
   const before=clone(entries),btn=$('publishBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Публикация...';$('saveStatus').style.color='#c8f4d8';$('saveStatus').textContent='Сохранение бота, текста и изображений в Supabase...';
-  try{const existing=editingId?entries.find(x=>String(x.id)===String(editingId)):null;const item={...draft,createdAt:existing?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),authorRole:existing?.authorRole||currentUser?.role||'admin'};if(editingId){const i=entries.findIndex(x=>String(x.id)===String(editingId));entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;await saveEntries();resetForm();render();$('saveStatus').style.color='#c8f4d8';$('saveStatus').textContent=existing?'Изменения сохранены.':'Бот опубликован.'}
+  try{const existing=editingId?entries.find(x=>String(x.id)===String(editingId)):null;const item={...draft,createdAt:existing?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),authorRole:existing?.authorRole||(existing?'admin':currentUser?.role)||'admin'};if(editingId){const i=entries.findIndex(x=>String(x.id)===String(editingId));entries[i]={...entries[i],...item}}else entries.push(item);selectedId=item.id;await saveEntries();resetForm();render();$('saveStatus').style.color='#c8f4d8';$('saveStatus').textContent=existing?'Изменения сохранены.':'Бот опубликован.'}
   catch(e){entries=before;$('saveStatus').style.color='#ffd0d0';$('saveStatus').textContent=e.message||'Не удалось опубликовать бота.';render()}
   finally{btn.disabled=false;if(btn.textContent==='Публикация...')btn.textContent=old}
 };

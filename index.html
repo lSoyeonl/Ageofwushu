@@ -1240,13 +1240,64 @@ button,input{font:inherit}
   }
 }
 
+
+
+/* 0.0.84 — более компактные и центрированные кнопки главной */
+.cards{
+  width:min(920px,94vw);
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:10px;
+  margin-top:24px;
+  justify-content:center;
+}
+.card{
+  height:112px;
+  border-radius:13px;
+  gap:7px;
+  padding:10px 8px;
+}
+.card .icon{font-size:32px}
+.card b{font-size:14px;line-height:1.14}
+.community-bar{
+  width:min(920px,94vw);
+  margin-top:12px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:stretch;
+  gap:10px;
+}
+.community-card,
+.community-card.bots-home-card,
+.community-card.hideouts-home-card,
+.community-card.buffs-home-card{
+  flex:0 1 286px;
+  width:auto;
+  min-height:64px;
+  padding:11px 13px;
+  border-radius:12px;
+  justify-self:auto;
+  grid-column:auto;
+  text-align:left;
+}
+.community-card .c-icon{width:38px;height:38px;flex-basis:38px;font-size:18px}
+.community-card b{font-size:14px}
+.community-card span{font-size:11px;margin-top:2px;line-height:1.25}
+@media(max-width:900px){
+  .cards{grid-template-columns:repeat(3,minmax(0,1fr));width:min(720px,94vw)}
+}
+@media(max-width:620px){
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .card{height:102px}.card .icon{font-size:28px}.card b{font-size:13px}
+  .community-card,.community-card.bots-home-card,.community-card.hideouts-home-card,.community-card.buffs-home-card{flex:1 1 100%;width:100%}
+}
 </style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=0.0.48"></script>
 <script src="storage-config.js?v=0.0.76"></script>
-<script src="supabase-sync.js?v=0.0.81"></script>
-<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+<script src="supabase-sync.js?v=0.0.84"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
 <link rel="stylesheet" href="home-mobile-0.0.49.css?v=0.0.49">
 </head>
 <body class="home-page">
@@ -1302,6 +1353,7 @@ button,input{font:inherit}
       <a href="pirate.html">О Пиратке</a>
       <a href="updates.html">Обновления</a>
     <a href="game-stats.html">Характеристики</a>
+      <a href="quests.html">Квесты</a>
       <a href="accounts-sale.html">Продажа Аккаунтов</a>
       <a href="forum.html">Форум</a>
       <a href="partners.html">Партнеры</a>
@@ -1370,6 +1422,10 @@ button,input{font:inherit}
       <a class="card" href="game-stats.html">
         <div class="icon">≡</div>
         <b>Игровые<br>Характеристики</b>
+      </a>
+      <a class="card" href="quests.html">
+        <div class="icon">▤</div>
+        <b>Сборник<br>Квестов</b>
       </a>
     </section>
 
