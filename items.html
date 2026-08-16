@@ -216,7 +216,7 @@ function card(item,preview=false){
   return `<article id="item-card-${item.id}" class="panel catalog-card ${item.id===selectedId&&!preview?'active':''}" ${!preview?`onclick="selectEntry(${item.id})"`:''}>
     <div class="catalog-head">
       ${item.image?`<img class="catalog-img" src="${item.image}" loading="lazy" alt="${esc(item.name||'Предмет')}">`:'<div class="catalog-img"></div>'}
-      <div><h2>${esc(item.name||'Без названия')}${window.KFStaffBadge?.(item.authorRole||'admin')||''}</h2><div class="tags"><span class="tag">${esc(item.type||'Без типа')}</span></div></div>
+      <div><h2>${esc(item.name||'Без названия')}</h2><div class="tags"><span class="tag">${esc(item.type||'Без типа')}</span>${window.KFStaffBadge?.(item.authorRole||'admin')||''}</div></div>
     </div>
     ${item.description?`<div class="desc" style="margin-top:8px">${esc(item.description).replace(/\n/g,'<br>')}</div>`:''}
     ${codeHtml(item)}

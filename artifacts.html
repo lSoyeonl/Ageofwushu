@@ -131,7 +131,7 @@ function artifactCard(item){
     item.pirateDate?`<div class="artifact-meta-row"><b>Пиратка:</b> ${esc(formatDate(item.pirateDate))}</div>`:''
   ].join('');
   return `<article id="artifact-card-${item.id}" class="panel artifact-card ${item.id===selectedId?'active':''}">
-    <div class="artifact-head">${displayImage(item)}<div><h2>${esc(item.name||'Без названия')}${window.KFStaffBadge?.(item.authorRole||'admin')||''}</h2><div class="tags"><span class="tag">${esc(item.type||types[0])}</span></div>${item.otherNames?`<div class="muted"><b>Другие:</b> ${esc(item.otherNames)}</div>`:''}</div></div>
+    <div class="artifact-head">${displayImage(item)}<div><h2>${esc(item.name||'Без названия')}</h2><div class="tags"><span class="tag">${esc(item.type||types[0])}</span>${window.KFStaffBadge?.(item.authorRole||'admin')||''}</div>${item.otherNames?`<div class="muted"><b>Другие:</b> ${esc(item.otherNames)}</div>`:''}</div></div>
     ${item.description?`<div class="desc">${esc(item.description).replace(/\n/g,'<br>')}</div>`:''}
     <div class="artifact-meta">
       ${item.code?`<div class="artifact-meta-row"><b>Код:</b> ${esc(item.code)}</div>`:''}

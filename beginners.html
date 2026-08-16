@@ -27,6 +27,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 .preview-modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);padding:22px;align-items:center;justify-content:center}.preview-modal.open{display:flex}.preview-box{width:min(900px,96vw);max-height:88vh;overflow:auto;padding:22px;border:1px solid rgba(228,180,94,.42);border-radius:18px;background:linear-gradient(180deg,#0a2636,#061721);box-shadow:0 25px 80px rgba(0,0,0,.55)}.preview-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}.preview-head h2{margin:0}.preview-content{display:grid;gap:12px}
 .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.gallery img{width:100%;height:170px;object-fit:cover;border-radius:10px;border:1px solid rgba(228,180,94,.16)}.draft-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.draft-img{position:relative}.draft-img img{width:100%;height:110px;object-fit:cover;border-radius:9px;border:1px solid rgba(228,180,94,.16)}.draft-img button{position:absolute;top:4px;right:4px;width:27px;height:27px;border:0;border-radius:50%;background:#57262b;color:#fff;cursor:pointer}
 .rich-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.rich-toolbar button,.rich-toolbar select,.rich-toolbar input[type=color]{min-height:34px;border:1px solid rgba(228,180,94,.25);border-radius:7px;background:#102b3b;color:#fff;padding:0 9px;cursor:pointer}.rich-editor{min-height:180px;padding:12px;border:1px solid rgba(228,180,94,.30);border-radius:10px;background:#071824;color:#fff;outline:0;line-height:1.55}.rich-editor table,.rich-output table{width:100%;border-collapse:collapse;margin:12px 0}.rich-editor td,.rich-editor th,.rich-output td,.rich-output th{border:1px solid rgba(228,180,94,.35);padding:7px 8px;vertical-align:top}.rich-editor th,.rich-output th{background:rgba(228,180,94,.10);color:#ffe2a0}.rich-output{line-height:1.58;color:#d7e3e8}.safe-link{display:inline-flex;margin-top:10px;padding:7px 10px;border:1px solid rgba(228,180,94,.22);border-radius:8px;color:#ffe2a0;background:rgba(228,180,94,.06)}
+.editor-help{margin:10px 0;padding:10px 12px;border:1px solid rgba(126,204,234,.18);border-radius:10px;background:rgba(126,204,234,.055);color:#cfe5ee;font-size:12px;line-height:1.5}.editor-help.compact{margin:7px 0;font-size:11px}.wiki-summary-footer{display:grid;grid-template-columns:minmax(0,.9fr) minmax(300px,1.1fr);gap:14px;align-items:stretch;margin-top:15px}.wiki-summary-footer .wiki-meta{align-content:start;margin:0}.wiki-expand-panel{min-height:70px;border:1px solid rgba(228,180,94,.3);border-radius:10px;background:linear-gradient(180deg,rgba(18,55,72,.82),rgba(10,35,50,.9));color:#ffe2a0;font-size:14px;font-weight:900;letter-spacing:.04em;cursor:pointer}.wiki-expand-panel:hover{border-color:rgba(255,226,160,.72);background:rgba(228,180,94,.1)}.wiki-collapse-wide{display:flex;justify-content:center;margin:16px 0 2px}.wiki-collapse-wide button{min-height:40px;border:1px solid rgba(228,180,94,.28);border-radius:9px;background:#153247;color:#ffe2a0;padding:0 16px;font-weight:800;cursor:pointer}@media(max-width:760px){.wiki-summary-footer{grid-template-columns:1fr}.wiki-expand-panel{min-height:54px}}
 @media(max-width:900px){.two-col{grid-template-columns:1fr}.toc{position:relative;top:auto;max-height:none}.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.grid3{grid-template-columns:1fr}.draft-gallery{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.compact-top{flex-direction:column}.compact-img{width:100%;height:220px}.grid2{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.draft-gallery{grid-template-columns:1fr}}
 
@@ -79,12 +80,14 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
   <a href="login.html">Вход</a>
 </nav></header>
 <main class="wrap"><section class="panel page-head"><h1>Справочник Новичкам <span id="adminBadge"></span></h1><p class="muted">Текст, таблицы, дополнительная ссылка и несколько изображений в одном материале.</p><div class="role-note" id="roleNote"></div>
-<div class="editor" id="editor"><h2 id="editorTitle" style="margin-top:0">Добавить материал</h2><div class="edit-note" id="editNote">Режим редактирования опубликованного материала.</div><div class="grid2"><div class="field"><label>Тип</label><select id="type"></select></div><div class="field"><label>Заголовок</label><input id="title"></div></div>
-<div class="field"><label>Вступление</label><textarea id="intro" maxlength="1200" placeholder="Кратко опишите, о чём эта статья и что пользователь узнает после прочтения."></textarea><div class="muted" style="font-size:11px;margin-top:5px">Для длинной статьи это вступление показывается рядом с первой картинкой в свернутом виде. До 1200 символов.</div></div>
-<div class="type-manager"><div class="field"><label>Добавить новый тип</label><input id="newType" maxlength="80"></div><button class="btn secondary" id="addType" type="button">Добавить тип</button></div><div class="chips" id="typeChips"></div>
+<div class="editor" id="editor"><h2 id="editorTitle" style="margin-top:0">Добавить материал</h2><div class="edit-note" id="editNote">Режим редактирования опубликованного материала.</div>
+<div class="editor-help"><b>Редактор статьи.</b> Заголовок — название материала. Вступление — короткое описание для свернутого вида. Разделы слева изменяются кнопкой «⚙ Изменить разделы» в оглавлении.</div>
+<div class="field"><label>Заголовок статьи</label><input id="title" placeholder="Например: Гайд на меридианы"></div>
+<div class="field"><label>Вступление / краткое описание</label><textarea id="intro" maxlength="1200" placeholder="Кратко опишите, о чём эта статья и что пользователь узнает после прочтения."></textarea><div class="muted" style="font-size:11px;margin-top:5px">Показывается до разворачивания полной статьи. До 1200 символов.</div></div>
+<div style="display:none"><select id="type"><option>Общее</option></select><input id="newType"><button id="addType" type="button"></button><div id="typeChips"></div></div>
 <div class="field"><label>Дополнительная ссылка</label><input id="extraLink" placeholder="https://..."></div>
 <div id="wikiTocEditorMount"></div>
-<div class="field"><label>Содержание</label><div class="rich-toolbar"><button type="button" onclick="fmt('bold')"><b>B</b></button><button type="button" onclick="fmt('strikeThrough')"><s>S</s></button><select onchange="if(this.value)setRichFontSize('rich',this.value);this.selectedIndex=0"><option value="">Шрифт 5–30 px</option><option value="5">5 px</option><option value="6">6 px</option><option value="7">7 px</option><option value="8">8 px</option><option value="9">9 px</option><option value="10">10 px</option><option value="11">11 px</option><option value="12">12 px</option><option value="13">13 px</option><option value="14">14 px</option><option value="15">15 px</option><option value="16">16 px</option><option value="17">17 px</option><option value="18">18 px</option><option value="19">19 px</option><option value="20">20 px</option><option value="21">21 px</option><option value="22">22 px</option><option value="23">23 px</option><option value="24">24 px</option><option value="25">25 px</option><option value="26">26 px</option><option value="27">27 px</option><option value="28">28 px</option><option value="29">29 px</option><option value="30">30 px</option></select><select class="rich-font-weight-select" onchange="if(this.value)setRichFontWeight('rich',this.value);this.selectedIndex=0"><option value="">Oswald</option><option value="300">Oswald тонкий</option><option value="400">Oswald обычный</option></select><label style="display:flex;align-items:center;gap:5px">Цвет <input type="color" onchange="fmt('foreColor',this.value)"></label><button type="button" onclick="fmt('justifyLeft')" title="По левому краю">⇤</button><button type="button" onclick="fmt('justifyCenter')" title="По центру">↔</button><button type="button" onclick="fmt('justifyRight')" title="По правому краю">⇥</button><button type="button" onclick="insertImageIntoRichEditor('rich')" title="Изображение можно вставить и внутрь ячейки таблицы">+ Изображение</button><button type="button" onclick="fmt('insertUnorderedList')">• Список</button></div><div class="rich-editor" id="rich" contenteditable="true"></div></div>
+<div class="field"><label>Содержание статьи</label><div class="editor-help compact"><b>Кнопки редактора:</b> B — жирный, S — зачёркнутый, «Шрифт» — размер, стрелки — выравнивание, «+ Изображение» — вставка картинки в текст, «• Список» — маркированный список.</div><div class="rich-toolbar"><button type="button" onclick="fmt('bold')"><b>B</b></button><button type="button" onclick="fmt('strikeThrough')"><s>S</s></button><select onchange="if(this.value)setRichFontSize('rich',this.value);this.selectedIndex=0"><option value="">Шрифт 5–30 px</option><option value="5">5 px</option><option value="6">6 px</option><option value="7">7 px</option><option value="8">8 px</option><option value="9">9 px</option><option value="10">10 px</option><option value="11">11 px</option><option value="12">12 px</option><option value="13">13 px</option><option value="14">14 px</option><option value="15">15 px</option><option value="16">16 px</option><option value="17">17 px</option><option value="18">18 px</option><option value="19">19 px</option><option value="20">20 px</option><option value="21">21 px</option><option value="22">22 px</option><option value="23">23 px</option><option value="24">24 px</option><option value="25">25 px</option><option value="26">26 px</option><option value="27">27 px</option><option value="28">28 px</option><option value="29">29 px</option><option value="30">30 px</option></select><select class="rich-font-weight-select" onchange="if(this.value)setRichFontWeight('rich',this.value);this.selectedIndex=0"><option value="">Oswald</option><option value="300">Oswald тонкий</option><option value="400">Oswald обычный</option></select><label style="display:flex;align-items:center;gap:5px">Цвет <input type="color" onchange="fmt('foreColor',this.value)"></label><button type="button" onclick="fmt('justifyLeft')" title="По левому краю">⇤</button><button type="button" onclick="fmt('justifyCenter')" title="По центру">↔</button><button type="button" onclick="fmt('justifyRight')" title="По правому краю">⇥</button><button type="button" onclick="insertImageIntoRichEditor('rich')" title="Изображение можно вставить и внутрь ячейки таблицы">+ Изображение</button><button type="button" onclick="fmt('insertUnorderedList')">• Список</button></div><div class="rich-editor" id="rich" contenteditable="true"></div></div>
 <div class="table-tools"><div class="field"><label>Строк</label><input id="tableRows" type="number" min="1" max="20" value="3"></div><div class="field"><label>Колонок</label><input id="tableCols" type="number" min="1" max="10" value="3"></div><button class="btn secondary" type="button" id="insertTable">Добавить таблицу в содержание</button></div>
 <div class="filebox"><label>Изображения (можно несколько)</label><input id="imagesInput" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif"><div class="muted" style="font-size:11px;margin-top:5px">До 8 изображений. Изображения автоматически оптимизируются.</div><div class="draft-gallery" id="draftGallery"></div></div>
 <button class="btn secondary" type="button" id="previewBtn">Предпросмотр</button><button class="btn" id="saveBtn">Опубликовать</button><button class="btn secondary" type="button" id="cancelBtn" style="display:none">Отменить редактирование</button><div class="beginner-save-status" id="saveStatus"></div></div></section>
@@ -235,7 +238,6 @@ function guideCard(x,preview=false){
   const body=expanded?fullGuideHtml(x):collapsedGuideHtml(x);
   const selectedClass=String(x.id)===String(selected)?' is-selected':'';
   return `<article id="${guideDomId(x.id)}" class="panel beginner-card ${expanded?'is-expanded':'is-collapsed'}${selectedClass}">
-    <span class="tag">${esc(x.type||'Общее')}</span>
     <h2>${esc(x.title)}${!preview?(window.KFStaffBadge?.(x.authorRole||'admin')||''):''}</h2>
     ${body}
     ${!preview?`<div class="beginner-expand-row"><button class="beginner-expand-btn" type="button" onclick="toggleGuide('${encodeURIComponent(String(x.id))}')">${expanded?'Свернуть запись':'Открыть запись'}</button></div>`:''}
@@ -247,11 +249,7 @@ function guideCard(x,preview=false){
   </article>`;
 }
 function render(){
-  document.getElementById('toc').innerHTML=items.length?types.map(type=>{
-    const a=items.filter(x=>(x.type||'Общее')===type).slice().reverse();
-    if(!a.length)return '';
-    return `<div class="toc-group">${esc(type)}</div>`+a.map(x=>`<a class="toc-item ${String(x.id)===String(selected)?'active':''}" onclick="sel('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title)}</b></a>`).join('')
-  }).join(''):'<div class="muted">Пока пусто</div>';
+  document.getElementById('toc').innerHTML=items.length?items.slice().reverse().map(x=>`<a class="toc-item ${String(x.id)===String(selected)?'active':''}" onclick="sel('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title)}</b></a>`).join(''):'<div class="muted">Пока пусто</div>';
 
   const list=items.slice().reverse();
   if(!list.length){
@@ -297,7 +295,6 @@ window.editItem=enc=>{
   const x=items.find(a=>String(a.id)===String(id));
   if(!x)return;
   editingId=x.id;selected=x.id;
-  document.getElementById('type').value=x.type||types[0];
   document.getElementById('title').value=x.title||'';
   document.getElementById('intro').value=x.intro||'';
   document.getElementById('extraLink').value=x.extraLink||'';
@@ -319,7 +316,7 @@ document.getElementById('previewBtn').onclick=()=>{
         intro=document.getElementById('intro').value.trim(),
         content=cleanRich(document.getElementById('rich').innerHTML),
         link=document.getElementById('extraLink').value.trim();
-  openPreview(`<article class="panel beginner-card"><span class="tag">${esc(document.getElementById('type').value)}</span><h2>${esc(title)}</h2>${draftImages.length?`<div class="beginner-gallery">${draftImages.map(src=>`<img src="${src}" loading="lazy" decoding="async">`).join('')}</div>`:''}${intro?`<div class="article-intro"><b>Вступление.</b> ${esc(intro)}</div>`:''}<div class="rich-output">${content}</div>${link&&safeUrl(link)?`<a class="safe-link" href="${safeUrl(link)}" target="_blank">Дополнительная ссылка</a>`:''}</article>`)
+  openPreview(`<article class="panel beginner-card"><h2>${esc(title)}</h2>${draftImages.length?`<div class="beginner-gallery">${draftImages.map(src=>`<img src="${src}" loading="lazy" decoding="async">`).join('')}</div>`:''}${intro?`<div class="article-intro"><b>Вступление.</b> ${esc(intro)}</div>`:''}<div class="rich-output">${content}</div>${link&&safeUrl(link)?`<a class="safe-link" href="${safeUrl(link)}" target="_blank">Дополнительная ссылка</a>`:''}</article>`)
 };
 
 document.getElementById('saveBtn').onclick=async()=>{
@@ -339,7 +336,7 @@ document.getElementById('saveBtn').onclick=async()=>{
   const tocCfg=window.KFWiki?.readTocEditor?.()||{tocMode:'auto',tocItems:[],showInToc:true};
   const item={
     id:editingId||Date.now(),
-    type:document.getElementById('type').value,
+    type:'Общее',
     title,
     intro,
     tocMode:tocCfg.tocMode,
@@ -425,14 +422,14 @@ async function init(){
     types=Array.isArray(remoteTypes)&&remoteTypes.length?remoteTypes:['Общее'];
     selected=items.length?items[0].id:null;
 
-    renderTypes();
+    renderTypes();document.getElementById('type').value='Общее';
     renderDraftGallery();
     render();
   }catch(e){
     document.getElementById('roleNote').style.color='#ffd0d0';
     document.getElementById('roleNote').textContent=e.message||'Не удалось загрузить справочник из Supabase.';
     items=[];types=['Общее'];
-    renderTypes();renderDraftGallery();render();
+    renderTypes();document.getElementById('type').value='Общее';renderDraftGallery();render();
   }
 }
 init();
@@ -447,30 +444,28 @@ init();
   side.innerHTML=KFWiki.sidebarChrome('beginners','Поиск по справочнику…',items.length,isAdmin);KFWiki.loadSectionConfig();
   KFWiki.mobileButton(shell);
   let wikiQuery='';
+  const wikiExpandedIds=new Set();
+  window.toggleBeginnerWikiArticle=id=>{const key=decodeURIComponent(String(id));if(wikiExpandedIds.has(key))wikiExpandedIds.delete(key);else wikiExpandedIds.add(key);render();requestAnimationFrame(()=>document.getElementById(guideDomId(key))?.scrollIntoView({behavior:'smooth',block:'start'}))};
   const hashId=KFWiki.hashId('guide');if(hashId&&items.some(x=>String(x.id)===String(hashId)))selected=hashId;
 
-  function searchable(x){return [x.type,x.title,x.intro,KFWiki.plain(x.content)].join(' ').toLowerCase()}
+  function searchable(x){return [x.title,x.intro,KFWiki.plain(x.content)].join(' ').toLowerCase()}
   function order(){return items.slice().reverse()}
   function visibleOrder(){return order().filter(x=>isAdmin||x.showInToc!==false)}
   function filtered(){const q=wikiQuery.trim().toLowerCase(),base=visibleOrder();return q?base.filter(x=>searchable(x).includes(q)):base}
-  function moveTo(id){selected=decodeURIComponent(String(id));KFWiki.setHash('guide',selected);render();KFWiki.closeToc();requestAnimationFrame(()=>content.scrollIntoView({behavior:'smooth',block:'start'}))}
+  function moveTo(id){selected=decodeURIComponent(String(id));wikiExpandedIds.delete(String(selected));KFWiki.setHash('guide',selected);render();KFWiki.closeToc();requestAnimationFrame(()=>content.scrollIntoView({behavior:'smooth',block:'start'}))}
   window.wikiBeginnerSelect=moveTo;
 
   function navHtml(list){
     if(!list.length)return '<div class="wiki-no-results">Ничего не найдено</div>';
-    return types.map(type=>{
-      const rows=list.filter(x=>(x.type||'Общее')===type);
-      if(!rows.length)return '';
-      return `<div class="wiki-group-title">${esc(type)}</div>`+rows.map(x=>`<a class="wiki-nav-item ${x.showInToc===false?'is-hidden ':''}${String(x.id)===String(selected)?'active':''}" onclick="wikiBeginnerSelect('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title)}</b><small>${x.showInToc===false?'Скрыто из оглавления':esc(KFWiki.itemDate(x)||'Материал справочника')}</small></a>`).join('')
-    }).join('');
+    return list.map(x=>`<a class="wiki-nav-item ${x.showInToc===false?'is-hidden ':''}${String(x.id)===String(selected)?'active':''}" onclick="wikiBeginnerSelect('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title)}</b><small>${x.showInToc===false?'Скрыто из оглавления':esc(KFWiki.itemDate(x)||'Материал справочника')}</small></a>`).join('');
   }
   function prevNext(x){
     const base=visibleOrder(),a=base.some(v=>String(v.id)===String(x.id))?base:order(),i=a.findIndex(v=>String(v.id)===String(x.id)),prev=a[i-1],next=a[i+1];
     return `<div class="wiki-prevnext"><a class="${prev?'':'disabled'}" ${prev?`onclick="wikiBeginnerSelect('${encodeURIComponent(String(prev.id))}')"`:''}><small>← Новее</small><b>${prev?esc(prev.title):'Нет материала'}</b></a><a class="${next?'':'disabled'}" ${next?`onclick="wikiBeginnerSelect('${encodeURIComponent(String(next.id))}')"`:''}><small>Дальше →</small><b>${next?esc(next.title):'Конец раздела'}</b></a></div>`
   }
   function article(x){
-    const date=KFWiki.itemDate(x),author=KFWiki.author(x);
-    return `<article id="${guideDomId(x.id)}" class="panel wiki-article"><div class="wiki-article-head"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>Справочник новичкам</span><span>›</span><span>${esc(x.type||'Общее')}</span></div><h2>${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin')||''}</h2>${x.intro?`<div class="wiki-article-sub">${esc(x.intro)}</div>`:''}<div class="wiki-meta"><span class="wiki-meta-chip"><b>Раздел:</b> ${esc(x.type||'Общее')}</span><span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div></div><div class="wiki-article-body"><div class="wiki-reader-actions"><button class="wiki-reader-btn" type="button" onclick="KFWiki.copyLink('guide','${encodeURIComponent(String(x.id))}',this)">🔗 Скопировать ссылку</button>${isAdmin?`<button class="wiki-reader-btn" type="button" onclick="editItem('${encodeURIComponent(String(x.id))}')">✎ Редактировать</button>`:''}</div>${fullGuideHtml(x)}<div id="kf-beginner-reactions-${guideDomId(x.id)}"></div>${isAdmin?`<div class="entry-actions show"><button class="btn danger" type="button" onclick="delItem('${encodeURIComponent(String(x.id))}')">Удалить материал</button></div>`:''}${prevNext(x)}</div></article>`
+    const date=KFWiki.itemDate(x),author=KFWiki.author(x),expanded=wikiExpandedIds.has(String(x.id));
+    return `<article id="${guideDomId(x.id)}" class="panel wiki-article ${expanded?'is-expanded':'is-summary'}"><div class="wiki-article-head"><div class="wiki-breadcrumb"><a href="index.html">Главная</a><span>›</span><span>Справочник новичкам</span><span>›</span><span>Общее</span></div><h2>${esc(x.title)}${window.KFStaffBadge?.(x.authorRole||'admin')||''}</h2>${x.intro?`<div class="wiki-article-sub">${esc(x.intro)}</div>`:''}<div class="wiki-summary-footer"><div class="wiki-meta"><span class="wiki-meta-chip"><b>Автор:</b> ${esc(author)}</span>${date?`<span class="wiki-meta-chip"><b>Опубликовано:</b> ${esc(date)}</span>`:''}</div>${expanded?'':`<button class="wiki-expand-panel" type="button" onclick="toggleBeginnerWikiArticle('${encodeURIComponent(String(x.id))}')">РАЗВЕРНУТЬ СТАТЬЮ</button>`}</div></div>${expanded?`<div class="wiki-article-body"><div class="wiki-reader-actions"><button class="wiki-reader-btn" type="button" onclick="KFWiki.copyLink('guide','${encodeURIComponent(String(x.id))}',this)">🔗 Скопировать ссылку</button>${isAdmin?`<button class="wiki-reader-btn" type="button" onclick="editItem('${encodeURIComponent(String(x.id))}')">✎ Редактировать</button>`:''}</div>${fullGuideHtml(x)}<div id="kf-beginner-reactions-${guideDomId(x.id)}"></div>${isAdmin?`<div class="entry-actions show"><button class="btn danger" type="button" onclick="delItem('${encodeURIComponent(String(x.id))}')">Удалить материал</button></div>`:''}<div class="wiki-collapse-wide"><button type="button" onclick="toggleBeginnerWikiArticle('${encodeURIComponent(String(x.id))}')">Свернуть статью</button></div>${prevNext(x)}</div>`:''}</article>`
   }
 
   render=function(){
