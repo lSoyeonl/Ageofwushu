@@ -62,7 +62,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="storage-config.js?v=0.0.76"></script>
 <script src="supabase-sync.js?v=0.0.84"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
-<link rel="stylesheet" href="wiki-reader-0.0.86.css?v=0.0.86">
+<link rel="stylesheet" href="wiki-reader-0.0.87.css?v=0.0.87">
 <link rel="stylesheet" href="guide-layout-0.0.86.css?v=0.0.86">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
@@ -83,6 +83,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <div class="field"><label>Вступление</label><textarea id="intro" maxlength="1200" placeholder="Кратко опишите, о чём эта статья и что пользователь узнает после прочтения."></textarea><div class="muted" style="font-size:11px;margin-top:5px">Для длинной статьи это вступление показывается рядом с первой картинкой в свернутом виде. До 1200 символов.</div></div>
 <div class="type-manager"><div class="field"><label>Добавить новый тип</label><input id="newType" maxlength="80"></div><button class="btn secondary" id="addType" type="button">Добавить тип</button></div><div class="chips" id="typeChips"></div>
 <div class="field"><label>Дополнительная ссылка</label><input id="extraLink" placeholder="https://..."></div>
+<div id="wikiTocEditorMount"></div>
 <div class="field"><label>Содержание</label><div class="rich-toolbar"><button type="button" onclick="fmt('bold')"><b>B</b></button><button type="button" onclick="fmt('strikeThrough')"><s>S</s></button><select onchange="if(this.value)setRichFontSize('rich',this.value);this.selectedIndex=0"><option value="">Шрифт 5–30 px</option><option value="5">5 px</option><option value="6">6 px</option><option value="7">7 px</option><option value="8">8 px</option><option value="9">9 px</option><option value="10">10 px</option><option value="11">11 px</option><option value="12">12 px</option><option value="13">13 px</option><option value="14">14 px</option><option value="15">15 px</option><option value="16">16 px</option><option value="17">17 px</option><option value="18">18 px</option><option value="19">19 px</option><option value="20">20 px</option><option value="21">21 px</option><option value="22">22 px</option><option value="23">23 px</option><option value="24">24 px</option><option value="25">25 px</option><option value="26">26 px</option><option value="27">27 px</option><option value="28">28 px</option><option value="29">29 px</option><option value="30">30 px</option></select><select class="rich-font-weight-select" onchange="if(this.value)setRichFontWeight('rich',this.value);this.selectedIndex=0"><option value="">Oswald</option><option value="300">Oswald тонкий</option><option value="400">Oswald обычный</option></select><label style="display:flex;align-items:center;gap:5px">Цвет <input type="color" onchange="fmt('foreColor',this.value)"></label><button type="button" onclick="fmt('justifyLeft')" title="По левому краю">⇤</button><button type="button" onclick="fmt('justifyCenter')" title="По центру">↔</button><button type="button" onclick="fmt('justifyRight')" title="По правому краю">⇥</button><button type="button" onclick="insertImageIntoRichEditor('rich')" title="Изображение можно вставить и внутрь ячейки таблицы">+ Изображение</button><button type="button" onclick="fmt('insertUnorderedList')">• Список</button></div><div class="rich-editor" id="rich" contenteditable="true"></div></div>
 <div class="table-tools"><div class="field"><label>Строк</label><input id="tableRows" type="number" min="1" max="20" value="3"></div><div class="field"><label>Колонок</label><input id="tableCols" type="number" min="1" max="10" value="3"></div><button class="btn secondary" type="button" id="insertTable">Добавить таблицу в содержание</button></div>
 <div class="filebox"><label>Изображения (можно несколько)</label><input id="imagesInput" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif"><div class="muted" style="font-size:11px;margin-top:5px">До 8 изображений. Изображения автоматически оптимизируются.</div><div class="draft-gallery" id="draftGallery"></div></div>
@@ -287,7 +288,8 @@ function reset(){
   document.getElementById('extraLink').value='';
   document.getElementById('rich').innerHTML='';
   draftImages=[];
-  renderDraftGallery()
+  renderDraftGallery();
+  window.KFWiki?.resetTocEditor?.()
 }
 window.editItem=enc=>{
   if(!isAdmin)return;
@@ -302,6 +304,7 @@ window.editItem=enc=>{
   document.getElementById('rich').innerHTML=x.content||'';
   draftImages=imagesFor(x);
   renderDraftGallery();
+  window.KFWiki?.fillTocEditor?.(x);
   document.getElementById('editorTitle').textContent='Редактировать материал';
   document.getElementById('editNote').classList.add('show');
   document.getElementById('saveBtn').textContent='Сохранить изменения';
@@ -333,11 +336,15 @@ document.getElementById('saveBtn').onclick=async()=>{
   }
 
   const oldItem=editingId?items.find(x=>String(x.id)===String(editingId)):null;
+  const tocCfg=window.KFWiki?.readTocEditor?.()||{tocMode:'auto',tocItems:[],showInToc:true};
   const item={
     id:editingId||Date.now(),
     type:document.getElementById('type').value,
     title,
     intro,
+    tocMode:tocCfg.tocMode,
+    tocItems:tocCfg.tocItems,
+    showInToc:tocCfg.showInToc,
     content,
     extraLink:document.getElementById('extraLink').value.trim(),
     images:draftImages.slice(),
@@ -429,10 +436,11 @@ async function init(){
   }
 }
 init();
-</script><script src="wiki-reader-0.0.86.js?v=0.0.86"></script>
+</script><script src="wiki-reader-0.0.87.js?v=0.0.87"></script>
 <script>
 (function(){
   KFWiki.bindCommon();
+  const tocMount=document.getElementById('wikiTocEditorMount');if(tocMount){tocMount.innerHTML=KFWiki.tocEditorMarkup();KFWiki.bindTocEditor()}
   const shell=document.querySelector('.two-col'),side=document.querySelector('.toc'),content=document.getElementById('content');
   if(!shell||!side||!content)return;
   shell.classList.add('wiki-shell');side.classList.add('wiki-sidebar');content.classList.add('wiki-content');
@@ -443,7 +451,8 @@ init();
 
   function searchable(x){return [x.type,x.title,x.intro,KFWiki.plain(x.content)].join(' ').toLowerCase()}
   function order(){return items.slice().reverse()}
-  function filtered(){const q=wikiQuery.trim().toLowerCase();return q?order().filter(x=>searchable(x).includes(q)):order()}
+  function visibleOrder(){return order().filter(x=>isAdmin||x.showInToc!==false)}
+  function filtered(){const q=wikiQuery.trim().toLowerCase(),base=visibleOrder();return q?base.filter(x=>searchable(x).includes(q)):base}
   function moveTo(id){selected=decodeURIComponent(String(id));KFWiki.setHash('guide',selected);render();KFWiki.closeToc();requestAnimationFrame(()=>content.scrollIntoView({behavior:'smooth',block:'start'}))}
   window.wikiBeginnerSelect=moveTo;
 
@@ -452,11 +461,11 @@ init();
     return types.map(type=>{
       const rows=list.filter(x=>(x.type||'Общее')===type);
       if(!rows.length)return '';
-      return `<div class="wiki-group-title">${esc(type)}</div>`+rows.map(x=>`<a class="wiki-nav-item ${String(x.id)===String(selected)?'active':''}" onclick="wikiBeginnerSelect('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title)}</b><small>${esc(KFWiki.itemDate(x)||'Материал справочника')}</small></a>`).join('')
+      return `<div class="wiki-group-title">${esc(type)}</div>`+rows.map(x=>`<a class="wiki-nav-item ${x.showInToc===false?'is-hidden ':''}${String(x.id)===String(selected)?'active':''}" onclick="wikiBeginnerSelect('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title)}</b><small>${x.showInToc===false?'Скрыто из оглавления':esc(KFWiki.itemDate(x)||'Материал справочника')}</small></a>`).join('')
     }).join('');
   }
   function prevNext(x){
-    const a=order(),i=a.findIndex(v=>String(v.id)===String(x.id)),prev=a[i-1],next=a[i+1];
+    const base=visibleOrder(),a=base.some(v=>String(v.id)===String(x.id))?base:order(),i=a.findIndex(v=>String(v.id)===String(x.id)),prev=a[i-1],next=a[i+1];
     return `<div class="wiki-prevnext"><a class="${prev?'':'disabled'}" ${prev?`onclick="wikiBeginnerSelect('${encodeURIComponent(String(prev.id))}')"`:''}><small>← Новее</small><b>${prev?esc(prev.title):'Нет материала'}</b></a><a class="${next?'':'disabled'}" ${next?`onclick="wikiBeginnerSelect('${encodeURIComponent(String(next.id))}')"`:''}><small>Дальше →</small><b>${next?esc(next.title):'Конец раздела'}</b></a></div>`
   }
   function article(x){
@@ -465,7 +474,7 @@ init();
   }
 
   render=function(){
-    const list=filtered(),all=order(),hashNow=KFWiki.hashId('guide');
+    const list=filtered(),all=order(),visible=visibleOrder(),hashNow=KFWiki.hashId('guide');
     if(hashNow&&items.some(x=>String(x.id)===String(hashNow)))selected=hashNow;
     if(!all.length){
       selected=null;
@@ -477,18 +486,18 @@ init();
     if(wikiQuery&&list.length&&!list.some(x=>String(x.id)===String(selected)))selected=list[0].id;
     if(wikiQuery&&!list.length){
       document.getElementById('wikiNav').innerHTML=navHtml(list);
-      document.getElementById('wikiCount').textContent='0 / '+String(items.length);
+      document.getElementById('wikiCount').textContent='0 / '+String(visible.length);
       content.innerHTML='<div class="panel wiki-empty-reader"><b>Ничего не найдено</b>Измените запрос или очистите строку поиска.</div>';
       return
     }
-    if(selected==null||!items.some(x=>String(x.id)===String(selected)))selected=all[0].id;
+    if(selected==null||!items.some(x=>String(x.id)===String(selected)))selected=(visible[0]||all[0]).id;
     document.getElementById('wikiNav').innerHTML=navHtml(list);
-    document.getElementById('wikiCount').textContent=String(list.length)+' / '+String(items.length);
+    document.getElementById('wikiCount').textContent=String(list.length)+' / '+String(visible.length);
     const x=items.find(v=>String(v.id)===String(selected));
     content.innerHTML=x?article(x):'<div class="panel wiki-empty-reader">Материал не найден.</div>';
     requestAnimationFrame(()=>{
       const a=content.querySelector('.wiki-article');
-      KFWiki.decorateHeadings(a);
+      KFWiki.decorateHeadings(a,x);
       if(window.KFReactions&&x)KFReactions.mountSmiles('kf-beginner-reactions-'+guideDomId(x.id),'kungfuBeginners',x.id)
     });
   };

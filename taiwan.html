@@ -57,7 +57,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="storage-config.js?v=0.0.76"></script>
 <script src="supabase-sync.js?v=0.0.84"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
-<link rel="stylesheet" href="wiki-reader-0.0.86.css?v=0.0.86">
+<link rel="stylesheet" href="wiki-reader-0.0.87.css?v=0.0.87">
 <link rel="stylesheet" href="guide-layout-0.0.86.css?v=0.0.86">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
@@ -79,6 +79,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <div class="grid2"><div class="field"><label>Заголовок</label><input id="postTitle"></div><div class="field"><label>Ссылка</label><input id="postLink" placeholder="https://..."></div></div>
 <div class="field"><label>Вступление</label><textarea id="postIntro" maxlength="1200" placeholder="Кратко обобщите материал: о чём он и что важно знать перед чтением."></textarea><div class="muted" style="font-size:11px;margin-top:5px">Для длинной статьи вступление показывается рядом с первой картинкой до разворачивания полного материала.</div></div>
 <label class="checkline"><input id="important" type="checkbox"> <span>Пометка «Важное»</span></label>
+<div id="wikiTocEditorMount"></div>
 <div class="field"><label>Содержание</label><div class="rich-toolbar">
 <button type="button" onclick="fmt('bold')"><b>B</b></button><button type="button" onclick="fmt('strikeThrough')"><s>S</s></button>
 <select onchange="if(this.value)setRichFontSize('rich',this.value);this.selectedIndex=0"><option value="">Шрифт 5–30 px</option><option value="5">5 px</option><option value="6">6 px</option><option value="7">7 px</option><option value="8">8 px</option><option value="9">9 px</option><option value="10">10 px</option><option value="11">11 px</option><option value="12">12 px</option><option value="13">13 px</option><option value="14">14 px</option><option value="15">15 px</option><option value="16">16 px</option><option value="17">17 px</option><option value="18">18 px</option><option value="19">19 px</option><option value="20">20 px</option><option value="21">21 px</option><option value="22">22 px</option><option value="23">23 px</option><option value="24">24 px</option><option value="25">25 px</option><option value="26">26 px</option><option value="27">27 px</option><option value="28">28 px</option><option value="29">29 px</option><option value="30">30 px</option></select><select class="rich-font-weight-select" onchange="if(this.value)setRichFontWeight('rich',this.value);this.selectedIndex=0"><option value="">Oswald</option><option value="300">Oswald тонкий</option><option value="400">Oswald обычный</option></select>
@@ -199,19 +200,20 @@ function card(x,preview=false){
   </article>`;
 }
 function render(){document.getElementById('posts').innerHTML=posts.length?posts.slice().reverse().map(x=>card(x)).join(''):'<div class="panel empty">Материалы пока не опубликованы.</div>';setTimeout(()=>{if(window.KFReactions)posts.forEach(x=>KFReactions.mountCheck('kf-check-taiwan-'+x.id,'kungfuTaiwanContent',x.id))},0)}
-function reset(){editingId=null;postTitle.value='';postLink.value='';postIntro.value='';important.checked=false;rich.innerHTML='';draftImages=[];renderDraft();editorTitle.textContent='Добавить материал';editNote.classList.remove('show');saveBtn.textContent='Опубликовать';cancelBtn.style.display='none'}
-window.editPost=id=>{if(!isAdmin)return;const x=posts.find(a=>a.id===id);if(!x)return;editingId=id;postTitle.value=x.title||'';postLink.value=x.link||'';postIntro.value=x.intro||'';important.checked=!!x.important;rich.innerHTML=x.content||'';draftImages=imagesFor(x);renderDraft();editorTitle.textContent='Редактировать материал';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'})}
+function reset(){editingId=null;postTitle.value='';postLink.value='';postIntro.value='';important.checked=false;rich.innerHTML='';draftImages=[];renderDraft();window.KFWiki?.resetTocEditor?.();editorTitle.textContent='Добавить материал';editNote.classList.remove('show');saveBtn.textContent='Опубликовать';cancelBtn.style.display='none'}
+window.editPost=id=>{if(!isAdmin)return;const x=posts.find(a=>a.id===id);if(!x)return;editingId=id;postTitle.value=x.title||'';postLink.value=x.link||'';postIntro.value=x.intro||'';important.checked=!!x.important;rich.innerHTML=x.content||'';draftImages=imagesFor(x);renderDraft();window.KFWiki?.fillTocEditor?.(x);editorTitle.textContent='Редактировать материал';editNote.classList.add('show');saveBtn.textContent='Сохранить изменения';cancelBtn.style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'})}
 cancelBtn.onclick=reset;
 previewBtn.onclick=()=>openPreview(card({id:'preview',title:postTitle.value.trim()||'Без заголовка',intro:postIntro.value.trim(),link:postLink.value.trim(),important:important.checked,content:cleanRich(rich.innerHTML),images:draftImages.slice()},true));
-saveBtn.onclick=async()=>{if(!isAdmin)return;const btn=saveBtn,oldText=btn.textContent;btn.disabled=true;btn.textContent=editingId?'Сохранение...':'Публикация...';try{const titleValue=postTitle.value.trim(),introValue=postIntro.value.trim(),contentValue=cleanRich(rich.innerHTML),linkValue=postLink.value.trim();if(!titleValue||!rich.innerText.trim())throw new Error('Заполните заголовок и содержание');if(isLongPost({content:contentValue,images:draftImages})&&!introValue)throw new Error('Для длинного материала заполните поле «Вступление» — оно будет показано до разворачивания полной статьи.');const item={id:editingId||Date.now(),title:titleValue,intro:introValue,link:linkValue,important:important.checked,content:contentValue,images:draftImages.slice(),image:draftImages[0]||'',authorRole:editingId?(posts.find(x=>x.id===editingId)?.authorRole||'admin'):(u.role||'admin')};const before=posts.slice();if(editingId){const i=posts.findIndex(x=>x.id===editingId);if(i<0)throw new Error('Материал не найден');posts[i]={...posts[i],...item}}else posts.push(item);try{await save()}catch(e){posts=before;throw e}reset();render()}catch(e){alert(e.message||'Не удалось опубликовать материал')}finally{btn.disabled=false;btn.textContent=oldText}};
+saveBtn.onclick=async()=>{if(!isAdmin)return;const btn=saveBtn,oldText=btn.textContent;btn.disabled=true;btn.textContent=editingId?'Сохранение...':'Публикация...';try{const titleValue=postTitle.value.trim(),introValue=postIntro.value.trim(),contentValue=cleanRich(rich.innerHTML),linkValue=postLink.value.trim();if(!titleValue||!rich.innerText.trim())throw new Error('Заполните заголовок и содержание');if(isLongPost({content:contentValue,images:draftImages})&&!introValue)throw new Error('Для длинного материала заполните поле «Вступление» — оно будет показано до разворачивания полной статьи.');const tocCfg=window.KFWiki?.readTocEditor?.()||{tocMode:'auto',tocItems:[],showInToc:true};const item={id:editingId||Date.now(),title:titleValue,intro:introValue,link:linkValue,important:important.checked,tocMode:tocCfg.tocMode,tocItems:tocCfg.tocItems,showInToc:tocCfg.showInToc,content:contentValue,images:draftImages.slice(),image:draftImages[0]||'',authorRole:editingId?(posts.find(x=>x.id===editingId)?.authorRole||'admin'):(u.role||'admin')};const before=posts.slice();if(editingId){const i=posts.findIndex(x=>x.id===editingId);if(i<0)throw new Error('Материал не найден');posts[i]={...posts[i],...item}}else posts.push(item);try{await save()}catch(e){posts=before;throw e}reset();render()}catch(e){alert(e.message||'Не удалось опубликовать материал')}finally{btn.disabled=false;btn.textContent=oldText}};
 window.delPost=async id=>{if(!isAdmin||!confirm('Удалить материал?'))return;const before=posts.slice();posts=posts.filter(x=>x.id!==id);try{await save();if(editingId===id)reset();render()}catch(e){posts=before;alert(e.message||'Не удалось удалить материал')}};
 window.addEventListener('storage',e=>{if(e.key==='kungfuPublicDataV1'||e.key==='kungfuTaiwanContent')render()});
 window.addEventListener('kf-public-data-change',e=>{if(e.detail&&e.detail.key==='kungfuTaiwanContent')render()});window.addEventListener('kf-supabase-synced',e=>{if(e.detail&&e.detail.key==='kungfuTaiwanContent'){posts=readPublishedPosts();render()}});
 renderDraft();render();hydratePublishedPosts();
-</script><script src="wiki-reader-0.0.86.js?v=0.0.86"></script>
+</script><script src="wiki-reader-0.0.87.js?v=0.0.87"></script>
 <script>
 (function(){
   KFWiki.bindCommon();
+  const tocMount=document.getElementById('wikiTocEditorMount');if(tocMount){tocMount.innerHTML=KFWiki.tocEditorMarkup();KFWiki.bindTocEditor()}
   const active='taiwan',hashPrefix='taiwan',sectionName='О Тайване',storeName='kungfuTaiwanContent';
   const postsEl=document.getElementById('posts');if(!postsEl)return;
   postsEl.classList.add('wiki-content');
@@ -224,8 +226,9 @@ renderDraft();render();hydratePublishedPosts();
   const fromHash=KFWiki.hashId(hashPrefix);if(fromHash&&posts.some(x=>String(x.id)===String(fromHash)))selectedPost=fromHash;
 
   function order(){return posts.slice().reverse()}
+  function visibleOrder(){return order().filter(x=>isAdmin||x.showInToc!==false)}
   function searchable(x){return [x.title,x.intro,KFWiki.plain(x.content)].join(' ').toLowerCase()}
-  function filtered(){const q=wikiQuery.trim().toLowerCase();return q?order().filter(x=>searchable(x).includes(q)):order()}
+  function filtered(){const q=wikiQuery.trim().toLowerCase(),base=visibleOrder();return q?base.filter(x=>searchable(x).includes(q)):base}
   function selectPost(id){
     selectedPost=decodeURIComponent(String(id));
     KFWiki.setHash(hashPrefix,selectedPost);
@@ -238,11 +241,11 @@ renderDraft();render();hydratePublishedPosts();
   function navHtml(list){
     if(!list.length)return '<div class="wiki-no-results">Ничего не найдено</div>';
     const important=list.filter(x=>x.important),normal=list.filter(x=>!x.important);
-    const group=(title,arr)=>arr.length?`<div class="wiki-group-title">${title}</div>`+arr.map(x=>`<a class="wiki-nav-item ${String(x.id)===String(selectedPost)?'active':''}" onclick="wikiTaiwanSelect('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title||'Без заголовка')}</b><small>${esc(KFWiki.itemDate(x)||'Материал раздела')}</small></a>`).join(''):'';
+    const group=(title,arr)=>arr.length?`<div class="wiki-group-title">${title}</div>`+arr.map(x=>`<a class="wiki-nav-item ${x.showInToc===false?'is-hidden ':''}${String(x.id)===String(selectedPost)?'active':''}" onclick="wikiTaiwanSelect('${encodeURIComponent(String(x.id))}')"><b>${esc(x.title||'Без заголовка')}</b><small>${x.showInToc===false?'Скрыто из оглавления':esc(KFWiki.itemDate(x)||'Материал раздела')}</small></a>`).join(''):'';
     return group('Важное',important)+group('Все материалы',normal);
   }
   function prevNext(x){
-    const a=order(),i=a.findIndex(v=>String(v.id)===String(x.id)),prev=a[i-1],next=a[i+1];
+    const base=visibleOrder(),a=base.some(v=>String(v.id)===String(x.id))?base:order(),i=a.findIndex(v=>String(v.id)===String(x.id)),prev=a[i-1],next=a[i+1];
     return `<div class="wiki-prevnext"><a class="${prev?'':'disabled'}" ${prev?`onclick="wikiTaiwanSelect('${encodeURIComponent(String(prev.id))}')"`:''}><small>← Новее</small><b>${prev?esc(prev.title):'Нет материала'}</b></a><a class="${next?'':'disabled'}" ${next?`onclick="wikiTaiwanSelect('${encodeURIComponent(String(next.id))}')"`:''}><small>Дальше →</small><b>${next?esc(next.title):'Конец раздела'}</b></a></div>`
   }
   function article(x){
@@ -252,7 +255,7 @@ renderDraft();render();hydratePublishedPosts();
   }
 
   render=function(){
-    const list=filtered(),all=order(),hashNow=KFWiki.hashId('taiwan');
+    const list=filtered(),all=order(),visible=visibleOrder(),hashNow=KFWiki.hashId('taiwan');
     if(hashNow&&posts.some(x=>String(x.id)===String(hashNow)))selectedPost=hashNow;
     if(!all.length){
       selectedPost=null;
@@ -264,18 +267,18 @@ renderDraft();render();hydratePublishedPosts();
     if(wikiQuery&&list.length&&!list.some(x=>String(x.id)===String(selectedPost)))selectedPost=list[0].id;
     if(wikiQuery&&!list.length){
       document.getElementById('wikiNav').innerHTML=navHtml(list);
-      document.getElementById('wikiCount').textContent='0 / '+String(posts.length);
+      document.getElementById('wikiCount').textContent='0 / '+String(visible.length);
       postsEl.innerHTML='<div class="panel wiki-empty-reader"><b>Ничего не найдено</b>Измените запрос или очистите строку поиска.</div>';
       return
     }
-    if(selectedPost==null||!posts.some(x=>String(x.id)===String(selectedPost)))selectedPost=all[0].id;
+    if(selectedPost==null||!posts.some(x=>String(x.id)===String(selectedPost)))selectedPost=(visible[0]||all[0]).id;
     document.getElementById('wikiNav').innerHTML=navHtml(list);
-    document.getElementById('wikiCount').textContent=String(list.length)+' / '+String(posts.length);
+    document.getElementById('wikiCount').textContent=String(list.length)+' / '+String(visible.length);
     const x=posts.find(v=>String(v.id)===String(selectedPost));
     postsEl.innerHTML=x?article(x):'<div class="panel wiki-empty-reader">Материал не найден.</div>';
     requestAnimationFrame(()=>{
       const a=postsEl.querySelector('.wiki-article');
-      KFWiki.decorateHeadings(a);
+      KFWiki.decorateHeadings(a,x);
       if(window.KFReactions&&x){
         const rid='wiki-react-'+String(x.id).replace(/[^a-zA-Z0-9_-]/g,'_');
         KFReactions.mountCheck(rid,storeName,x.id)

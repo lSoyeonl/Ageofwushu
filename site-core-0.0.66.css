@@ -363,3 +363,12 @@ body.kf-subpage-shimmer .update-card>*{position:relative;z-index:1}
   border-color:rgba(145,216,255,.34);background:rgba(105,190,235,.10);color:#bdeaff;
 }
 .content-author-badge.in-button{margin-left:5px;padding:2px 6px;font-size:9px}
+
+/* 0.0.87 — защита от горизонтального переполнения контента */
+.wrap,.panel,.posts,.layout,.content-area,.wiki-content,.wiki-article,.wiki-article-body,.update-copy-col{min-width:0}
+.rich-output,.article-intro,.desc,.wiki-article-sub,.update-copy-col{max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+.rich-output img,.rich-output video,.rich-output canvas,.rich-output svg{max-width:100%!important;height:auto!important}
+.rich-output pre,.rich-output code{max-width:100%;white-space:pre-wrap!important;overflow-wrap:anywhere;word-break:break-word}
+.rich-output a,.safe-link,.update-link a{overflow-wrap:anywhere;word-break:break-word}
+.rich-output table{display:block;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin}
+.rich-output td,.rich-output th{white-space:normal!important;overflow-wrap:anywhere;word-break:break-word}
