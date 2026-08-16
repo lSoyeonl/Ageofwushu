@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Игровые Характеристики — Легенды Кунг-Фу</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<style>
+:root{--gold:#e4b45e;--gold2:#ffe2a0;--line:rgba(228,180,94,.34);--muted:#bfd0d8;--deep:#071824;--cyan:#a9e5ff;--danger:#ffb5b5}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Oswald","Arial Narrow",Arial,sans-serif;background:linear-gradient(rgba(3,14,22,.72),rgba(3,14,22,.94)),url("background.webp") center/cover fixed no-repeat}
+a{text-decoration:none;color:inherit}button,input,textarea{font:inherit}
+.top{min-height:76px;padding:0 3.5vw;display:flex;align-items:center;gap:18px;background:rgba(3,16,26,.93);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--gold2);font-size:18px;font-weight:700}.brand img{width:52px;height:52px;object-fit:contain}
+.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.nav a{font-size:14px;font-weight:750}.nav a:hover,.nav a.active{color:var(--gold2)}
+.wrap{width:min(1600px,calc(100% - 30px));margin:34px auto 70px}.panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(5,27,40,.94),rgba(3,18,28,.97));box-shadow:0 16px 44px rgba(0,0,0,.28)}
+.page-head{padding:22px 24px}.page-head h1{font-size:42px;margin:0;color:var(--gold2)}.muted{color:var(--muted);line-height:1.55}.role-note,.save-status{margin-top:10px;padding:9px 11px;border:1px solid rgba(126,204,234,.16);border-radius:9px;color:#bcd9e4;background:rgba(126,204,234,.05);font-size:13px}.save-status:empty{display:none}
+.admin-badge{display:inline-flex;align-items:center;padding:4px 9px;border:1px solid rgba(255,226,160,.34);border-radius:999px;background:rgba(228,180,94,.08);color:var(--gold2);font-size:11px;font-weight:900;letter-spacing:.05em}
+.toolbar{margin-top:16px;display:grid;grid-template-columns:minmax(240px,1fr) auto;gap:10px;align-items:center}.search{width:100%;min-height:42px;border:1px solid rgba(228,180,94,.28);border-radius:10px;background:#071824;color:#fff;outline:0;padding:10px 12px}.search:focus{border-color:rgba(255,226,160,.78);box-shadow:0 0 0 3px rgba(228,180,94,.06)}
+.toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.btn{min-height:40px;border:0;border-radius:9px;padding:0 14px;background:linear-gradient(#f3d28f,#cb9643);color:#251707;font-weight:800;cursor:pointer}.btn.secondary{background:#153247;color:#ffe2a0;border:1px solid rgba(228,180,94,.24)}.btn.danger{background:#50252a;color:#ffd7d7;border:1px solid rgba(255,140,140,.2)}.btn.small{min-height:31px;padding:0 9px;font-size:11px}.btn:disabled{opacity:.5;cursor:not-allowed}
+.staff-tools{display:none;margin-top:14px;padding:14px;border:1px solid rgba(255,226,160,.18);border-radius:12px;background:rgba(3,21,32,.58)}.staff-tools.show{display:block}.staff-tools-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.staff-tools h2{font-size:18px;margin:0;color:var(--gold2)}.column-list{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.column-chip{display:flex;align-items:center;gap:6px;border:1px solid rgba(126,204,234,.16);border-radius:999px;background:rgba(126,204,234,.05);padding:5px 6px 5px 10px;font-size:12px}.column-chip button{border:0;background:transparent;color:#d9edf5;cursor:pointer;padding:2px 5px}.column-chip button:hover{color:var(--gold2)}.core-note{font-size:11px;color:#9db1ba;margin-top:8px}
+.table-panel{margin-top:16px;padding:0;overflow:hidden}.table-top{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(228,180,94,.18)}.result-count{color:#b9ccd4;font-size:13px}.table-wrap{width:100%;overflow:auto;max-height:70vh;scrollbar-width:thin;scrollbar-color:#8fd8ff #081b29}.stats-table{width:100%;border-collapse:separate;border-spacing:0;min-width:1050px}.stats-table th,.stats-table td{padding:11px 12px;border-right:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.07);vertical-align:top;text-align:left}.stats-table th{position:sticky;top:0;z-index:4;background:#0a2839;color:#ffe2a0;font-size:12px;letter-spacing:.02em;white-space:nowrap}.stats-table td{font-size:13px;color:#dce8ed;background:rgba(5,25,37,.78)}.stats-table tbody tr:nth-child(even) td{background:rgba(7,31,44,.82)}.stats-table tbody tr:hover td{background:rgba(17,51,66,.9)}.stats-table th:first-child,.stats-table td:first-child{position:sticky;left:0;z-index:3}.stats-table th:first-child{z-index:6}.stats-table td:first-child{background:#0a2636;color:#9fc5d5;width:58px;text-align:center}.stats-table .name-ru{font-weight:800;color:#ffe2a0;min-width:190px}.stats-table .name-en{min-width:180px}.stats-table .name-zh{min-width:180px;font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",Arial,sans-serif;font-size:14px}.stats-table .desc{min-width:300px;max-width:460px;white-space:pre-wrap;line-height:1.45}.stats-table .custom-cell{min-width:150px;max-width:340px;white-space:pre-wrap;overflow-wrap:anywhere}.empty-cell{color:#718995}.actions-cell{min-width:150px;white-space:nowrap}.row-actions{display:flex;gap:6px}.empty{padding:34px;text-align:center;color:#9db0b8}
+.editor-backdrop{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.72);padding:22px;align-items:center;justify-content:center}.editor-backdrop.open{display:flex}.editor-box{width:min(900px,96vw);max-height:90vh;overflow:auto;padding:20px;border:1px solid rgba(228,180,94,.4);border-radius:16px;background:linear-gradient(180deg,#0a2636,#061721);box-shadow:0 25px 80px rgba(0,0,0,.55)}.editor-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.editor-head h2{margin:0;color:#ffe2a0}.close-btn{width:38px;height:38px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:#102c3d;color:#fff;cursor:pointer;font-size:20px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-top:12px}label{display:block;margin-bottom:5px;color:#dce7eb;font-weight:700;font-size:13px}input,textarea{width:100%;border:1px solid rgba(228,180,94,.28);border-radius:9px;background:#071824;color:#fff;outline:0;padding:10px 11px}textarea{min-height:100px;resize:vertical}input:focus,textarea:focus{border-color:rgba(255,226,160,.78);box-shadow:0 0 0 3px rgba(228,180,94,.06)}.required{color:#ffb6b6}.editor-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}.field-wide{grid-column:1/-1}
+@media(max-width:980px){.brand span{display:none}.top{align-items:flex-start;padding-top:10px;padding-bottom:10px}.nav{gap:8px}.nav a{font-size:12px}.toolbar{grid-template-columns:1fr}.toolbar-actions{justify-content:flex-start}}
+@media(max-width:650px){.wrap{width:min(100% - 18px,1600px);margin-top:18px}.page-head{padding:17px}.page-head h1{font-size:32px}.form-grid{grid-template-columns:1fr}.field-wide{grid-column:auto}.editor-backdrop{padding:8px}.editor-box{padding:15px}.table-top{align-items:flex-start;flex-direction:column}}
+</style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=0.0.48"></script>
+<script src="storage-config.js?v=0.0.76"></script>
+<script src="supabase-sync.js?v=0.0.81"></script>
+<link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.66">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><img src="logo.png" alt="Логотип"><span>Руководство Легенд Кунг-Фу</span></a>
+  <nav class="nav">
+    <a href="index.html">Главная</a>
+    <a href="taiwan.html">О Тайвани</a>
+    <a href="pirate.html">О Пиратке</a>
+    <a href="updates.html">Обновления</a>
+    <a class="active" href="game-stats.html">Характеристики</a>
+    <a href="accounts-sale.html">Продажа Аккаунтов</a>
+    <a href="forum.html">Форум</a>
+    <a href="partners.html">Партнеры</a>
+    <a href="register.html">Регистрация</a>
+    <a href="login.html">Вход</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="panel page-head">
+    <h1>Игровые Характеристики</h1>
+    <p class="muted">Справочник игровых статов на русском, английском и китайском языках. Описание характеристики необязательно. Дополнительные столбцы можно создавать по мере необходимости.</p>
+    <div class="role-note" id="roleNote">Загрузка...</div>
+    <div class="toolbar">
+      <input class="search" id="searchInput" type="search" placeholder="Поиск по русскому, английскому, китайскому названию, описанию и дополнительным колонкам...">
+      <div class="toolbar-actions" id="staffActions" style="display:none">
+        <button class="btn secondary" type="button" id="manageColumnsBtn">Управление колонками</button>
+        <button class="btn" type="button" id="addRowBtn">+ Добавить характеристику</button>
+      </div>
+    </div>
+    <div class="staff-tools" id="staffTools">
+      <div class="staff-tools-head"><h2>Дополнительные колонки</h2><button class="btn small" type="button" id="addColumnBtn">+ Добавить колонку</button></div>
+      <div class="column-list" id="columnList"></div>
+      <div class="core-note">Основные колонки «Русское название», «English», «中文» и «Описание» закреплены. Дополнительные колонки можно переименовывать и удалять.</div>
+    </div>
+    <div class="save-status" id="saveStatus"></div>
+  </section>
+
+  <section class="panel table-panel">
+    <div class="table-top">
+      <div class="result-count" id="resultCount">0 характеристик</div>
+      <div class="muted" style="font-size:12px">Таблица прокручивается горизонтально, если колонок много.</div>
+    </div>
+    <div class="table-wrap">
+      <table class="stats-table" id="statsTable">
+        <thead id="statsHead"></thead>
+        <tbody id="statsBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<div class="editor-backdrop" id="editorBackdrop" aria-hidden="true">
+  <div class="editor-box" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+    <div class="editor-head"><h2 id="editorTitle">Добавить характеристику</h2><button class="close-btn" id="closeEditorBtn" type="button" aria-label="Закрыть">×</button></div>
+    <div class="form-grid" id="editorFields"></div>
+    <div class="editor-actions"><button class="btn secondary" id="cancelEditorBtn" type="button">Отмена</button><button class="btn" id="saveRowBtn" type="button">Сохранить</button></div>
+  </div>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const KEY='kungfuGameStats';
+const CORE=[
+  {id:'ru',label:'Русское название',required:true,kind:'input'},
+  {id:'en',label:'English',required:true,kind:'input'},
+  {id:'zh',label:'中文',required:true,kind:'input'},
+  {id:'description',label:'Описание',required:false,kind:'textarea'}
+];
+const $=id=>document.getElementById(id);
+let currentUser=null,isStaff=false,state={version:1,columns:[],rows:[]},editingId=null,saving=false;
+
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function uid(prefix='id'){return prefix+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
+function defaultState(){return {version:1,columns:[],rows:[]}}
+function normalize(raw){
+  const x=raw&&typeof raw==='object'?raw:defaultState();
+  const columns=Array.isArray(x.columns)?x.columns.filter(c=>c&&c.id&&c.label).map(c=>({id:String(c.id),label:String(c.label).slice(0,80)})):[];
+  const ids=new Set();
+  const safeCols=columns.filter(c=>!CORE.some(k=>k.id===c.id)&&!ids.has(c.id)&&(ids.add(c.id),true));
+  const rows=Array.isArray(x.rows)?x.rows.filter(r=>r&&typeof r==='object').map(r=>({
+    id:String(r.id||uid('stat')),ru:String(r.ru||''),en:String(r.en||''),zh:String(r.zh||''),description:String(r.description||''),
+    extra:r.extra&&typeof r.extra==='object'?r.extra:{},author:String(r.author||''),authorRole:String(r.authorRole||''),createdAt:r.createdAt||null,updatedAt:r.updatedAt||null
+  })):[];
+  return {version:1,columns:safeCols,rows};
+}
+function roleText(){
+  if(!currentUser)return 'Просмотр доступен всем. Для редактирования войдите в аккаунт администратора или модератора.';
+  if(isStaff)return '<span class="admin-badge">'+(currentUser.role==='moderator'?'МОДЕРАТОР':'АДМИН')+'</span> Доступно добавление и редактирование характеристик, а также управление дополнительными колонками.';
+  return 'Вы вошли как '+esc(currentUser.nickname||currentUser.email||'пользователь')+'. Таблица доступна только для просмотра.';
+}
+function setStatus(text,error=false){const el=$('saveStatus');el.textContent=text||'';el.style.color=error?'#ffb5b5':'#bcd9e4'}
+function cell(v,cls=''){const s=String(v??'').trim();return '<td class="'+cls+'">'+(s?esc(s):'<span class="empty-cell">—</span>')+'</td>'}
+function allText(row){return [row.ru,row.en,row.zh,row.description,...state.columns.map(c=>row.extra?.[c.id]||'')].join(' ').toLocaleLowerCase()}
+function plural(n){const a=Math.abs(n)%100,b=a%10;return a>10&&a<20?'характеристик':b===1?'характеристика':b>=2&&b<=4?'характеристики':'характеристик'}
+
+function renderColumnsManager(){
+  const box=$('columnList');
+  if(!state.columns.length){box.innerHTML='<span class="muted" style="font-size:12px">Дополнительных колонок пока нет.</span>';return}
+  box.innerHTML=state.columns.map(c=>`<span class="column-chip"><b>${esc(c.label)}</b><button type="button" data-rename="${esc(c.id)}" title="Переименовать">✎</button><button type="button" data-delete-col="${esc(c.id)}" title="Удалить">×</button></span>`).join('');
+}
+function render(){
+  const q=$('searchInput').value.trim().toLocaleLowerCase();
+  const rows=state.rows.filter(r=>!q||allText(r).includes(q));
+  const customHeaders=state.columns.map(c=>`<th>${esc(c.label)}</th>`).join('');
+  $('statsHead').innerHTML=`<tr><th>№</th><th>Русское название</th><th>English</th><th>中文</th><th>Описание</th>${customHeaders}${isStaff?'<th>Действия</th>':''}</tr>`;
+  if(!rows.length){
+    $('statsBody').innerHTML=`<tr><td colspan="${5+state.columns.length+(isStaff?1:0)}"><div class="empty">${q?'По вашему запросу ничего не найдено.':'Характеристики пока не добавлены.'}</div></td></tr>`;
+  }else{
+    $('statsBody').innerHTML=rows.map((r,i)=>{
+      const extras=state.columns.map(c=>cell(r.extra?.[c.id]||'','custom-cell')).join('');
+      const actions=isStaff?`<td class="actions-cell"><div class="row-actions"><button class="btn secondary small" type="button" data-edit="${esc(r.id)}">Изменить</button><button class="btn danger small" type="button" data-delete="${esc(r.id)}">Удалить</button></div></td>`:'';
+      return `<tr><td>${i+1}</td>${cell(r.ru,'name-ru')}${cell(r.en,'name-en')}${cell(r.zh,'name-zh')}${cell(r.description,'desc')}${extras}${actions}</tr>`;
+    }).join('');
+  }
+  $('resultCount').textContent=rows.length+' '+plural(rows.length)+(q?' из '+state.rows.length:'');
+  renderColumnsManager();
+}
+
+async function persist(message='Сохранено'){
+  if(!isStaff)throw new Error('Недостаточно прав.');
+  saving=true;setStatus('Сохранение...');
+  try{
+    const saved=await KFSupabase.saveStore(KEY,state);
+    state=normalize(saved||state);render();setStatus(message);
+  }catch(e){setStatus(e?.message||String(e),true);throw e}
+  finally{saving=false}
+}
+function fieldHtml(def,value=''){
+  const req=def.required?' <span class="required">*</span>':'';
+  const wide=def.kind==='textarea'?' field-wide':'';
+  if(def.kind==='textarea')return `<div class="field${wide}"><label>${esc(def.label)}${req}</label><textarea data-field="${esc(def.id)}" maxlength="5000" placeholder="Необязательно">${esc(value)}</textarea></div>`;
+  return `<div class="field"><label>${esc(def.label)}${req}</label><input data-field="${esc(def.id)}" maxlength="250" value="${esc(value)}"></div>`;
+}
+function openEditor(id=null){
+  if(!isStaff)return;
+  editingId=id;
+  const row=id?state.rows.find(r=>r.id===id):null;
+  $('editorTitle').textContent=row?'Редактировать характеристику':'Добавить характеристику';
+  const fields=[...CORE,...state.columns.map(c=>({id:'extra:'+c.id,label:c.label,required:false,kind:'input'}))];
+  $('editorFields').innerHTML=fields.map(f=>{
+    let value='';
+    if(row)value=f.id.startsWith('extra:')?(row.extra?.[f.id.slice(6)]||''):(row[f.id]||'');
+    return fieldHtml(f,value);
+  }).join('');
+  $('editorBackdrop').classList.add('open');$('editorBackdrop').setAttribute('aria-hidden','false');
+  setTimeout(()=>$('editorFields').querySelector('input')?.focus(),30);
+}
+function closeEditor(){$('editorBackdrop').classList.remove('open');$('editorBackdrop').setAttribute('aria-hidden','true');editingId=null}
+async function saveEditor(){
+  if(!isStaff)return;
+  const vals={};$('editorFields').querySelectorAll('[data-field]').forEach(el=>vals[el.dataset.field]=el.value.trim());
+  if(!vals.ru||!vals.en||!vals.zh){setStatus('Заполните названия на русском, английском и китайском языках.',true);return}
+  const old=editingId?state.rows.find(r=>r.id===editingId):null;
+  const extra={};state.columns.forEach(c=>extra[c.id]=vals['extra:'+c.id]||'');
+  const row={id:old?.id||uid('stat'),ru:vals.ru,en:vals.en,zh:vals.zh,description:vals.description||'',extra,
+    author:old?.author||currentUser?.nickname||currentUser?.email||'',authorRole:old?.authorRole||currentUser?.role||'',createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
+  if(old)state.rows=state.rows.map(r=>r.id===old.id?row:r);else state.rows=[...state.rows,row];
+  try{await persist(old?'Характеристика обновлена.':'Характеристика добавлена.');closeEditor()}catch{}
+}
+async function deleteRow(id){
+  if(!isStaff)return;const row=state.rows.find(r=>r.id===id);if(!row)return;
+  if(!confirm('Удалить характеристику «'+(row.ru||row.en||row.zh)+'»?'))return;
+  state.rows=state.rows.filter(r=>r.id!==id);try{await persist('Характеристика удалена.')}catch{}
+}
+async function addColumn(){
+  if(!isStaff)return;const label=prompt('Название новой колонки:');if(label===null)return;const name=label.trim();if(!name)return;
+  if([...CORE,...state.columns].some(c=>c.label.toLocaleLowerCase()===name.toLocaleLowerCase())){setStatus('Колонка с таким названием уже существует.',true);return}
+  state.columns.push({id:uid('col'),label:name.slice(0,80)});try{await persist('Колонка добавлена.')}catch{}
+}
+async function renameColumn(id){
+  if(!isStaff)return;const col=state.columns.find(c=>c.id===id);if(!col)return;const label=prompt('Новое название колонки:',col.label);if(label===null)return;const name=label.trim();if(!name)return;
+  if([...CORE,...state.columns.filter(c=>c.id!==id)].some(c=>c.label.toLocaleLowerCase()===name.toLocaleLowerCase())){setStatus('Колонка с таким названием уже существует.',true);return}
+  col.label=name.slice(0,80);try{await persist('Колонка переименована.')}catch{}
+}
+async function deleteColumn(id){
+  if(!isStaff)return;const col=state.columns.find(c=>c.id===id);if(!col)return;
+  if(!confirm('Удалить колонку «'+col.label+'»? Данные этой колонки во всех строках также будут удалены.'))return;
+  state.columns=state.columns.filter(c=>c.id!==id);state.rows.forEach(r=>{if(r.extra)delete r.extra[id]});try{await persist('Колонка удалена.')}catch{}
+}
+async function load(remoteOnly=false){
+  try{
+    await KFSupabase.ready;
+    if(!remoteOnly){currentUser=await KFSupabase.getCurrentProfile();isStaff=!!currentUser&&['admin','moderator'].includes(currentUser.role);$('roleNote').innerHTML=roleText();$('staffActions').style.display=isStaff?'flex':'none'}
+    const data=await KFSupabase.getStore(KEY,defaultState());state=normalize(data);render();
+  }catch(e){$('roleNote').textContent='Ошибка загрузки: '+(e?.message||String(e));setStatus(e?.message||String(e),true)}
+}
+
+$('searchInput').addEventListener('input',render);
+$('addRowBtn').addEventListener('click',()=>openEditor());
+$('manageColumnsBtn').addEventListener('click',()=>$('staffTools').classList.toggle('show'));
+$('addColumnBtn').addEventListener('click',addColumn);
+$('closeEditorBtn').addEventListener('click',closeEditor);$('cancelEditorBtn').addEventListener('click',closeEditor);$('saveRowBtn').addEventListener('click',saveEditor);
+$('editorBackdrop').addEventListener('click',e=>{if(e.target===$('editorBackdrop'))closeEditor()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('editorBackdrop').classList.contains('open'))closeEditor()});
+$('statsBody').addEventListener('click',e=>{const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(edit)openEditor(edit.dataset.edit);if(del)deleteRow(del.dataset.delete)});
+$('columnList').addEventListener('click',e=>{const rn=e.target.closest('[data-rename]'),del=e.target.closest('[data-delete-col]');if(rn)renameColumn(rn.dataset.rename);if(del)deleteColumn(del.dataset.deleteCol)});
+window.addEventListener('kf-supabase-synced',e=>{if(e.detail?.key===KEY&&!saving)setTimeout(()=>load(true),120)});
+load();
+})();
+</script>
+</body>
+</html>
