@@ -62,7 +62,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="storage-config.js?v=0.0.76"></script>
 <script src="supabase-sync.js?v=0.0.84"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
-<link rel="stylesheet" href="wiki-reader-0.0.87.css?v=0.0.87">
+<link rel="stylesheet" href="wiki-reader-0.0.88.css?v=0.0.88">
 <link rel="stylesheet" href="guide-layout-0.0.86.css?v=0.0.86">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
@@ -436,7 +436,7 @@ async function init(){
   }
 }
 init();
-</script><script src="wiki-reader-0.0.87.js?v=0.0.87"></script>
+</script><script src="wiki-reader-0.0.88.js?v=0.0.88"></script>
 <script>
 (function(){
   KFWiki.bindCommon();
@@ -444,7 +444,7 @@ init();
   const shell=document.querySelector('.two-col'),side=document.querySelector('.toc'),content=document.getElementById('content');
   if(!shell||!side||!content)return;
   shell.classList.add('wiki-shell');side.classList.add('wiki-sidebar');content.classList.add('wiki-content');
-  side.innerHTML=KFWiki.sidebarChrome('beginners','Поиск по справочнику…',items.length);
+  side.innerHTML=KFWiki.sidebarChrome('beginners','Поиск по справочнику…',items.length,isAdmin);KFWiki.loadSectionConfig();
   KFWiki.mobileButton(shell);
   let wikiQuery='';
   const hashId=KFWiki.hashId('guide');if(hashId&&items.some(x=>String(x.id)===String(hashId)))selected=hashId;

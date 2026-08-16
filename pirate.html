@@ -57,7 +57,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
 <script src="storage-config.js?v=0.0.76"></script>
 <script src="supabase-sync.js?v=0.0.84"></script>
 <link rel="stylesheet" href="site-core-0.0.66.css?v=0.0.84">
-<link rel="stylesheet" href="wiki-reader-0.0.87.css?v=0.0.87">
+<link rel="stylesheet" href="wiki-reader-0.0.88.css?v=0.0.88">
 <link rel="stylesheet" href="guide-layout-0.0.86.css?v=0.0.86">
 <link rel="stylesheet" href="word-editor-0.0.69.css?v=0.0.69">
 <script src="smiles-pack-0.0.80.js?v=0.0.80"></script>
@@ -209,7 +209,7 @@ window.delPost=async id=>{if(!isAdmin||!confirm('Удалить материал
 window.addEventListener('storage',e=>{if(e.key==='kungfuPublicDataV1'||e.key==='kungfuPirateContent')render()});
 window.addEventListener('kf-public-data-change',e=>{if(e.detail&&e.detail.key==='kungfuPirateContent')render()});window.addEventListener('kf-supabase-synced',e=>{if(e.detail&&e.detail.key==='kungfuPirateContent'){posts=readPublishedPosts();render()}});
 renderDraft();render();hydratePublishedPosts();
-</script><script src="wiki-reader-0.0.87.js?v=0.0.87"></script>
+</script><script src="wiki-reader-0.0.88.js?v=0.0.88"></script>
 <script>
 (function(){
   KFWiki.bindCommon();
@@ -220,7 +220,7 @@ renderDraft();render();hydratePublishedPosts();
   const shell=document.createElement('div');shell.className='wiki-shell';
   postsEl.parentNode.insertBefore(shell,postsEl);shell.appendChild(postsEl);
   const side=document.createElement('aside');side.className='panel wiki-sidebar';
-  side.innerHTML=KFWiki.sidebarChrome(active,'Поиск по материалам…',posts.length);
+  side.innerHTML=KFWiki.sidebarChrome(active,'Поиск по материалам…',posts.length,isAdmin);KFWiki.loadSectionConfig();
   shell.insertBefore(side,postsEl);KFWiki.mobileButton(shell);
   let wikiQuery='',selectedPost=null;
   const fromHash=KFWiki.hashId(hashPrefix);if(fromHash&&posts.some(x=>String(x.id)===String(fromHash)))selectedPost=fromHash;
