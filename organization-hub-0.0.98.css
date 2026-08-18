@@ -8,7 +8,7 @@ body.org-world{background:
   radial-gradient(circle at 63% 34%,rgba(97,139,172,.20),transparent 31%),
   radial-gradient(circle at 12% 15%,rgba(217,170,87,.09),transparent 23%),
   linear-gradient(180deg,rgba(3,10,16,.52),rgba(2,10,16,.90)),
-  url("background.webp") center/cover fixed no-repeat!important;
+  url("background-night-0.0.99.webp") center/cover fixed no-repeat!important;
 }
 .org-wrap{width:min(1510px,calc(100% - 28px));margin:22px auto 56px;position:relative}
 .org-wrap:before,.org-wrap:after{content:"";position:fixed;pointer-events:none;z-index:-1}

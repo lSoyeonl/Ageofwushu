@@ -42,7 +42,7 @@ button,input{font:inherit}
   min-height:100svh;
   overflow:hidden;
   isolation:isolate;
-  background:#0a5a80 url("background.webp") center center / cover no-repeat;
+  background:#0a5a80 url("background-night-0.0.99.webp") center center / cover no-repeat;
 }
 
 .hero-bg{
@@ -1291,6 +1291,12 @@ button,input{font:inherit}
   .card{height:102px}.card .icon{font-size:28px}.card b{font-size:13px}
   .community-card,.community-card.bots-home-card,.community-card.hideouts-home-card,.community-card.buffs-home-card{flex:1 1 100%;width:100%}
 }
+
+/* v0.0.99: 4 lower-left reference/social buttons wrap cleanly on mobile */
+@media(max-width:820px){
+  .social-links{flex-wrap:wrap}
+  .social-links .social-btn{flex:1 1 calc(50% - 9px)}
+}
 </style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1335,7 +1341,7 @@ button,input{font:inherit}
   <i class="spark" style="left:73%;top:27%;animation-delay:1s"></i>
   <i class="spark" style="left:82%;top:42%;animation-delay:3s"></i>
   <i class="spark" style="left:57%;top:16%;animation-delay:4s"></i>
-  <img src="background.webp" class="hero-bg" alt="Легенды Кунг-Фу">
+  <img src="background-night-0.0.99.webp" class="hero-bg" alt="Легенды Кунг-Фу">
   <div class="water-shimmer"></div>
 <div id="particles"></div>
 
@@ -1451,6 +1457,8 @@ button,input{font:inherit}
     </div>
 
   <div class="social-links">
+<a class="social-btn" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vR_MFmWwXupVq5bbv0rC37kGKVNR91FtL4yhQKk_Aze0Kmz3iNFaqHedt95TXece-nPgbHlvMUyUHza/pubhtml" target="_blank" rel="noopener noreferrer">Игровые Термины</a>
+<a class="social-btn" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vR158-i0rchCbyhFKmj6SBkRZnii0I63LEhOi7U-uq9uzJkAjQJIvZKLp0NyQcs-8ywXLNxmhqGIJAs/pubhtml" target="_blank" rel="noopener noreferrer">Фонари</a>
 <a class="social-btn" href="https://vk.ru/ageofwushu_tv" target="_blank" rel="noopener">Мы в Вконтакте</a>
 <a class="social-btn" href="https://discord.gg/ZveA5ZpZzK" target="_blank" rel="noopener">Дискорд</a>
 </div>
