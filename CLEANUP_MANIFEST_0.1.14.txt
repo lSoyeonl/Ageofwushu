@@ -1,0 +1,34 @@
+Файлы, которые можно удалить из старого репозитория после перехода на PRODUCTION 0.1.14 COMPACT,
+если они там присутствуют и не были вручную изменены после сборки:
+
+__layout_test.html
+guide-layout-0.0.86.css
+guide-layout-0.0.86.js
+wiki-reader-0.0.86.css
+wiki-reader-0.0.86.js
+wiki-reader-0.0.87.css
+wiki-reader-0.0.87.js
+
+Старые organization-data-*.js, кроме:
+organization-data-0.1.10.js
+organization-data-0.1.11.js
+
+Старые organization-detail-*.js, кроме:
+organization-detail-0.1.11.js
+
+Старые organization-hub-*.js, кроме:
+organization-hub-0.1.10.js
+
+Старые organization-hub-*.css, кроме:
+organization-hub-0.1.10.css
+organization-hub-0.1.11.css
+
+Старые README_PATCH_*.txt можно удалить, кроме актуальных справочных файлов, если они нужны вам для истории.
+
+НЕ УДАЛЯТЬ И НЕ ЗАМЕНЯТЬ БЕЗ ПРОВЕРКИ:
+supabase-config.js
+storage-config.js
+supabase-sync.js
+папку smiles
+smiles-pack-0.0.80.js
+SUPABASE_RLS_FIX_0.1.12.sql

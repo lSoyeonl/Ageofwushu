@@ -1,6 +1,6 @@
 (function(){
-  if(window.__KF_SUPABASE_V0084__)return;
-  window.__KF_SUPABASE_V0084__=true;
+  if(window.__KF_SUPABASE_V0085__)return;
+  window.__KF_SUPABASE_V0085__=true;
 
   const cfg=window.KF_SUPABASE_CONFIG||{};
   const storageCfg=window.KF_STORAGE_CONFIG||{};
@@ -24,6 +24,11 @@
   let realtimeChannel=null;
 
   function isStaffRole(role){return role==='admin'||role==='moderator'}
+  const USER_WRITABLE_STORE_KEYS=new Set(['kungfuForumTopics','kungfuPlayers']);
+  function canWriteStoreKey(key,profile=currentProfile){
+    if(isStaffRole(profile?.role))return true;
+    return profile?.role==='user'&&USER_WRITABLE_STORE_KEYS.has(String(key||''));
+  }
   window.KFStaffBadge=function(role,extraClass=''){
     const r=String(role||'').toLowerCase();
     if(r!=='admin'&&r!=='moderator')return '';
@@ -281,6 +286,19 @@
     if(userError)throw userError;
     if(!user)throw new Error('Необходимо войти в аккаунт.');
 
+    let profile=currentProfile;
+    if(!profile||String(profile.id||'')!==String(user.id||'')){
+      try{profile=await profileFromUser(user)}
+      catch(e){
+        console.warn('Profile permission fallback:',e?.message||e);
+        profile=profileObject(null,user);
+        cacheProfile(profile);
+      }
+    }
+    if(!canWriteStoreKey(key,profile)){
+      throw new Error('Недостаточно прав для изменения этого раздела.');
+    }
+
     const cachedFallback=Object.prototype.hasOwnProperty.call(memory,key)
       ? memory[key]
       : parse(nativeGet.call(localStorage,key),undefined);
@@ -312,9 +330,10 @@
     const previous=getRemoteSnapshot(key,cachedPrevious);
     cacheSet(key,parsed);
 
-    // Public pages sometimes create default UI arrays before Auth/bootstrap
-    // finishes. Those defaults are cache-only and must never become database data.
+    // Public pages sometimes create default UI arrays. For обычного игрока
+    // такие фоновые записи остаются только локальным UI-кэшем и не идут в site_store.
     if(!currentProfile)return;
+    if(!canWriteStoreKey(key,currentProfile))return;
 
     queueMicrotask(async()=>{
       try{
@@ -334,6 +353,7 @@
     }
     if(!configured)throw new Error('Supabase не настроен: удаление не сохранено.');
     cacheRemove(key);
+    if(!currentProfile||!canWriteStoreKey(key,currentProfile))return;
     queueMicrotask(async()=>{
       try{
         const {error}=await client.from('site_store').delete().eq('key',key);
@@ -527,7 +547,13 @@
       }
     });
     if(error)throw error;
-    if(data.session&&data.user)await profileFromUser(data.user);
+    if(data.session&&data.user){
+      try{await profileFromUser(data.user)}
+      catch(e){
+        console.warn('Profile after registration:',e?.message||e);
+        cacheProfile(profileObject(null,data.user));
+      }
+    }
     return {user:data.user,session:data.session,needsConfirmation:!!data.user&&!data.session};
   }
 
@@ -538,7 +564,13 @@
       password:String(password||'')
     });
     if(error)throw error;
-    return await profileFromUser(data.user);
+    try{return await profileFromUser(data.user)}
+    catch(e){
+      console.warn('Profile after login:',e?.message||e);
+      const fallback=profileObject(null,data.user);
+      cacheProfile(fallback);
+      return fallback;
+    }
   }
 
   async function adminLogin(loginValue,password){
@@ -577,7 +609,13 @@
     if(!configured||!client)return null;
     const {data:{user},error}=await client.auth.getUser();
     if(error||!user){cacheProfile(null);return null}
-    return await profileFromUser(user);
+    try{return await profileFromUser(user)}
+    catch(e){
+      console.warn('Profile read fallback:',e?.message||e);
+      const fallback=profileObject(null,user);
+      cacheProfile(fallback);
+      return fallback;
+    }
   }
 
   async function updateMyAvatar(avatarUrl){
