@@ -71,4 +71,3 @@ $('addContentBtn').onclick=addContent;$('closeRowEditor').onclick=closeRowEditor
 })();
 </script>
 </body></html>
-function normRow(r={}){return{id:String(r.id||uid('row')),cells:r.cells&&typeof r.cells==='object'?r.cells:{},author:String(r.author||''),authorRole:String(r.authorRole||''),createdAt:r.createdAt||null,updatedAt:r.updatedAt||null}}
