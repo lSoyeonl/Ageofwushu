@@ -275,3 +275,148 @@ pre,code{
     grid-row:auto!important;
   }
 }
+/* === HOTFIX 0.1.27 — MOBILE ORGANIZATION CONTENT ===
+   На страницах школ / сект / фракций позднее desktop-правило
+   .org-content-entry-main снова включало 2 колонки после mobile media-query.
+   Этот блок загружается последним и принудительно возвращает одну колонку. */
+@media (max-width:900px){
+  .org-content-stack,
+  .org-content-entry,
+  .org-content-entry-main,
+  .org-content-media,
+  .org-content-image,
+  .org-content-stats,
+  .org-content-body,
+  .org-content-body.rich-output{
+    min-width:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+
+  .org-content-entry-main{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-auto-flow:row!important;
+    gap:12px!important;
+    align-items:start!important;
+    padding:12px!important;
+    overflow:hidden!important;
+  }
+
+  .org-content-entry-main.no-image{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+
+  .org-content-media,
+  .org-content-body,
+  .org-content-body.rich-output{
+    grid-column:1/-1!important;
+    align-self:stretch!important;
+  }
+
+  .org-content-image{
+    min-height:0!important;
+    padding:10px!important;
+  }
+
+  .org-content-image img{
+    display:block!important;
+    width:auto!important;
+    max-width:100%!important;
+    height:auto!important;
+    max-height:260px!important;
+    margin:0 auto!important;
+    object-fit:contain!important;
+  }
+
+  .org-content-stats,
+  .org-content-stats-text,
+  .org-content-body,
+  .org-content-body.rich-output,
+  .org-content-body *{
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+  }
+
+  .org-content-body [style*="font-size"]{
+    max-width:100%!important;
+  }
+
+  .org-content-entry-head{
+    grid-template-columns:auto minmax(0,1fr)!important;
+  }
+
+  .org-entry-actions{
+    grid-column:1/-1!important;
+    width:100%!important;
+    justify-content:flex-start!important;
+  }
+
+  .org-entry-actions .org-btn{
+    flex:1 1 140px!important;
+    min-width:0!important;
+  }
+
+  /* Страница «Подробнее» */
+  .detail-hero{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:14px!important;
+    padding:14px!important;
+  }
+
+  .detail-copy,
+  .detail-image,
+  .detail-facts,
+  .detail-section,
+  .detail-cards{
+    min-width:0!important;
+    width:100%!important;
+    max-width:100%!important;
+  }
+
+  .detail-facts>div{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:5px!important;
+  }
+
+  .detail-image{
+    min-height:0!important;
+  }
+
+  .detail-image img{
+    width:auto!important;
+    max-width:100%!important;
+    height:auto!important;
+    max-height:320px!important;
+    margin:0 auto!important;
+  }
+}
+
+@media (max-width:600px){
+  .org-content-section-head{
+    padding:12px!important;
+  }
+
+  .org-content-stack{
+    padding:10px!important;
+  }
+
+  .org-content-entry-head{
+    grid-template-columns:auto minmax(0,1fr)!important;
+    gap:8px!important;
+    padding:11px!important;
+  }
+
+  .org-content-entry h3{
+    font-size:clamp(20px,7vw,27px)!important;
+  }
+
+  .org-content-body,
+  .org-content-stats{
+    font-size:14px!important;
+    line-height:1.5!important;
+  }
+}
