@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Игроки — Легенды Кунг-Фу</title>
+<!doctype html><!-- PATCH 0.1.24 PLAYERS EDIT: admin/moderator/author --><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Игроки — Легенды Кунг-Фу</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="shortcut icon" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
@@ -52,7 +52,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(255,226,160,.78);box-s
   <a href="register.html">Регистрация</a>
   <a href="login.html">Вход</a>
 </nav></header>
-<main class="wrap"><section class="panel page-head"><h1>Игроки</h1><p class="muted">Поставить ❤️ может только зарегистрированный пользователь. В каждой карточке обязательно отображается изображение: загруженное фото или стандартная заглушка.</p><div class="editor composer" id="composer"><h2>Добавить себя</h2><div class="grid2"><input id="nick" placeholder="Никнейм"><select id="server"><option>Тайвань</option><option>Пиратка</option></select></div><div class="profile-pick"><label><b>Фото профиля</b></label><input id="image" type="file" accept="image/*"><div class="muted" style="font-size:11px;margin-top:5px">Если фото не выбрано, автоматически используется изображение «Нет фото профиля».</div><img id="profilePickPreview" class="profile-pick-preview" src="profile-placeholder.webp" alt="Предпросмотр фото"></div><input id="contact" placeholder="Связаться"><textarea id="description" placeholder="Описание игрока"></textarea><button class="btn" id="add">Добавить карточку</button></div><div class="role-note" id="loginNote"></div></section>
+<main class="wrap"><section class="panel page-head"><h1>Игроки</h1><p class="muted">Поставить ❤️ может только зарегистрированный пользователь. В каждой карточке обязательно отображается изображение: загруженное фото или стандартная заглушка.</p><div class="editor composer" id="composer"><h2>Добавить себя</h2><div class="grid2"><input id="nick" placeholder="Никнейм"><select id="server"><option>Тайвань</option><option>Пиратка</option></select></div><div class="profile-pick"><label><b>Фото профиля</b></label><input id="image" type="file" accept="image/*"><div class="muted" style="font-size:11px;margin-top:5px">Если фото не выбрано, автоматически используется изображение «Нет фото профиля».</div><img id="profilePickPreview" class="profile-pick-preview" src="profile-placeholder.webp" alt="Предпросмотр фото"></div><input id="contact" placeholder="Связаться"><textarea id="description" placeholder="Описание игрока"></textarea><div class="entry-actions"><button class="btn" id="add">Добавить карточку</button><button class="btn secondary" id="cancelEdit" type="button" style="display:none">Отмена</button></div></div><div class="role-note" id="loginNote"></div></section>
 <section class="server-columns"><div class="panel server-column"><div class="server-title"><h2>Пиратка</h2><span id="pirateCount"></span></div><div class="player-list" id="piratePlayers"></div></div><div class="panel server-column"><div class="server-title"><h2>Тайвань</h2><span id="taiwanCount"></span></div><div class="player-list" id="taiwanPlayers"></div></div></section></main>
 <script>
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
@@ -74,16 +74,188 @@ async function imageToData(file,maxSide=1400){
 function openPreview(html){document.getElementById('previewContent').innerHTML=html;document.getElementById('previewModal').classList.add('open')}
 function closePreview(){document.getElementById('previewModal').classList.remove('open')}
 
-const u=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null');const isAdmin=!!u&&['admin','moderator'].includes(u.role||'user');const canUse=!!u&&['admin','moderator','user'].includes(u.role||'user');if(canUse){composer.classList.add('show');loginNote.textContent='Вы вошли в аккаунт. Можно добавить карточку и ставить ❤️.'}else loginNote.innerHTML='Гость может смотреть карточки. Чтобы добавить себя или поставить ❤️ — <a href="login.html" style="color:#ffe2a0">войдите</a>.';
-let avatar='';image.onchange=async()=>{const f=image.files[0];if(!f){avatar='';profilePickPreview.src='profile-placeholder.webp';return}try{avatar=await imageToData(f);profilePickPreview.src=avatar}catch(e){alert(e.message);avatar='';profilePickPreview.src='profile-placeholder.webp'}};
-let players=JSON.parse(localStorage.getItem('kungfuPlayers')||'[]');function save(){localStorage.setItem('kungfuPlayers',JSON.stringify(players))}
-function userKey(){return u?String(u.id||u.email||u.nickname):''}
-function contactHtml(v){const value=String(v||'').trim();if(!value)return '';return safeUrl(value)?`<div class="contact"><b>Связаться:</b> <a href="${safeUrl(value)}" target="_blank" rel="noopener">${esc(value)}</a></div>`:`<div class="contact"><b>Связаться:</b> ${esc(value)}</div>`}
-function card(x){const likes=Array.isArray(x.likes)?x.likes:[];const liked=canUse&&likes.includes(userKey()),pic=x.avatar||'profile-placeholder.webp';return `<article class="player"><img class="avatar" src="${pic}" loading="lazy" decoding="async" onerror="this.src='profile-placeholder.webp'"><div><span class="tag">${esc(x.server)}</span><h3 style="margin:7px 0">${esc(x.nick)}${window.KFStaffBadge?.(x.authorRole)||''}</h3><div class="date">Добавлен: ${esc(x.createdAt||'Ранее')}</div><p class="muted">${esc(x.description||'').replace(/\n/g,'<br>')}</p>${contactHtml(x.contact)}<button class="heart ${liked?'liked':''}" ${canUse?'':'disabled'} onclick="toggleLike(${x.id})" title="${canUse?'Поставить или убрать ❤️':'Только для зарегистрированных'}">❤️ <span>${likes.length}</span></button>${u&&(isAdmin||u.nickname===x.owner)?`<div><button class="btn danger" onclick="delPlayer(${x.id})">Удалить</button></div>`:''}</div></article>`}
-function render(){const p=players.filter(x=>x.server==='Пиратка').slice().reverse(),t=players.filter(x=>x.server==='Тайвань').slice().reverse();pirateCount.textContent=p.length+' игроков';taiwanCount.textContent=t.length+' игроков';piratePlayers.innerHTML=p.length?p.map(card).join(''):'<div class="empty">Игроков пока нет.</div>';taiwanPlayers.innerHTML=t.length?t.map(card).join(''):'<div class="empty">Игроков пока нет.</div>'}
-add.onclick=()=>{if(!canUse)return;const n=nick.value.trim();if(!n){alert('Укажите никнейм');return}players.push({id:Date.now(),nick:n,server:server.value,contact:contact.value.trim(),description:description.value.trim(),avatar:avatar||'profile-placeholder.webp',owner:u.nickname,authorRole:u.role||'user',createdAt:new Date().toLocaleDateString('ru-RU'),likes:[]});save();avatar='';image.value='';profilePickPreview.src='profile-placeholder.webp';nick.value='';contact.value='';description.value='';render()};
-window.toggleLike=id=>{if(!canUse){alert('Поставить ❤️ могут только зарегистрированные пользователи.');return}const x=players.find(a=>a.id===id);if(!x)return;x.likes=Array.isArray(x.likes)?x.likes:[];const key=userKey(),i=x.likes.indexOf(key);if(i>=0)x.likes.splice(i,1);else x.likes.push(key);save();render()};
-window.delPlayer=id=>{const x=players.find(a=>a.id===id);if(!x||!u||!(isAdmin||u.nickname===x.owner))return;if(!confirm('Удалить карточку игрока?'))return;players=players.filter(a=>a.id!==id);save();render()};
+const u=JSON.parse(localStorage.getItem('kungfuCurrentUser')||'null');
+const isAdmin=!!u&&['admin','moderator'].includes(u.role||'user');
+const canUse=!!u&&['admin','moderator','user'].includes(u.role||'user');
+
+if(canUse){
+  composer.classList.add('show');
+  loginNote.textContent='Вы вошли в аккаунт. Можно добавить карточку, редактировать свои карточки и ставить ❤️.';
+}else{
+  loginNote.innerHTML='Гость может смотреть карточки. Чтобы добавить себя, редактировать свою карточку или поставить ❤️ — <a href="login.html" style="color:#ffe2a0">войдите</a>.';
+}
+
+let avatar='';
+let editingPlayerId=null;
+
+function userKey(){
+  return u?String(u.id||u.email||u.nickname||''):'';
+}
+function sameText(a,b){
+  return String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase();
+}
+function canEditPlayer(x){
+  if(!u||!x)return false;
+  if(isAdmin)return true;
+  if(x.ownerKey&&userKey()&&sameText(x.ownerKey,userKey()))return true;
+  return !!u.nickname&&sameText(u.nickname,x.owner);
+}
+function resetComposer(){
+  editingPlayerId=null;
+  avatar='';
+  image.value='';
+  profilePickPreview.src='profile-placeholder.webp';
+  nick.value='';
+  contact.value='';
+  description.value='';
+  server.value='Тайвань';
+  add.textContent='Добавить карточку';
+  cancelEdit.style.display='none';
+}
+function contactHtml(v){
+  const value=String(v||'').trim();
+  if(!value)return '';
+  return safeUrl(value)
+    ?`<div class="contact"><b>Связаться:</b> <a href="${safeUrl(value)}" target="_blank" rel="noopener">${esc(value)}</a></div>`
+    :`<div class="contact"><b>Связаться:</b> ${esc(value)}</div>`;
+}
+
+image.onchange=async()=>{
+  const f=image.files[0];
+  if(!f){
+    const current=editingPlayerId?players.find(x=>x.id===editingPlayerId):null;
+    avatar=current?.avatar||'';
+    profilePickPreview.src=avatar||'profile-placeholder.webp';
+    return;
+  }
+  try{
+    avatar=await imageToData(f);
+    profilePickPreview.src=avatar;
+  }catch(e){
+    alert(e.message);
+    const current=editingPlayerId?players.find(x=>x.id===editingPlayerId):null;
+    avatar=current?.avatar||'';
+    profilePickPreview.src=avatar||'profile-placeholder.webp';
+  }
+};
+
+let players=JSON.parse(localStorage.getItem('kungfuPlayers')||'[]');
+
+function save(){
+  localStorage.setItem('kungfuPlayers',JSON.stringify(players));
+}
+
+function card(x){
+  const likes=Array.isArray(x.likes)?x.likes:[];
+  const liked=canUse&&likes.includes(userKey());
+  const pic=x.avatar||'profile-placeholder.webp';
+  const canEdit=canEditPlayer(x);
+  return `<article class="player"><img class="avatar" src="${pic}" loading="lazy" decoding="async" onerror="this.src='profile-placeholder.webp'"><div><span class="tag">${esc(x.server)}</span><h3 style="margin:7px 0">${esc(x.nick)}${window.KFStaffBadge?.(x.authorRole)||''}</h3><div class="date">Добавлен: ${esc(x.createdAt||'Ранее')}</div><p class="muted">${esc(x.description||'').replace(/\n/g,'<br>')}</p>${contactHtml(x.contact)}<button class="heart ${liked?'liked':''}" ${canUse?'':'disabled'} onclick="toggleLike(${x.id})" title="${canUse?'Поставить или убрать ❤️':'Только для зарегистрированных'}">❤️ <span>${likes.length}</span></button>${canEdit?`<div class="entry-actions"><button class="btn secondary" onclick="editPlayer(${x.id})">Редактировать</button><button class="btn danger" onclick="delPlayer(${x.id})">Удалить</button></div>`:''}</div></article>`;
+}
+
+function render(){
+  const p=players.filter(x=>x.server==='Пиратка').slice().reverse();
+  const t=players.filter(x=>x.server==='Тайвань').slice().reverse();
+  pirateCount.textContent=p.length+' игроков';
+  taiwanCount.textContent=t.length+' игроков';
+  piratePlayers.innerHTML=p.length?p.map(card).join(''):'<div class="empty">Игроков пока нет.</div>';
+  taiwanPlayers.innerHTML=t.length?t.map(card).join(''):'<div class="empty">Игроков пока нет.</div>';
+}
+
+window.editPlayer=id=>{
+  const x=players.find(a=>a.id===id);
+  if(!x||!canEditPlayer(x)){
+    alert('Недостаточно прав для редактирования этой карточки.');
+    return;
+  }
+  editingPlayerId=id;
+  nick.value=x.nick||'';
+  server.value=x.server||'Тайвань';
+  contact.value=x.contact||'';
+  description.value=x.description||'';
+  avatar=x.avatar||'';
+  image.value='';
+  profilePickPreview.src=avatar||'profile-placeholder.webp';
+  add.textContent='Сохранить изменения';
+  cancelEdit.style.display='inline-flex';
+  composer.classList.add('show');
+  composer.scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(()=>nick.focus(),250);
+};
+
+cancelEdit.onclick=resetComposer;
+
+add.onclick=()=>{
+  if(!canUse)return;
+  const n=nick.value.trim();
+  if(!n){
+    alert('Укажите никнейм');
+    return;
+  }
+
+  if(editingPlayerId){
+    const x=players.find(a=>a.id===editingPlayerId);
+    if(!x||!canEditPlayer(x)){
+      alert('Недостаточно прав для редактирования этой карточки.');
+      return;
+    }
+    x.nick=n;
+    x.server=server.value;
+    x.contact=contact.value.trim();
+    x.description=description.value.trim();
+    x.avatar=avatar||x.avatar||'profile-placeholder.webp';
+    x.updatedAt=new Date().toLocaleDateString('ru-RU');
+    save();
+    resetComposer();
+    render();
+    return;
+  }
+
+  players.push({
+    id:Date.now(),
+    nick:n,
+    server:server.value,
+    contact:contact.value.trim(),
+    description:description.value.trim(),
+    avatar:avatar||'profile-placeholder.webp',
+    owner:u.nickname||'',
+    ownerKey:userKey(),
+    authorRole:u.role||'user',
+    createdAt:new Date().toLocaleDateString('ru-RU'),
+    likes:[]
+  });
+  save();
+  resetComposer();
+  render();
+};
+
+window.toggleLike=id=>{
+  if(!canUse){
+    alert('Поставить ❤️ могут только зарегистрированные пользователи.');
+    return;
+  }
+  const x=players.find(a=>a.id===id);
+  if(!x)return;
+  x.likes=Array.isArray(x.likes)?x.likes:[];
+  const key=userKey(),i=x.likes.indexOf(key);
+  if(i>=0)x.likes.splice(i,1);
+  else x.likes.push(key);
+  save();
+  render();
+};
+
+window.delPlayer=id=>{
+  const x=players.find(a=>a.id===id);
+  if(!x||!canEditPlayer(x))return;
+  if(!confirm('Удалить карточку игрока?'))return;
+  players=players.filter(a=>a.id!==id);
+  if(editingPlayerId===id)resetComposer();
+  save();
+  render();
+};
+
+render();
+
 render();
 </script><script src="image-tools-0.0.48.js?v=0.0.70"></script>
 <script src="draft-recovery-0.0.62.js?v=0.0.62"></script>
