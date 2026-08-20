@@ -1,0 +1,277 @@
+/* PATCH 0.1.26 — CLEAN HOME + MOBILE
+   - Полезные таблицы выведены из интерфейса.
+   - "Сборник Квестов" переносится вправо от "Питомцы" на широких экранах.
+   - Единая защита мобильной верстки внутренних страниц. */
+
+html,body{
+  max-width:100%;
+  overflow-x:clip;
+}
+
+/* Главная: 5 карточек сверху, 6 снизу. "Сборник Квестов" — справа от "Питомцы". */
+@media (min-width:901px){
+  body.home-page .cards{
+    width:min(1110px,96vw)!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  body.home-page .cards>.card:nth-child(1){grid-column:1;grid-row:1}
+  body.home-page .cards>.card:nth-child(2){grid-column:2;grid-row:1}
+  body.home-page .cards>.card:nth-child(3){grid-column:3;grid-row:1}
+  body.home-page .cards>.card:nth-child(4){grid-column:4;grid-row:1}
+  body.home-page .cards>.card:nth-child(5){grid-column:5;grid-row:1}
+  body.home-page .cards>.card:nth-child(6){grid-column:1;grid-row:2}
+  body.home-page .cards>.card:nth-child(7){grid-column:2;grid-row:2}
+  body.home-page .cards>.card:nth-child(8){grid-column:3;grid-row:2}
+  body.home-page .cards>.card:nth-child(9){grid-column:4;grid-row:2}
+  body.home-page .cards>.card:nth-child(10){grid-column:5;grid-row:2}
+  body.home-page .cards>.card:nth-child(11){grid-column:6;grid-row:2}
+}
+
+/* Общая защита: любой контент обязан оставаться внутри viewport. */
+main,.wrap,.container,.page,.panel,section,article,
+.content,.content-area,.posts,.post,.toolbar,.editor,
+.org-wrap,.org-stage,.org-grid,.org-copy,.org-image-wrap,
+.detail-wrap,.detail-hero,.detail-section,
+.wiki-shell,.wiki-content,.wiki-article,.wiki-summary-card,
+.school-layout,.school-main,.two-col,.layout,
+.profile-layout,.server-columns,.community-bar{
+  min-width:0;
+  max-width:100%;
+}
+img,video,canvas,svg{
+  max-width:100%;
+  height:auto;
+}
+pre,code{
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+.table-wrap,.table-shell,.rich-output,.rich-editor{
+  max-width:100%;
+}
+.table-wrap{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* Внутренние страницы на телефонах/небольших планшетах. */
+@media (max-width:900px){
+  body:not(.home-page) .top,
+  body:not(.home-page) .header,
+  .account-top{
+    width:100%!important;
+    max-width:100%!important;
+    min-height:auto!important;
+    padding:9px 10px!important;
+    gap:8px!important;
+    flex-wrap:wrap!important;
+    align-items:center!important;
+  }
+
+  body:not(.home-page) .brand,
+  .account-brand{
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    flex:1 1 100%!important;
+    justify-content:flex-start!important;
+  }
+  body:not(.home-page) .brand img,
+  .account-brand img{
+    width:44px!important;
+    height:44px!important;
+    flex:0 0 44px!important;
+  }
+  body:not(.home-page) .brand span,
+  .account-brand span{
+    display:block!important;
+    min-width:0!important;
+    max-width:calc(100vw - 78px)!important;
+    white-space:normal!important;
+    overflow-wrap:break-word!important;
+    font-size:15px!important;
+    line-height:1.15!important;
+  }
+
+  body:not(.home-page) .nav,
+  .account-nav{
+    width:100%!important;
+    max-width:100%!important;
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    gap:7px!important;
+    padding:3px 0 6px!important;
+    white-space:nowrap!important;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+  }
+  body:not(.home-page) .nav a,
+  .account-nav a{
+    flex:0 0 auto!important;
+    min-width:max-content!important;
+    max-width:none!important;
+    padding:7px 9px!important;
+    font-size:13px!important;
+    line-height:1.2!important;
+  }
+
+  body>main,
+  main.wrap,.wrap,.container,
+  .org-wrap,.detail-wrap,
+  body.kf-wiki-reader .wrap,
+  body.kf-guide-reference .wrap{
+    width:calc(100% - 14px)!important;
+    max-width:calc(100vw - 14px)!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  .panel,.page-head,.content-panel,.toc-panel,
+  .org-head,.org-stage,.org-grid,.org-copy,.org-image-wrap,
+  .detail-hero,.detail-section,.wiki-shell,.wiki-content,
+  .wiki-article,.wiki-summary-card{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  .grid2,.grid3,.grid4,.two-col,.layout,.server-columns,
+  .school-layout,.profile-layout,.detail-hero,.org-grid,
+  .wiki-shell,.wiki-summary-card,.repeat-builders,
+  .toolbar,.filters-grid,.form-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+
+  .two-col>*,.layout>*,.server-columns>*,
+  .school-layout>*,.profile-layout>*,
+  .detail-hero>*,.org-grid>*,
+  .wiki-shell>*,.wiki-summary-card>*{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  .toc,.sidebar,.school-nav{
+    position:relative!important;
+    top:auto!important;
+    left:auto!important;
+    right:auto!important;
+    width:100%!important;
+    max-width:100%!important;
+    max-height:none!important;
+  }
+
+  /* Организации/школы — наиболее чувствительный к ширине блок. */
+  .org-copy{
+    width:auto!important;
+    max-width:100%!important;
+    margin:12px!important;
+    padding:16px!important;
+  }
+  .org-image-wrap{
+    width:100%!important;
+    min-height:260px!important;
+    overflow:hidden!important;
+  }
+  .org-image,
+  .org-image-ghost,
+  .org-scene-art .org-image{
+    left:auto!important;
+    right:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    max-height:320px!important;
+    object-fit:contain!important;
+  }
+  .detail-image{
+    min-width:0!important;
+    min-height:240px!important;
+  }
+  .detail-image img{
+    width:100%!important;
+    height:auto!important;
+    max-height:320px!important;
+    object-fit:contain!important;
+  }
+
+  .detail-facts>div,.org-fact{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  .compact-top,.player,.sale,.contact{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  .compact-img,.avatar,.school-img{
+    max-width:100%!important;
+  }
+
+  .gallery,.draft-gallery,.beginner-gallery{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  input,textarea,select{
+    min-width:0!important;
+    max-width:100%!important;
+    font-size:16px!important;
+  }
+  button,.btn{
+    max-width:100%;
+    min-height:42px;
+  }
+
+  table{
+    max-width:100%;
+  }
+  .rich-output table,.rich-editor table{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+  }
+
+  .editor-backdrop,.org-modal,.detail-modal,.preview-modal,.smile-modal{
+    padding:8px!important;
+  }
+  .editor-box,.org-editor,.preview-box,.smile-box{
+    width:min(100%,calc(100vw - 16px))!important;
+    max-width:calc(100vw - 16px)!important;
+  }
+
+  .kf-music{
+    max-width:calc(100vw - 20px)!important;
+  }
+}
+
+@media (max-width:620px){
+  .gallery,.draft-gallery,.beginner-gallery{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .detail-facts>div,.org-fact,.detail-cards article{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .detail-cards img{
+    width:100%!important;
+    height:auto!important;
+    max-height:240px!important;
+    object-fit:contain!important;
+  }
+  .page-head h1,h1{
+    font-size:clamp(28px,9vw,38px)!important;
+  }
+  .entry-actions,.editor-actions,.toolbar-actions,.profile-actions{
+    width:100%;
+    flex-wrap:wrap!important;
+  }
+}
+
+/* На узком экране главная сохраняет прежнюю компактную сетку. */
+@media (max-width:900px){
+  body.home-page .cards>.card{
+    grid-column:auto!important;
+    grid-row:auto!important;
+  }
+}
